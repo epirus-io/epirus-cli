@@ -1,16 +1,16 @@
-web3j-cli: Web3j Command Line Tools
+epirus-cli: Epirus Command Line Tools
 ==================================
 
 .. image:: https://api.travis-ci.org/web3j/web3j-docs.svg?branch=master
    :target: https://docs.web3j.io
    :alt: Documentation Status
 
-.. image:: https://travis-ci.org/web3j/web3j-cli.svg?branch=master
-   :target: https://travis-ci.org/web3j/web3j-cli
+.. image:: https://travis-ci.org/epirus-io/epirus-cli.svg?branch=master
+   :target: https://travis-ci.org/epirus-io/epirus-cli
    :alt: Build Status
 
-.. image:: https://codecov.io/gh/web3j/web3j-cli/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/web3j/web3j-cli
+.. image:: https://codecov.io/gh/epirus-io/epirus-cli/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/epirus-io/epirus-cli
    :alt: codecov
 
 .. image:: https://badges.gitter.im/web3j/web3j.svg
@@ -20,7 +20,7 @@ web3j-cli: Web3j Command Line Tools
 
 About
 =====
-The Web3j command line tools enable developers to interact with blockchains more easily. The Web3j command line tools allow allow you to use some of the key functionality of web3j from your terminal, including:
+The Epirus command line tools enable developers to interact with blockchains more easily. The Epirus command line tools allow allow you to use some of the key functionality of Epirus from your terminal, including:
 
 * New project creation
 * Project creation from existing Solidity code
@@ -37,15 +37,15 @@ On Linux/macOS, in a terminal, run the following command:
 
 .. code-block:: bash
 
-	curl -L get.web3j.io | sh
+	curl -L get.epirus.io | sh
 
-This script will not work if Web3j has been installed using Homebrew on macOS.
+This script will not work if Epirus has been installed using Homebrew on macOS.
 
 On Windows, in PowerShell, run the following command:
 
 .. code-block:: bash
 
-	Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))
+	Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/epirus-io/epirus-installer/master/installer.ps1'))
    
 Docs
 =====

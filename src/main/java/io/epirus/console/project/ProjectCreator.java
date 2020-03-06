@@ -79,15 +79,15 @@ public class ProjectCreator {
                                 stringOptions.add(projectDest);
                             });
             if (InteractiveOptions.configFileExists()) {
-                if (!InteractiveOptions.userHasWeb3jAccount()) {
-                    if (InteractiveOptions.userWantsWeb3jAccount()) {
+                if (!InteractiveOptions.userHasEpirusAccount()) {
+                    if (InteractiveOptions.userWantsEpirusAccount()) {
                         AccountManager.main(
                                 CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
                                 new String[] {"create"});
                     }
                 }
             } else {
-                if (InteractiveOptions.userWantsWeb3jAccount()) {
+                if (InteractiveOptions.userWantsEpirusAccount()) {
                     AccountManager.main(
                             CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
                             new String[] {"create"});

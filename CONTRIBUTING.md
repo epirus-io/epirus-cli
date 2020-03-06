@@ -1,4 +1,4 @@
-## How to contribute to web3j
+## How to contribute to Epirus & Web3j
 
 Thank you for reading this! If you'd like to report a bug or join in the buidl-ing of web3j, then here are some notes on how to do that.
 
@@ -26,4 +26,4 @@ Thank you for reading this! If you'd like to report a bug or join in the buidl-i
 
 ## :heart: BUIDL :heart:
 
-team web3j 
+Web3 Labs Team

@@ -77,7 +77,7 @@ public class AccountManager implements Closeable {
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
                 System.out.println(
-                        "Account created successfully. You can now use Web3j Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+                        "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
                 System.out.println("Account creation failed. Please try again later.");
             }

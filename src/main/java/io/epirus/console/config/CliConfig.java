@@ -33,9 +33,9 @@ public class CliConfig {
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
-        File web3jHome = new File(configFile.getParent());
-        if (!web3jHome.exists() && !web3jHome.mkdirs()) {
-            throw new IOException("Failed to create Web3j home directory");
+        File epirusHome = new File(configFile.getParent());
+        if (!epirusHome.exists() && !epirusHome.mkdirs()) {
+            throw new IOException("Failed to create Epirus home directory");
         }
         return new CliConfig(
                 Version.getVersion(),
