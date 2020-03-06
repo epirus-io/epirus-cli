@@ -8,9 +8,9 @@ plugins {
     id "de.undercouch.download" version "4.0.0"
 }
 
-description 'web3j command line tools'
-mainClassName = 'org.web3j.console.Runner'
-applicationName = 'web3j'
+description 'epirus command line tools'
+mainClassName = 'io.epirus.console.Runner'
+applicationName = 'epirus'
 
 ext {
     web3jVersion = project.property('version')
@@ -55,11 +55,11 @@ test {
 }
 
 distZip {
-    archiveName "web3j-${project.version}.zip"
+    archiveName "epirus-${project.version}.zip"
 }
 
 distTar {
-    archiveName "web3j-${project.version}.tar"
+    archiveName "epirus-${project.version}.tar"
 }
 
 dependencies {
