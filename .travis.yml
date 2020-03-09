@@ -20,9 +20,6 @@ jobs:
     if: branch =~ /release/
     script: "./gradlew check distZip distTar -Pversion=${TRAVIS_BRANCH#'release/'}
       && ./scripts/github-release.sh"
-  - stage: release homebrew
-    if: branch =~ /release/
-    script: "./scripts/homebrew-release.sh"
 env:
   global:
     secure: MRT0QZ0rSPml2QGugEYwdw/aiiyYxjBZKGWIboeFl5FkDbAd3cJ2MpJYcRGn79W2ZopdckTvC4h0RpszcOicGmcG0WuB4K1OWg2SDMxwuZeUZssTXgEkO4gbN03piYfYSlRWIba8mZ4UrvgURvA99tNc64IdHOJXpT9WdEu4HJ9FScrBqxvbWyzcpbmz7J+q6Uo3PYPT4MCf/G3sMKYHItWPal/Cu+UNpCosxfpVSwIgjGcZxN8bWoZ732jBHYBdhB1fYRJjaD4XPKXPj1xSFBHizBvbBc6qKSr7RnvCzA/0KBtsoCTGab/xQ2rs8f6NZ8XHXA/P6UQrS0g9X3Kll58JmX7r3U4qwleTzWY8PRUuF8y69TS/LZP7o9iyf6OQ3AFySluuylTgZsVzUuYZwQxWbvAG46L/jUTvnUYQQzCebpZ2pWhu5QEh9/HQraKOfM+3PWh2JUJZ+yU0nlPvvYvM0FJ3qs8Hl9F+ryEumLuohjU9Gp7Zu+PHmr3ttYuk0hJ+t0wBlkqQbeKJPgmQdumdv6RsZadPVDtoHKI560xJ0BJKKtd+xQ/IqnBSDhCkOOgy9qKY+hwhi+IxurDeM/+A5PM4vRjYboUE5pruUA+B/9NSPlnp2uMYKUPseOc7agzgEdoRWWqXTs6/HK6PyBTwfn6t+3DtSC6Fpr+S3Y8=
