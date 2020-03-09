@@ -49,12 +49,12 @@ import static org.mockito.Mockito.mock;
 
 public class UpdaterTest {
 
-    private static Path tempWeb3jSettingsPath;
+    private static Path tempEpirusSettingsPath;
     private static WireMockServer wireMockServer;
 
     @BeforeEach
     void setup(@TempDir Path temp) {
-        tempWeb3jSettingsPath = Paths.get(temp.toString(), ".config");
+        tempEpirusSettingsPath = Paths.get(temp.toString(), ".config");
         wireMockServer = new WireMockServer(wireMockConfig().port(8081));
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
@@ -103,7 +103,7 @@ public class UpdaterTest {
                                                             config.getUpdatePrompt(),
                                                             null));
                             Files.write(
-                                    tempWeb3jSettingsPath,
+                                    tempEpirusSettingsPath,
                                     jsonToWrite.getBytes(Charset.defaultCharset()));
                             return null;
                         })
@@ -139,7 +139,7 @@ public class UpdaterTest {
         // return true, otherwise it should return false
         assertEquals(!version.equals(config.getVersion()), config.isUpdateAvailable());
 
-        CliConfig realConfigAfterUpdate = CliConfig.getConfig(tempWeb3jSettingsPath.toFile());
+        CliConfig realConfigAfterUpdate = CliConfig.getConfig(tempEpirusSettingsPath.toFile());
         assertEquals(
                 !version.equals(config.getVersion()), realConfigAfterUpdate.isUpdateAvailable());
         wireMockServer.stop();

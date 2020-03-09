@@ -43,10 +43,10 @@ public class InteractiveOptions {
     }
 
     public static String getPackageName() {
-        print("Please enter the package name for your project [io.web3j]:");
+        print("Please enter the package name for your project [io.epirus]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
-            return "io.web3j";
+            return "io.epirus";
         }
         while (!InputVerifier.packageNameIsValid(packageName)) {
             packageName = getUserInput();
@@ -154,7 +154,7 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public static boolean userHasWeb3jAccount() throws IOException {
+    public static boolean userHasEpirusAccount() throws IOException {
         if (LocalWeb3jAccount.configExists()) {
             ObjectNode objectNode = LocalWeb3jAccount.readConfigAsJson();
             return LocalWeb3jAccount.loginTokenExists(objectNode);
@@ -166,9 +166,9 @@ public class InteractiveOptions {
         return LocalWeb3jAccount.configExists();
     }
 
-    public static boolean userWantsWeb3jAccount() throws IOException {
+    public static boolean userWantsEpirusAccount() throws IOException {
 
-        print("It looks like you don’t have a Web3j account, would you like to create one?");
+        print("It looks like you don’t have an Epirus account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
