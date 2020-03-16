@@ -14,6 +14,7 @@ package io.epirus.console;
 
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.CliConfig;
+import io.epirus.console.deploy.DeployRunner;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
@@ -65,6 +66,9 @@ public class Runner {
             Console.exitError(USAGE);
         } else {
             switch (args[0]) {
+                case "deploy":
+                    DeployRunner.main(tail(args));
+                    break;
                 case "wallet":
                     WalletRunner.run(tail(args));
                     break;

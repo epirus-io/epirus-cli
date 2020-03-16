@@ -15,6 +15,7 @@ package io.epirus.console;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -54,15 +55,15 @@ public class WalletFunder {
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
+
             String transactionHash =
                     fundWallet(args[1], selectedFaucet, args.length == 4 ? args[3] : null);
             System.out.println(
                     String.format(
                             "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.epirus.io/transactions/%s",
                             selectedFaucet.name.toLowerCase(), transactionHash));
-            System.exit(0);
         } catch (Exception e) {
-            System.err.println("The fund operation failed with the following exception:");
+            System.out.println("The fund operation failed with the following exception:");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -98,7 +99,13 @@ public class WalletFunder {
 
     public static String fundWallet(String walletAddress, Faucet faucet, String token)
             throws Exception {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client =
+                new OkHttpClient.Builder()
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .build();
+
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("Sending funding request...");
         Request sendEtherRequest;
@@ -185,7 +192,9 @@ public class WalletFunder {
             WalletFunderResult result = mapper.readValue(sendResponse, WalletFunderResult.class);
             return result.result;
         } catch (Exception ex) {
-            return "The fund operation failed - this may be due to an issue with the remote server. Please try again.";
+            throw new Exception(
+                    "The fund operation failed - this may be due to an issue with the remote server. Please try again.",
+                    ex);
         }
     }
 }

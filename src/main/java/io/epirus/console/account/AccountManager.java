@@ -26,11 +26,13 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import org.web3j.codegen.Console;
+
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
     private static final String USAGE = "account login|logout|create";
-    private static final String CLOUD_URL = "https://auth.epirus.io";
+    public static final String CLOUD_URL = "https://auth.epirus.io";
     private OkHttpClient client;
     CliConfig config;
 
@@ -53,7 +55,7 @@ public class AccountManager implements Closeable {
         }
     }
 
-    public void createAccount(String email) throws IOException {
+    public void createAccount(String email) {
         RequestBody requestBody = createRequestBody(email);
         Request newAccountRequest = createRequest(requestBody);
 
@@ -68,22 +70,23 @@ public class AccountManager implements Closeable {
 
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
                     if (tokenError == null || tokenError.isEmpty()) {
-                        System.out.println("Could not retrieve token. Try again later.");
+                        Console.exitError("Could not retrieve token. Try again later.");
                     } else {
-                        System.out.println(tokenError);
+                        Console.exitError(tokenError);
                     }
                     return;
                 }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
+                config.save();
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
-                System.out.println("Account creation failed. Please try again later.");
+                Console.exitError("Account creation failed. Please try again later.");
             }
 
         } catch (IOException e) {
-            System.out.println("Could not connect to the server.\nReason:" + e.getMessage());
+            Console.exitError("Could not connect to the server.\nReason:" + e.getMessage());
         }
     }
 
