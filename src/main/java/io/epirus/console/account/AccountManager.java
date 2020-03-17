@@ -26,8 +26,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import org.web3j.codegen.Console;
-
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
@@ -67,12 +65,15 @@ public class AccountManager implements Closeable {
                 JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
 
                 if (responseJsonObj.get("token") == null) {
-
+                    System.out.println("Response token is null");
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
                     if (tokenError == null || tokenError.isEmpty()) {
-                        Console.exitError("Could not retrieve token. Try again later.");
+                        System.out.println("Could not retrieve tokenError. Try again later.");
+                        // Console.exitError("Could not retrieve token. Try again later.");
                     } else {
-                        Console.exitError(tokenError);
+                        System.out.println("Could not retrieve token. Try again later.");
+
+                        // Console.exitError(tokenError);
                     }
                     return;
                 }
@@ -82,11 +83,13 @@ public class AccountManager implements Closeable {
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
-                Console.exitError("Account creation failed. Please try again later.");
+                System.out.println("Account creation failed.");
+                // Console.exitError("Account creation failed. Please try again later.");
             }
 
         } catch (IOException e) {
-            Console.exitError("Could not connect to the server.\nReason:" + e.getMessage());
+            e.printStackTrace();
+            // Console.exitError("Could not connect to the server.\nReason:" + e.getMessage());
         }
     }
 
