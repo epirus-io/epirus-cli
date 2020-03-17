@@ -81,6 +81,8 @@ public class AccountManagerTest {
         when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
         doNothing().when(connectionPool).evictAll();
         accountManager.createAccount("test@gmail.com");
+        System.out.println(errContent.toString());
+        System.out.println(outContent.toString());
         Assertions.assertTrue(outContent.toString().contains("Account created successfully."));
     }
 }
