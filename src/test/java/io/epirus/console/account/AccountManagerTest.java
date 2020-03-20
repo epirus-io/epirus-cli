@@ -61,7 +61,8 @@ public class AccountManagerTest {
                         "ce3724d9-06eb-4b50-b654-ae0e6a756caf",
                         "4.6.0-SNAPSHOT",
                         null,
-                        null);
+                        null,
+                        Paths.get(workingDirectory.getPath(), ".epirus", ".config"));
         String jsonToWrite = new Gson().toJson(cliConfig);
         new File(workingDirectory + File.separator + ".epirus").mkdirs();
         Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
