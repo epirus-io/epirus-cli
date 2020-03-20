@@ -120,7 +120,6 @@ public class AccountManager implements Closeable {
     }
 
     public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
-
         Request request =
                 new Request.Builder()
                         .url(
@@ -138,9 +137,9 @@ public class AccountManager implements Closeable {
             } else {
                 Thread.sleep(5000);
             }
-            Console.exitError(
-                    "Please check your email and activate your account in order to take advantage our features.");
         }
+        Console.exitError(
+                "Please check your email and activate your account in order to take advantage our features.");
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {
