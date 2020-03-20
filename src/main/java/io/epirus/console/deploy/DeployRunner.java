@@ -95,7 +95,8 @@ public class DeployRunner {
                 }
                 return;
             } catch (Exception e) {
-                e.printStackTrace();
+                Console.exitError(
+                        "Could not fund wallet with address: " + credentials.getAddress());
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
