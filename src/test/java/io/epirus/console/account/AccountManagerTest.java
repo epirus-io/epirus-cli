@@ -45,9 +45,7 @@ import static org.mockito.Mockito.when;
 public class AccountManagerTest {
     @TempDir static File workingDirectory;
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
-    private static final PrintStream originalErr = System.err;
     static OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
     static Call call = mock(Call.class);
     static ConnectionPool connectionPool = mock(ConnectionPool.class);
@@ -63,20 +61,18 @@ public class AccountManagerTest {
                         "ce3724d9-06eb-4b50-b654-ae0e6a756caf",
                         "4.6.0-SNAPSHOT",
                         null,
-                        "");
+                        null);
         String jsonToWrite = new Gson().toJson(cliConfig);
         new File(workingDirectory + File.separator + ".epirus").mkdirs();
         Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
         Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
         accountManager = new AccountManager(cliConfig, mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
     }
 
     @AfterAll
     public static void restoreStreams() {
         System.setOut(originalOut);
-        System.setErr(originalErr);
     }
 
     @Test
