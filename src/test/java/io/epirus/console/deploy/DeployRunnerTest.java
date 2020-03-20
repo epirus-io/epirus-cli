@@ -55,14 +55,14 @@ public class DeployRunnerTest extends ClassExecutor {
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
                         .start()
                         .waitFor();
-        CliConfig cliConfig =
+        cliConfig =
                 new CliConfig(
                         "4.6.0-SNAPSHOT",
                         "https://auth.epirus.io",
                         "ce3724d9-06eb-4b50-b654-ae0e6a756caf",
                         "4.6.0-SNAPSHOT",
                         null,
-                        "4e86ddd6-2f46-4fb2-a4f7-c1331657934f");
+                        null);
         String jsonToWrite = new Gson().toJson(cliConfig);
         new File(workingDirectory + File.separator + ".epirus").mkdirs();
         Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");

@@ -16,7 +16,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import com.google.gson.Gson;
 import io.epirus.console.config.CliConfig;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -30,6 +35,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -37,6 +43,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AccountManagerTest {
+    @TempDir static File workingDirectory;
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
@@ -45,14 +52,23 @@ public class AccountManagerTest {
     static Call call = mock(Call.class);
     static ConnectionPool connectionPool = mock(ConnectionPool.class);
     static AccountManager accountManager;
+    static CliConfig cliConfig;
 
     @BeforeAll
-    public static void setUpStreams() throws IOException {
-        accountManager =
-                new AccountManager(
-                        CliConfig.getConfig(
-                                new File(String.valueOf(CliConfig.getDefaultEpirusConfigPath()))),
-                        mockedOkHttpClient);
+    public static void setUp() throws IOException {
+        cliConfig =
+                new CliConfig(
+                        "4.6.0-SNAPSHOT",
+                        "https://auth.epirus.io",
+                        "ce3724d9-06eb-4b50-b654-ae0e6a756caf",
+                        "4.6.0-SNAPSHOT",
+                        null,
+                        "");
+        String jsonToWrite = new Gson().toJson(cliConfig);
+        new File(workingDirectory + File.separator + ".epirus").mkdirs();
+        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
+        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
+        accountManager = new AccountManager(cliConfig, mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }

@@ -12,7 +12,8 @@
  */
 package io.epirus.console.config;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -188,6 +189,6 @@ public class CliConfig {
 
     public void save() throws IOException {
         String jsonToWrite = new Gson().toJson(this);
-        Files.write(DEFAULT_EPIRUS_CONFIG_PATH, jsonToWrite.getBytes(Charset.defaultCharset()));
+        Files.write(Paths.get(configPath), jsonToWrite.getBytes(Charset.defaultCharset()));
     }
 }
