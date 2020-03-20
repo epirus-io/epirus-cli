@@ -36,7 +36,6 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 
 import static org.web3j.codegen.Console.exitError;
 
-// Possible can be renamed Account and the accountUtills class can be named account manager
 public class AccountManager implements Closeable {
     private static final String USAGE = "account login|logout|create";
     public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
@@ -115,10 +114,7 @@ public class AccountManager implements Closeable {
     final Request createRequest(RequestBody accountBody) {
 
         return new Request.Builder()
-                .url(
-                        String.format(
-                                "%s/auth/realms/EpirusPortal/web3j-token/create",
-                                DEFAULT_CLOUD_URL))
+                .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", cloudURL))
                 .post(accountBody)
                 .build();
     }
@@ -128,7 +124,7 @@ public class AccountManager implements Closeable {
         Request request =
                 new Request.Builder()
                         .url(
-                                AccountManager.DEFAULT_CLOUD_URL
+                                cloudURL
                                         + "/auth/realms/EpirusPortal/web3j-token/status/"
                                         + config.getLoginToken())
                         .get()
