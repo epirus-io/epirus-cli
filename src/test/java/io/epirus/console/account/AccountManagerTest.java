@@ -41,9 +41,18 @@ public class AccountManagerTest {
     private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
     private static final PrintStream originalErr = System.err;
+    static OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
+    static Call call = mock(Call.class);
+    static ConnectionPool connectionPool = mock(ConnectionPool.class);
+    static AccountManager accountManager;
 
     @BeforeAll
-    public static void setUpStreams() {
+    public static void setUpStreams() throws IOException {
+        accountManager =
+                new AccountManager(
+                        CliConfig.getConfig(
+                                new File(String.valueOf(CliConfig.getDefaultEpirusConfigPath()))),
+                        mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }
@@ -55,15 +64,29 @@ public class AccountManagerTest {
     }
 
     @Test
+    public void testAccountConfirmation() throws IOException, InterruptedException {
+        Request request =
+                accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
+        Response response =
+                new Response.Builder()
+                        .protocol(Protocol.H2_PRIOR_KNOWLEDGE)
+                        .message("")
+                        .body(
+                                ResponseBody.create(
+                                        "{\"active\":true}", MediaType.parse("application/json")))
+                        .code(200)
+                        .request(request)
+                        .build();
+        when(call.execute()).thenReturn(response);
+        when(mockedOkHttpClient.newCall(any(Request.class))).thenReturn(call);
+        when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
+        doNothing().when(connectionPool).evictAll();
+        accountManager.checkIfAccountIsConfirmed();
+        Assertions.assertTrue(outContent.toString().contains("Account is active."));
+    }
+
+    @Test
     public void testAccountCreation() throws IOException {
-        OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
-        Call call = mock(Call.class);
-        ConnectionPool connectionPool = mock(ConnectionPool.class);
-        AccountManager accountManager =
-                new AccountManager(
-                        CliConfig.getConfig(
-                                new File(String.valueOf(CliConfig.getEpirusConfigPath()))),
-                        mockedOkHttpClient);
         Request request =
                 accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
         Response response =

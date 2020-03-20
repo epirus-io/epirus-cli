@@ -63,15 +63,9 @@ public class ProjectUtils {
         return RandomStringUtils.random(10, true, true);
     }
 
-    public static Optional<Path> loadProjectWalletFile() {
+    public static Optional<Path> loadProjectWalletFile(Path path) {
         String pathToProjectResources =
-                String.join(
-                        File.separator,
-                        System.getProperty("user.dir"),
-                        "src",
-                        "test",
-                        "resources",
-                        "wallet");
+                String.join(File.separator, path.toString(), "src", "test", "resources", "wallet");
         try {
             return Optional.of(
                     Files.list(Paths.get(pathToProjectResources))
@@ -85,15 +79,9 @@ public class ProjectUtils {
         }
     }
 
-    public static Optional<Path> loadProjectPasswordWalletFile() {
+    public static Optional<Path> loadProjectPasswordWalletFile(Path path) {
         String pathToProjectResources =
-                String.join(
-                        File.separator,
-                        System.getProperty("user.dir"),
-                        "src",
-                        "test",
-                        "resources",
-                        "wallet");
+                String.join(File.separator, path.toString(), "src", "test", "resources", "wallet");
         try {
             return Optional.of(
                     Files.list(Paths.get(pathToProjectResources))
@@ -125,12 +113,12 @@ public class ProjectUtils {
         return null;
     }
 
-    public static void uploadSolidityMetadata(Network network) {
+    public static void uploadSolidityMetadata(Network network, Path workingDirectory) {
         File pathToMetadata =
                 new File(
                         String.join(
                                 File.separator,
-                                System.getProperty("user.dir"),
+                                workingDirectory.toString(),
                                 "build",
                                 "resources",
                                 "main",

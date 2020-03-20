@@ -15,56 +15,78 @@ package io.epirus.console.deploy;
 import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import io.epirus.console.Faucet;
 import io.epirus.console.WalletFunder;
+import io.epirus.console.account.AccountManager;
 import io.epirus.console.account.AccountUtils;
+import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.utils.ProjectUtils;
+import okhttp3.OkHttpClient;
 
 import org.web3j.account.LocalWeb3jAccount;
 import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
 
-import static io.epirus.console.account.AccountUtils.accountInit;
-import static io.epirus.console.account.AccountUtils.checkIfUserConfirmedAccount;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 
 public class DeployRunner {
     public static final String USAGE = "epirus deploy <network>";
-    private Network network;
-    private Credentials credentials;
+    private final Path workingDirectory;
+    private final Network network;
+    private final Credentials credentials;
+    private final AccountManager accountManager;
 
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
-            accountInit();
-            new DeployRunner(Network.valueOf(args[0].toUpperCase())).deploy();
+            new DeployRunner(
+                            Network.valueOf(args[0].toUpperCase()),
+                            new AccountManager(
+                                    CliConfig.getConfig(
+                                            CliConfig.getDefaultEpirusConfigPath().toFile()),
+                                    new OkHttpClient()))
+                    .deploy();
         } else {
             Console.exitError(USAGE);
         }
     }
 
-    public DeployRunner(Network network) {
+    public DeployRunner(Network network, AccountManager accountManager, Path workingDirectory) {
+        this.workingDirectory = workingDirectory;
         this.network = network;
-        Path walletPath = ProjectUtils.loadProjectWalletFile().get();
-        Path walletPasswordPath = ProjectUtils.loadProjectPasswordWalletFile().get();
+        Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
+        Path walletPasswordPath =
+                ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
         this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
+        this.accountManager = accountManager;
+    }
+
+    public DeployRunner(Network network, AccountManager accountManager) {
+        this.workingDirectory = Paths.get(System.getProperty("user.dir"));
+        this.network = network;
+        Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
+        Path walletPasswordPath =
+                ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
+        this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
+        this.accountManager = accountManager;
     }
 
     public void deploy() throws Exception {
-        accountInit();
-        checkIfUserConfirmedAccount();
+        AccountUtils.accountInit(accountManager);
+        this.accountManager.checkIfAccountIsConfirmed();
         fundWallet();
         waitForBalanceUpdate();
-        uploadSolidityMetadata(network);
-        runGradle();
+        uploadSolidityMetadata(network, workingDirectory);
+        runGradle(workingDirectory);
     }
 
     private void fundWallet() {
         int tries = 5;
         while (tries-- > 0) {
             try {
-                BigInteger accountBalance = AccountUtils.getAccountBalance(credentials, network);
+                BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
                 if (accountBalance.equals(BigInteger.ZERO)) {
                     WalletFunder.fundWallet(
                             credentials.getAddress(),
@@ -88,7 +110,7 @@ public class DeployRunner {
         int tries = 5;
         while (tries-- > 0) {
             try {
-                BigInteger accountBalance = AccountUtils.getAccountBalance(credentials, network);
+                BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
                 if (!accountBalance.equals(BigInteger.ZERO)) {
                     return;
                 } else {
@@ -104,9 +126,9 @@ public class DeployRunner {
         }
     }
 
-    private void runGradle() throws Exception {
+    private void runGradle(Path runLocation) throws Exception {
         executeProcess(
-                new File(File.separator, System.getProperty("user.dir")),
+                new File(File.separator, runLocation.toString()),
                 new String[] {"bash", "-c", "./gradlew run -q"});
     }
 
@@ -130,7 +152,7 @@ public class DeployRunner {
         if (exitCode != 0) {
             Console.exitError("Could not build project.");
         } else {
-            Console.exitSuccess("Project deployed successfully");
+            System.out.println("Project deployed successfully");
         }
     }
 }

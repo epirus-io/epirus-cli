@@ -12,8 +12,6 @@
  */
 package io.epirus.console.project.java;
 
-import java.io.IOException;
-
 import io.epirus.console.project.templates.java.JavaTemplateBuilder;
 import io.epirus.console.project.templates.java.JavaTemplateProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +23,7 @@ public class TemplateProviderTest {
     private JavaTemplateProvider templateProvider;
 
     @BeforeEach
-    public void init() throws IOException {
+    public void init() {
         templateProvider =
                 new JavaTemplateBuilder()
                         .withGradleBatScript("gradlew.bat.template")

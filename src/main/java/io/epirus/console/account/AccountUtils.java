@@ -12,98 +12,23 @@
  */
 package io.epirus.console.account;
 
-import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Paths;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.InteractiveOptions;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
-import org.web3j.codegen.Console;
-import org.web3j.crypto.Credentials;
-import org.web3j.protocol.Network;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class AccountUtils {
 
-    static OkHttpClient okHttpClient = new OkHttpClient();
-
-    public static void accountInit() throws IOException {
+    public static void accountInit(AccountManager accountManager) throws IOException {
         if (InteractiveOptions.configFileExists()) {
             if (!InteractiveOptions.userHasEpirusAccount()) {
                 if (InteractiveOptions.userWantsEpirusAccount()) {
-                    AccountManager.main(
-                            CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
-                            new String[] {"create"});
+                    accountManager.createAccount(InteractiveOptions.getEmail());
                 }
             }
         } else {
             if (InteractiveOptions.userWantsEpirusAccount()) {
-                AccountManager.main(
-                        CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
-                        new String[] {"create"});
+                accountManager.createAccount(InteractiveOptions.getEmail());
             }
         }
-    }
-
-    public static void checkIfUserConfirmedAccount() throws IOException, InterruptedException {
-        CliConfig cliConfig =
-                CliConfig.getConfig(
-                        new File(
-                                String.valueOf(
-                                        Paths.get(
-                                                System.getProperty("user.home"),
-                                                ".epirus",
-                                                ".config"))));
-        Request request =
-                new Request.Builder()
-                        .url(
-                                AccountManager.CLOUD_URL
-                                        + "/auth/realms/EpirusPortal/web3j-token/status/"
-                                        + cliConfig.getLoginToken())
-                        .get()
-                        .build();
-        System.out.println("Checking if the account is activated...");
-        int tries = 5;
-        while (tries-- > 0) {
-            if (userConfirmedAccount(request)) {
-                return;
-            } else {
-                Thread.sleep(5000);
-            }
-        }
-    }
-
-    private static boolean userConfirmedAccount(Request request) throws IOException {
-        Response response = okHttpClient.newCall(request).execute();
-        if (response.code() != 200) {
-            Console.exitError(response.message());
-        }
-        ResponseBody responseBody = response.body();
-        assert responseBody != null;
-        JsonObject responseJsonObj =
-                JsonParser.parseString(responseBody.string()).getAsJsonObject();
-        return responseJsonObj.get("active").getAsBoolean();
-    }
-
-    public static BigInteger getAccountBalance(Credentials credentials, Network network)
-            throws Exception {
-        BigInteger accountBalance =
-                Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
-                        .ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST)
-                        .send()
-                        .getBalance();
-        if (accountBalance == null) {
-            return BigInteger.ZERO;
-        }
-        return accountBalance;
     }
 }

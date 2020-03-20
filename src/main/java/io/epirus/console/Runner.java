@@ -55,7 +55,7 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
-        CliConfig config = CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile());
+        CliConfig config = CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile());
         Updater updater = new Updater(config);
         updater.promptIfUpdateAvailable();
         Thread updateThread = new Thread(updater::onlineUpdateCheck);

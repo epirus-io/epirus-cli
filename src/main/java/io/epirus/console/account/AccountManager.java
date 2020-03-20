@@ -14,11 +14,13 @@ package io.epirus.console.account;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Scanner;
+import java.math.BigInteger;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.epirus.console.config.CliConfig;
+import io.epirus.console.project.InteractiveOptions;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,26 +29,24 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import org.web3j.codegen.Console;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Network;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 
 import static org.web3j.codegen.Console.exitError;
 
+// Possible can be renamed Account and the accountUtills class can be named account manager
 public class AccountManager implements Closeable {
     private static final String USAGE = "account login|logout|create";
-    public static final String CLOUD_URL = "https://auth.epirus.io";
-    private OkHttpClient client;
+    public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
+    private final String cloudURL;
+    private final OkHttpClient client;
     CliConfig config;
 
-    public AccountManager(final CliConfig cliConfig, OkHttpClient client) {
-        this.client = client;
-        this.config = cliConfig;
-    }
-
     public static void main(final CliConfig config, final String[] args) throws IOException {
-
-        Scanner console = new Scanner(System.in);
         if ("create".equals(args[0])) {
-            System.out.println("Please enter your email address: ");
-            String email = console.nextLine().trim();
+            String email = InteractiveOptions.getEmail();
             AccountManager accountManager = new AccountManager(config, new OkHttpClient());
             accountManager.createAccount(email);
             accountManager.close();
@@ -55,17 +55,29 @@ public class AccountManager implements Closeable {
         }
     }
 
+    @VisibleForTesting
+    public AccountManager(final CliConfig cliConfig, OkHttpClient client) {
+        this.client = client;
+        this.config = cliConfig;
+        this.cloudURL = DEFAULT_CLOUD_URL;
+    }
+
+    @VisibleForTesting
+    public AccountManager(final CliConfig cliConfig, OkHttpClient client, String cloudURL) {
+        this.client = client;
+        this.config = cliConfig;
+        this.cloudURL = cloudURL;
+    }
+
     public void createAccount(String email) {
         RequestBody requestBody = createRequestBody(email);
         Request newAccountRequest = createRequest(requestBody);
-
         try {
             Response sendRawResponse = executeClientCall(newAccountRequest);
             ResponseBody body;
             if (sendRawResponse.code() == 200 && (body = sendRawResponse.body()) != null) {
                 String rawResponse = body.string();
                 JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
-
                 if (responseJsonObj.get("token") == null) {
                     System.out.println("Response token is null");
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
@@ -91,25 +103,79 @@ public class AccountManager implements Closeable {
         }
     }
 
-    protected final Response executeClientCall(Request newAccountRequest) throws IOException {
+    private final Response executeClientCall(Request newAccountRequest) throws IOException {
         return client.newCall(newAccountRequest).execute();
     }
 
-    protected final RequestBody createRequestBody(String email) {
+    final RequestBody createRequestBody(String email) {
 
         return new FormBody.Builder().add("email", email).build();
     }
 
-    protected final Request createRequest(RequestBody accountBody) {
+    final Request createRequest(RequestBody accountBody) {
 
         return new Request.Builder()
-                .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", CLOUD_URL))
+                .url(
+                        String.format(
+                                "%s/auth/realms/EpirusPortal/web3j-token/create",
+                                DEFAULT_CLOUD_URL))
                 .post(accountBody)
                 .build();
     }
 
+    public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
+
+        Request request =
+                new Request.Builder()
+                        .url(
+                                AccountManager.DEFAULT_CLOUD_URL
+                                        + "/auth/realms/EpirusPortal/web3j-token/status/"
+                                        + config.getLoginToken())
+                        .get()
+                        .build();
+        System.out.println("Checking if the account is activated...");
+        int tries = 5;
+        while (tries-- > 0) {
+            if (userConfirmedAccount(request)) {
+                System.out.println("Account is active.");
+                return;
+            } else {
+                Thread.sleep(5000);
+            }
+            Console.exitError(
+                    "Please check your email and activate your account in order to take advantage our features.");
+        }
+    }
+
+    private boolean userConfirmedAccount(Request request) throws IOException {
+        Response response = client.newCall(request).execute();
+        if (response.code() != 200) {
+            Console.exitError(response.message());
+        }
+        ResponseBody responseBody = response.body();
+        assert responseBody != null;
+        String responseBodyString = responseBody.string();
+        if (responseBodyString.equals("Invalid request")) {
+            Console.exitError("Could not check if account has been confirmed");
+        }
+        JsonObject responseJsonObj = JsonParser.parseString(responseBodyString).getAsJsonObject();
+        return responseJsonObj.get("active").getAsBoolean();
+    }
+
+    public BigInteger getAccountBalance(Credentials credentials, Network network) throws Exception {
+        BigInteger accountBalance =
+                Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
+                        .ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST)
+                        .send()
+                        .getBalance();
+        if (accountBalance == null) {
+            return BigInteger.ZERO;
+        }
+        return accountBalance;
+    }
+
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.client.dispatcher().executorService().shutdown();
         this.client.connectionPool().evictAll();
     }
