@@ -59,7 +59,7 @@ public class DeployRunnerTest extends ClassExecutor {
                 new CliConfig(
                         "4.6.0-SNAPSHOT",
                         "https://auth.epirus.io",
-                        "ce3724d9-06eb-4b50-b654-ae0e6a756caf",
+                        "test-token",
                         "4.6.0-SNAPSHOT",
                         null,
                         null);

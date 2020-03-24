@@ -83,25 +83,16 @@ public class DeployRunner {
     }
 
     private void fundWallet() {
-        int tries = 5;
-        while (tries-- > 0) {
-            try {
-                BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
-                if (accountBalance.equals(BigInteger.ZERO)) {
-                    WalletFunder.fundWallet(
-                            credentials.getAddress(),
-                            Faucet.valueOf(network.getNetworkName().toUpperCase()),
-                            "alex");
-                }
-                return;
-            } catch (Exception e) {
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+        try {
+            BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
+            if (accountBalance.equals(BigInteger.ZERO)) {
+                WalletFunder.fundWallet(
+                        credentials.getAddress(),
+                        Faucet.valueOf(network.getNetworkName().toUpperCase()),
+                        this.accountManager.getLoginToken());
             }
+        } catch (Exception e) {
+            Console.exitError(e);
         }
     }
 
@@ -127,6 +118,11 @@ public class DeployRunner {
     }
 
     private void runGradle(Path runLocation) throws Exception {
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            executeProcess(
+                    new File(File.separator, runLocation.toString()),
+                    new String[] {"cmd.exe", "/c", "./gradlew.bat run", "-q"});
+        }
         executeProcess(
                 new File(File.separator, runLocation.toString()),
                 new String[] {"bash", "-c", "./gradlew run -q"});

@@ -41,9 +41,9 @@ public class AccountManager implements Closeable {
     public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
     private final String cloudURL;
     private final OkHttpClient client;
-    CliConfig config;
+    private final CliConfig config;
 
-    public static void main(final CliConfig config, final String[] args) throws IOException {
+    public static void main(final CliConfig config, final String[] args) {
         if ("create".equals(args[0])) {
             String email = InteractiveOptions.getEmail();
             AccountManager accountManager = new AccountManager(config, new OkHttpClient());
@@ -78,7 +78,6 @@ public class AccountManager implements Closeable {
                 String rawResponse = body.string();
                 JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
                 if (responseJsonObj.get("token") == null) {
-                    System.out.println("Response token is null");
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
                     if (tokenError == null || tokenError.isEmpty()) {
                         Console.exitError("Could not retrieve token. Try again later.");
@@ -128,27 +127,25 @@ public class AccountManager implements Closeable {
                                         + config.getLoginToken())
                         .get()
                         .build();
-        System.out.println("Checking if the account is activated...");
-        int tries = 5;
+        System.out.println("Checking if the account is active...");
+        int tries = 10;
         while (tries-- > 0) {
             if (userConfirmedAccount(request)) {
                 System.out.println("Account is active.");
                 return;
-            } else {
-                Thread.sleep(5000);
             }
+            Thread.sleep(5000);
         }
         Console.exitError(
-                "Please check your email and activate your account in order to take advantage our features.");
+                "Please check your email and activate your account in order to take advantage our features.Once your account is activated you can re-run the command.");
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {
         Response response = client.newCall(request).execute();
-        if (response.code() != 200) {
+        ResponseBody responseBody = response.body();
+        if (response.code() != 200 || responseBody == null) {
             Console.exitError(response.message());
         }
-        ResponseBody responseBody = response.body();
-        assert responseBody != null;
         String responseBodyString = responseBody.string();
         if (responseBodyString.equals("Invalid request")) {
             Console.exitError("Could not check if account has been confirmed");
@@ -157,16 +154,26 @@ public class AccountManager implements Closeable {
         return responseJsonObj.get("active").getAsBoolean();
     }
 
-    public BigInteger getAccountBalance(Credentials credentials, Network network) throws Exception {
-        BigInteger accountBalance =
-                Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
-                        .ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST)
-                        .send()
-                        .getBalance();
+    public BigInteger getAccountBalance(Credentials credentials, Network network) {
+        BigInteger accountBalance = null;
+        try {
+            accountBalance =
+                    Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
+                            .ethGetBalance(
+                                    credentials.getAddress(), DefaultBlockParameterName.LATEST)
+                            .send()
+                            .getBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (accountBalance == null) {
             return BigInteger.ZERO;
         }
         return accountBalance;
+    }
+
+    public String getLoginToken() {
+        return this.config.getLoginToken();
     }
 
     @Override
