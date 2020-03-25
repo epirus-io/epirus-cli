@@ -45,21 +45,22 @@ public class ProjectImporter extends ProjectCreator {
     private static String[] getValues(String[] args, List<String> stringOptions) {
         String projectName;
         if (args.length == 0) {
-
+            InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
-            projectName = InteractiveOptions.getProjectName();
+            projectName = interactiveOptions.getProjectName();
             stringOptions.add(projectName);
             stringOptions.add("-p");
-            stringOptions.add(InteractiveOptions.getPackageName());
+            stringOptions.add(interactiveOptions.getPackageName());
             stringOptions.add("-s");
-            stringOptions.add(InteractiveOptions.getSolidityProjectPath());
-            InteractiveOptions.getProjectDestination(projectName)
+            stringOptions.add(interactiveOptions.getSolidityProjectPath());
+            interactiveOptions
+                    .getProjectDestination(projectName)
                     .ifPresent(
                             projectDest -> {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            if (InteractiveOptions.userWantsTests()) {
+            if (interactiveOptions.userWantsTests()) {
                 stringOptions.add("-t");
             }
 

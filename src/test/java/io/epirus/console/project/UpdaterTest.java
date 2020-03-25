@@ -54,7 +54,7 @@ public class UpdaterTest {
 
     @BeforeEach
     void setup(@TempDir Path temp) {
-        tempEpirusSettingsPath = Paths.get(temp.toString(), ".config");
+        tempEpirusSettingsPath = Paths.get(Folders.tempBuildFolder().getAbsolutePath(), ".config");
         wireMockServer = new WireMockServer(wireMockConfig().port(8081));
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
