@@ -159,7 +159,7 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public boolean userHasWeb3jAccount() throws IOException {
+    public boolean userHasEpirusAccount() throws IOException {
         if (LocalWeb3jAccount.configExists()) {
             ObjectNode objectNode = LocalWeb3jAccount.readConfigAsJson();
             return LocalWeb3jAccount.loginTokenExists(objectNode);
@@ -171,7 +171,7 @@ public class InteractiveOptions {
         return LocalWeb3jAccount.configExists();
     }
 
-    public boolean userWantsWeb3jAccount() throws IOException {
+    public boolean userWantsEpirusAccount() throws IOException {
         print("It looks like you don’t have a Web3j account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();

@@ -12,12 +12,11 @@
  */
 package io.epirus.console.project.kotlin;
 
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
-
-import org.web3j.console.project.utils.Folders;
 
 public class KotlinProjectCreatorCLIRunnerTest {
     private String tempDirPath;

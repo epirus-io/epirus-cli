@@ -16,10 +16,9 @@ import java.io.File;
 
 import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.java.JavaProjectStructure;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.web3j.console.project.utils.Folders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

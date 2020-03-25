@@ -12,9 +12,8 @@
  */
 package io.epirus.console;
 
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Test;
-
-import org.web3j.console.project.utils.Folders;
 
 import static io.epirus.console.KeyImporterTest.WALLET_PASSWORD;
 import static org.mockito.ArgumentMatchers.contains;

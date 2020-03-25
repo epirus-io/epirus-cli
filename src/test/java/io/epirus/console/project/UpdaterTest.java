@@ -23,11 +23,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.gson.Gson;
 import io.epirus.console.config.CliConfig;
+import io.epirus.console.project.utils.Folders;
 import io.epirus.console.update.Updater;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -48,12 +48,11 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 public class UpdaterTest {
-
     private static Path tempEpirusSettingsPath;
     private static WireMockServer wireMockServer;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
+    void setup() {
         tempEpirusSettingsPath = Paths.get(Folders.tempBuildFolder().getAbsolutePath(), ".config");
         wireMockServer = new WireMockServer(wireMockConfig().port(8081));
         wireMockServer.start();

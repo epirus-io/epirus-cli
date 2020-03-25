@@ -20,12 +20,11 @@ import java.util.Collections;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.project.utils.ClassExecutor;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
-
-import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 

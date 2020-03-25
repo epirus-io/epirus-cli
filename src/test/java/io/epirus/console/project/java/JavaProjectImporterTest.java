@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.utils.ClassExecutor;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

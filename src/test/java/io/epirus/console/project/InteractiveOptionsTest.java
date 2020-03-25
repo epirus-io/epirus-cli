@@ -18,10 +18,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;

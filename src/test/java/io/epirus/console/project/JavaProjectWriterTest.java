@@ -17,10 +17,9 @@ import java.io.IOException;
 
 import io.epirus.console.project.templates.java.JavaTemplateBuilder;
 import io.epirus.console.project.templates.java.JavaTemplateProvider;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.web3j.console.project.utils.Folders;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
