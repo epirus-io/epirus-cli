@@ -151,7 +151,11 @@ public class DeployRunner {
         if (exitCode != 0) {
             Console.exitError("Could not build project.");
         } else {
-            System.out.println("Project deployed successfully");
+            String epirus =
+                    String.format(
+                            "https://%s.epirus.io/accounts/%s",
+                            network.getNetworkName(), credentials.getAddress());
+            System.out.println("Project deployed successfully at: " + epirus);
         }
     }
 }

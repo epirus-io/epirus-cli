@@ -105,7 +105,6 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
-        config.save();
         Console.exitSuccess();
     }
 }
