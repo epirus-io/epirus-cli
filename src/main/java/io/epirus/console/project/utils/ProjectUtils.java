@@ -90,7 +90,8 @@ public class ProjectUtils {
                             .get(0));
         } catch (IOException e) {
             Console.exitError(
-                    "Could not load wallet password file. Make sure you are in the right directory.");
+                    "Could not load wallet password file. Make sure you are in the right directory: "
+                            + e.getMessage());
 
             return Optional.empty();
         }
@@ -101,14 +102,14 @@ public class ProjectUtils {
         try {
             walletPassword = new String(Files.readAllBytes(walletPasswordPath));
         } catch (IOException e) {
-            Console.exitError("Could not read password file.");
+            Console.exitError("Could not read password file: " + e.getMessage());
         }
         try {
             return WalletUtils.loadCredentials(walletPassword, walletPath.toFile());
         } catch (IOException e) {
-            Console.exitError("Could not create credentials.");
+            Console.exitError("Could not create credentials: " + e.getMessage());
         } catch (CipherException e) {
-            e.printStackTrace();
+            Console.exitError(e.getMessage());
         }
         return null;
     }

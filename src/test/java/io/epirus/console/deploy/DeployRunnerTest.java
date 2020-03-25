@@ -33,6 +33,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
+import org.web3j.protocol.Web3j;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -72,7 +73,12 @@ public class DeployRunnerTest extends ClassExecutor {
     @Test
     public void testAccountDeployment() throws Exception {
         AccountManager accountManager = mock(AccountManager.class);
-        when(accountManager.getAccountBalance(any(Credentials.class), any(Network.class)))
+        Web3j web3j = mock(Web3j.class);
+        when(accountManager.pollForAccountBalance(
+                        any(Credentials.class),
+                        any(Network.class),
+                        any(Web3j.class),
+                        any(int.class)))
                 .thenReturn(BigInteger.TEN);
         doNothing().when(accountManager).checkIfAccountIsConfirmed();
         DeployRunner deployRunner =
@@ -80,6 +86,7 @@ public class DeployRunnerTest extends ClassExecutor {
                         new DeployRunner(
                                 Network.RINKEBY,
                                 accountManager,
+                                web3j,
                                 Paths.get(workingDirectory + File.separator + "Test")));
         doNothing().when(deployRunner).deploy();
         deployRunner.deploy();

@@ -39,6 +39,8 @@ import static org.web3j.codegen.Console.exitError;
 public class AccountManager implements Closeable {
     private static final String USAGE = "account login|logout|create";
     public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
+    private static final String DEFAULT_REALM = "EpirusPortal";
+    private final String realm;
     private final String cloudURL;
     private final OkHttpClient client;
     private final CliConfig config;
@@ -59,13 +61,16 @@ public class AccountManager implements Closeable {
         this.client = client;
         this.config = cliConfig;
         this.cloudURL = DEFAULT_CLOUD_URL;
+        this.realm = DEFAULT_REALM;
     }
 
     @VisibleForTesting
-    public AccountManager(final CliConfig cliConfig, OkHttpClient client, String cloudURL) {
+    public AccountManager(
+            final CliConfig cliConfig, OkHttpClient client, String cloudURL, String realm) {
         this.client = client;
         this.config = cliConfig;
         this.cloudURL = cloudURL;
+        this.realm = realm;
     }
 
     public void createAccount(String email) {
@@ -113,7 +118,7 @@ public class AccountManager implements Closeable {
     final Request createRequest(RequestBody accountBody) {
 
         return new Request.Builder()
-                .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", cloudURL))
+                .url(String.format("%s/auth/realms/%s/web3j-token/create", cloudURL, realm))
                 .post(accountBody)
                 .build();
     }
@@ -141,6 +146,7 @@ public class AccountManager implements Closeable {
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {
+
         Response response = client.newCall(request).execute();
         ResponseBody responseBody = response.body();
         if (response.code() != 200 || responseBody == null) {
@@ -154,20 +160,34 @@ public class AccountManager implements Closeable {
         return responseJsonObj.get("active").getAsBoolean();
     }
 
-    public BigInteger getAccountBalance(Credentials credentials, Network network) {
+    public BigInteger getAccountBalance(Credentials credentials, Network network, Web3j web3j)
+            throws Exception {
+        return web3j.ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST)
+                .send()
+                .getBalance();
+    }
+
+    public BigInteger pollForAccountBalance(
+            Credentials credentials, Network network, Web3j web3j, int numberOfBlocksToCheck)
+            throws IOException {
         BigInteger accountBalance = null;
-        try {
-            accountBalance =
-                    Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
-                            .ethGetBalance(
-                                    credentials.getAddress(), DefaultBlockParameterName.LATEST)
-                            .send()
-                            .getBalance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (accountBalance == null) {
-            return BigInteger.ZERO;
+        BigInteger startBlock = web3j.ethBlockNumber().send().getBlockNumber();
+        BigInteger stopBlock = startBlock.add(BigInteger.valueOf(numberOfBlocksToCheck));
+        while (web3j.ethBlockNumber().send().getBlockNumber().compareTo(stopBlock) < 0) {
+            try {
+                accountBalance =
+                        Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
+                                .ethGetBalance(
+                                        credentials.getAddress(), DefaultBlockParameterName.LATEST)
+                                .send()
+                                .getBalance();
+                if (accountBalance.compareTo(BigInteger.ZERO) > 0) {
+                    return accountBalance;
+                }
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                Console.exitError("Could not check the account balance.");
+            }
         }
         return accountBalance;
     }

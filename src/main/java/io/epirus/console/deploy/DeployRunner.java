@@ -29,6 +29,7 @@ import org.web3j.account.LocalWeb3jAccount;
 import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
+import org.web3j.protocol.Web3j;
 
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 
@@ -38,22 +39,31 @@ public class DeployRunner {
     private final Network network;
     private final Credentials credentials;
     private final AccountManager accountManager;
+    private final Web3j web3j;
 
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
+            Web3j web3j = null;
+            try {
+                web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
+            } catch (Exception e) {
+                Console.exitError(e.getMessage());
+            }
             new DeployRunner(
                             Network.valueOf(args[0].toUpperCase()),
                             new AccountManager(
                                     CliConfig.getConfig(
                                             CliConfig.getDefaultEpirusConfigPath().toFile()),
-                                    new OkHttpClient()))
+                                    new OkHttpClient()),
+                            web3j)
                     .deploy();
         } else {
             Console.exitError(USAGE);
         }
     }
 
-    public DeployRunner(Network network, AccountManager accountManager, Path workingDirectory) {
+    public DeployRunner(
+            Network network, AccountManager accountManager, Web3j web3j, Path workingDirectory) {
         this.workingDirectory = workingDirectory;
         this.network = network;
         Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
@@ -61,9 +71,10 @@ public class DeployRunner {
                 ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
         this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
         this.accountManager = accountManager;
+        this.web3j = web3j;
     }
 
-    public DeployRunner(Network network, AccountManager accountManager) {
+    public DeployRunner(Network network, AccountManager accountManager, Web3j web3j) {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
         Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
@@ -71,6 +82,7 @@ public class DeployRunner {
                 ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
         this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
         this.accountManager = accountManager;
+        this.web3j = web3j;
     }
 
     public void deploy() throws Exception {
@@ -84,7 +96,8 @@ public class DeployRunner {
 
     private void fundWallet() {
         try {
-            BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
+            BigInteger accountBalance =
+                    accountManager.getAccountBalance(credentials, network, web3j);
             if (accountBalance.equals(BigInteger.ZERO)) {
                 WalletFunder.fundWallet(
                         credentials.getAddress(),
@@ -92,28 +105,18 @@ public class DeployRunner {
                         this.accountManager.getLoginToken());
             }
         } catch (Exception e) {
-            Console.exitError(e);
+            Console.exitError("Could not fund wallet: " + e.getMessage());
         }
     }
 
     private void waitForBalanceUpdate() {
         System.out.println("Checking the account balance...");
-        int tries = 5;
-        while (tries-- > 0) {
-            try {
-                BigInteger accountBalance = accountManager.getAccountBalance(credentials, network);
-                if (!accountBalance.equals(BigInteger.ZERO)) {
-                    return;
-                } else {
-                    Thread.sleep(10000);
-                }
-            } catch (Exception e) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+        try {
+            BigInteger accountBalance =
+                    accountManager.pollForAccountBalance(credentials, network, web3j, 5);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
