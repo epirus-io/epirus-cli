@@ -19,15 +19,17 @@ import io.epirus.console.project.InteractiveOptions;
 public class AccountUtils {
 
     public static void accountInit(AccountManager accountManager) throws IOException {
-        if (InteractiveOptions.configFileExists()) {
-            if (!InteractiveOptions.userHasEpirusAccount()) {
-                if (InteractiveOptions.userWantsEpirusAccount()) {
-                    accountManager.createAccount(InteractiveOptions.getEmail());
+        InteractiveOptions interactiveOptions = new InteractiveOptions();
+
+        if (interactiveOptions.configFileExists()) {
+            if (!interactiveOptions.userHasEpirusAccount()) {
+                if (interactiveOptions.userWantsEpirusAccount()) {
+                    accountManager.createAccount(interactiveOptions.getEmail());
                 }
             }
         } else {
-            if (InteractiveOptions.userWantsEpirusAccount()) {
-                accountManager.createAccount(InteractiveOptions.getEmail());
+            if (interactiveOptions.userWantsEpirusAccount()) {
+                accountManager.createAccount(interactiveOptions.getEmail());
             }
         }
     }

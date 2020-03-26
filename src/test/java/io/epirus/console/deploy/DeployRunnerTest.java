@@ -53,7 +53,10 @@ public class DeployRunnerTest extends ClassExecutor {
         final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .start()
                         .waitFor();
         cliConfig =
