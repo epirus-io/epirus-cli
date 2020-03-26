@@ -13,8 +13,8 @@ mainClassName = 'io.epirus.console.Runner'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = project.property('version')
-    picocli = '4.0.4'
+    web3jVersion = "4.5.16"
+    picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
