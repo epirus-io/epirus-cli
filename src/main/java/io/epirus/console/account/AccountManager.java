@@ -142,7 +142,7 @@ public class AccountManager implements Closeable {
             Thread.sleep(5000);
         }
         Console.exitError(
-                "Please check your email and activate your account in order to take advantage our features.Once your account is activated you can re-run the command.");
+                "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {

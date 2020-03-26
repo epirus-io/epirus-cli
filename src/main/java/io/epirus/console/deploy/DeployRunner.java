@@ -116,7 +116,7 @@ public class DeployRunner {
                     accountManager.pollForAccountBalance(credentials, network, web3j, 5);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Console.exitError(e.getMessage());
         }
     }
 
@@ -125,10 +125,12 @@ public class DeployRunner {
             executeProcess(
                     new File(File.separator, runLocation.toString()),
                     new String[] {"cmd.exe", "/c", "./gradlew.bat run", "-q"});
+        } else {
+
+            executeProcess(
+                    new File(File.separator, runLocation.toString()),
+                    new String[] {"bash", "-c", "./gradlew run -q"});
         }
-        executeProcess(
-                new File(File.separator, runLocation.toString()),
-                new String[] {"bash", "-c", "./gradlew run -q"});
     }
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
