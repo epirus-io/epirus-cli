@@ -26,7 +26,7 @@ import org.web3j.utils.Version;
 public class CliConfig {
     private static final Path EPIRUS_CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".epirus", ".config");
-    private static final String defaultServicesUrl = "https://auth.epirus.io";
+    private static final String defaultServicesUrl = "https://internal.services.web3labs.com";
 
     public static Path getEpirusConfigPath() {
         return EPIRUS_CONFIG_PATH;

@@ -37,7 +37,11 @@ public class Updater {
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format(
-                            "A new Epirus CLI update is available. To update, run: %s",
+                            "Your current Web3j version is: "
+                                    + config.getVersion()
+                                    + ". The latest Version is: "
+                                    + config.getLatestVersion()
+                                    + ". To update, run: %s",
                             config.getUpdatePrompt()));
         }
     }
