@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Optional;
 
 import io.epirus.console.account.AccountManager;
+import io.epirus.console.account.AccountUtils;
 import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.java.JavaBuilder;
 import io.epirus.console.project.java.JavaProjectCreatorCLIRunner;
 import io.epirus.console.project.kotlin.KotlinBuilder;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorCLIRunner;
 import io.epirus.console.project.utils.InputVerifier;
+import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
@@ -78,22 +80,10 @@ public class ProjectCreator {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            if (InteractiveOptions.configFileExists()) {
-                if (!InteractiveOptions.userHasEpirusAccount()) {
-                    if (InteractiveOptions.userWantsEpirusAccount()) {
-                        AccountManager.main(
-                                CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
-                                new String[] {"create"});
-                    }
-                }
-            } else {
-                if (InteractiveOptions.userWantsEpirusAccount()) {
-                    AccountManager.main(
-                            CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile()),
-                            new String[] {"create"});
-                }
-            }
-
+            AccountUtils.accountInit(
+                    new AccountManager(
+                            CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile()),
+                            new OkHttpClient()));
             args = stringOptions.toArray(new String[0]);
         }
         return args;
@@ -118,7 +108,6 @@ public class ProjectCreator {
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);
             solidityFile.map(File::getAbsolutePath).ifPresent(javaBuilder::withSolidityFile);
-
             Project javaProject = javaBuilder.build();
             javaProject.createProject();
             onSuccess(javaProject);

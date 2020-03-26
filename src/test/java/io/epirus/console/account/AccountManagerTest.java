@@ -13,9 +13,15 @@
 package io.epirus.console.account;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import com.google.gson.Gson;
 import io.epirus.console.config.CliConfig;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -29,6 +35,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -36,30 +43,63 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AccountManagerTest {
+    @TempDir static File workingDirectory;
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
-    private static final PrintStream originalErr = System.err;
+    static OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
+    static Call call = mock(Call.class);
+    static ConnectionPool connectionPool = mock(ConnectionPool.class);
+    static AccountManager accountManager;
+    static CliConfig cliConfig;
 
     @BeforeAll
-    public static void setUpStreams() {
+    public static void setUp() throws IOException {
+        cliConfig =
+                new CliConfig(
+                        "4.6.0-SNAPSHOT",
+                        "https://auth.epirus.io",
+                        "random-token",
+                        "4.6.0-SNAPSHOT",
+                        null,
+                        null,
+                        Paths.get(workingDirectory.getPath(), ".epirus", ".config"));
+        String jsonToWrite = new Gson().toJson(cliConfig);
+        new File(workingDirectory + File.separator + ".epirus").mkdirs();
+        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
+        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
+        accountManager = new AccountManager(cliConfig, mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
     }
 
     @AfterAll
     public static void restoreStreams() {
         System.setOut(originalOut);
-        System.setErr(originalErr);
+    }
+
+    @Test
+    public void testAccountConfirmation() throws IOException, InterruptedException {
+        Request request =
+                accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
+        Response response =
+                new Response.Builder()
+                        .protocol(Protocol.H2_PRIOR_KNOWLEDGE)
+                        .message("")
+                        .body(
+                                ResponseBody.create(
+                                        "{\"active\":true}", MediaType.parse("application/json")))
+                        .code(200)
+                        .request(request)
+                        .build();
+        when(call.execute()).thenReturn(response);
+        when(mockedOkHttpClient.newCall(any(Request.class))).thenReturn(call);
+        when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
+        doNothing().when(connectionPool).evictAll();
+        accountManager.checkIfAccountIsConfirmed();
+        Assertions.assertTrue(outContent.toString().contains("Account is active."));
     }
 
     @Test
     public void testAccountCreation() throws IOException {
-        OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
-        Call call = mock(Call.class);
-        ConnectionPool connectionPool = mock(ConnectionPool.class);
-        AccountManager accountManager =
-                new AccountManager(new CliConfig("", "", "", "", "", ""), mockedOkHttpClient);
         Request request =
                 accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
         Response response =

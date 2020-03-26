@@ -141,7 +141,7 @@ public class InteractiveOptions {
     }
 
     static String getUserInput() {
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     private static void print(final String text) {
@@ -166,11 +166,16 @@ public class InteractiveOptions {
         return LocalWeb3jAccount.configExists();
     }
 
-    public static boolean userWantsEpirusAccount() throws IOException {
-
+    public static boolean userWantsEpirusAccount() {
         print("It looks like you don’t have an Epirus account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
+    }
+
+    public static String getEmail() {
+        print("Please enter your email address: ");
+
+        return getUserInput();
     }
 }

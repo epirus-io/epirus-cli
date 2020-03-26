@@ -12,7 +12,8 @@
  */
 package io.epirus.console.config;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,16 +21,17 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import org.web3j.utils.Version;
 
 public class CliConfig {
-    private static final Path EPIRUS_CONFIG_PATH =
+    private static final Path DEFAULT_EPIRUS_CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".epirus", ".config");
-    private static final String defaultServicesUrl = "https://auth.epirus.io";
+    private static final String servicesURL = "https://internal.services.web3labs.com";
 
-    public static Path getEpirusConfigPath() {
-        return EPIRUS_CONFIG_PATH;
+    public static Path getDefaultEpirusConfigPath() {
+        return DEFAULT_EPIRUS_CONFIG_PATH;
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
@@ -39,7 +41,7 @@ public class CliConfig {
         }
         return new CliConfig(
                 Version.getVersion(),
-                defaultServicesUrl,
+                servicesURL,
                 UUID.randomUUID().toString(),
                 Version.getVersion(),
                 null,
@@ -129,6 +131,26 @@ public class CliConfig {
     private String updatePrompt;
     private String loginToken;
 
+    @Expose(serialize = false, deserialize = false)
+    private transient String configPath;
+
+    public CliConfig(
+            String version,
+            String servicesUrl,
+            String clientId,
+            String latestVersion,
+            String updatePrompt,
+            String loginToken,
+            Path configPath) {
+        this.version = version;
+        this.servicesUrl = servicesUrl;
+        this.clientId = clientId;
+        this.latestVersion = latestVersion;
+        this.updatePrompt = updatePrompt;
+        this.loginToken = loginToken;
+        this.configPath = configPath.toString();
+    }
+
     public CliConfig(
             String version,
             String servicesUrl,
@@ -142,6 +164,7 @@ public class CliConfig {
         this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
         this.loginToken = loginToken;
+        this.configPath = DEFAULT_EPIRUS_CONFIG_PATH.toString();
     }
 
     public String getVersion() {
@@ -166,6 +189,6 @@ public class CliConfig {
 
     public void save() throws IOException {
         String jsonToWrite = new Gson().toJson(this);
-        Files.write(EPIRUS_CONFIG_PATH, jsonToWrite.getBytes(Charset.defaultCharset()));
+        Files.write(Paths.get(configPath), jsonToWrite.getBytes(Charset.defaultCharset()));
     }
 }
