@@ -72,4 +72,33 @@ public class JavaProjectWriterTest {
                                         + "HelloWorld.sol")
                         .exists());
     }
+
+    @Test
+    public void importSolidityProjectTestSingleContract() throws IOException {
+        final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
+        file.mkdirs();
+        final File destination =
+                new File(tempDirPath + File.separator + "tempSoliditySingleImport");
+        destination.mkdirs();
+        ProjectWriter.writeResourceFile(
+                "HelloWorld.sol",
+                "HelloWorld.sol",
+                tempDirPath + File.separator + "tempSolidityDir");
+        ProjectWriter.importSolidityProject(
+                new File(
+                        tempDirPath
+                                + File.separator
+                                + "tempSolidityDir"
+                                + File.separator
+                                + "HelloWorld.sol"),
+                destination.getAbsolutePath());
+        assertTrue(
+                new File(
+                                tempDirPath
+                                        + File.separator
+                                        + "tempSoliditySingleImport"
+                                        + File.separator
+                                        + "HelloWorld.sol")
+                        .exists());
+    }
 }
