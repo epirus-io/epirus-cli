@@ -16,11 +16,25 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import org.web3j.codegen.Console;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.Network;
 
 public class ProjectUtils {
 
@@ -47,5 +61,99 @@ public class ProjectUtils {
 
     public static String generateWalletPassword() {
         return RandomStringUtils.random(10, true, true);
+    }
+
+    public static Optional<Path> loadProjectWalletFile(Path path) {
+        String pathToProjectResources =
+                String.join(File.separator, path.toString(), "src", "test", "resources", "wallet");
+        try {
+            return Optional.of(
+                    Files.list(Paths.get(pathToProjectResources))
+                            .filter(f -> f.getFileName().toString().endsWith("json"))
+                            .collect(Collectors.toList())
+                            .get(0));
+        } catch (IOException e) {
+            Console.exitError(
+                    "Could not load wallet file. Make sure you are in the right directory.");
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Path> loadProjectPasswordWalletFile(Path path) {
+        String pathToProjectResources =
+                String.join(File.separator, path.toString(), "src", "test", "resources", "wallet");
+        try {
+            return Optional.of(
+                    Files.list(Paths.get(pathToProjectResources))
+                            .filter(f -> f.getFileName().toString().endsWith("-Password"))
+                            .collect(Collectors.toList())
+                            .get(0));
+        } catch (IOException e) {
+            Console.exitError(
+                    "Could not load wallet password file. Make sure you are in the right directory: "
+                            + e.getMessage());
+
+            return Optional.empty();
+        }
+    }
+
+    public static Credentials createCredentials(Path walletPath, Path walletPasswordPath) {
+        String walletPassword = null;
+        try {
+            walletPassword = new String(Files.readAllBytes(walletPasswordPath));
+        } catch (IOException e) {
+            Console.exitError("Could not read password file: " + e.getMessage());
+        }
+        try {
+            return WalletUtils.loadCredentials(walletPassword, walletPath.toFile());
+        } catch (IOException e) {
+            Console.exitError("Could not create credentials: " + e.getMessage());
+        } catch (CipherException e) {
+            Console.exitError(e.getMessage());
+        }
+        return null;
+    }
+
+    public static void uploadSolidityMetadata(Network network, Path workingDirectory) {
+        File pathToMetadata =
+                new File(
+                        String.join(
+                                File.separator,
+                                workingDirectory.toString(),
+                                "build",
+                                "resources",
+                                "main",
+                                "solidity"));
+        if (pathToMetadata.exists()) {
+            Arrays.stream(pathToMetadata.listFiles())
+                    .filter(file -> file.getName().contains("_meta"))
+                    .forEach(
+                            file -> {
+                                try {
+                                    uploadFile(file, network);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+        } else {
+            Console.exitError(
+                    "Could not find the metadata files in :" + pathToMetadata.getAbsolutePath());
+        }
+    }
+
+    private static void uploadFile(File file, Network network) throws IOException {
+        String uploadURL = "https://" + network.getNetworkName() + ".api.epirus.io/metadata";
+        OkHttpClient okHttpClient = new OkHttpClient();
+        RequestBody requestBody =
+                new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart(
+                                "file",
+                                file.getName(),
+                                RequestBody.create(MediaType.parse("application/json"), file))
+                        .build();
+        Request request = new Request.Builder().url(uploadURL).post(requestBody).build();
+        Call call = okHttpClient.newCall(request);
+        call.execute();
     }
 }

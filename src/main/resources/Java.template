@@ -74,5 +74,7 @@ public class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld");
         String response = helloWorld.greeting().send();
         log.info("Contract returned: " + response);
+        System.exit(0);
+
     }
 }

@@ -178,6 +178,12 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
+    public String getEmail() {
+        print("Please enter your email address: ");
+
+        return getUserInput();
+    }
+
     private String getUserInput() {
         return scanner.nextLine();
     }
