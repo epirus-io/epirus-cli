@@ -16,13 +16,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.epirus.console.config.CliConfig;
+import io.epirus.console.utils.Version;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import org.web3j.utils.Version;
 
 public class Updater {
 
@@ -37,7 +36,11 @@ public class Updater {
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format(
-                            "A new Epirus CLI update is available. To update, run: %s",
+                            "Your current Epirus version is: "
+                                    + config.getVersion()
+                                    + ". The latest Version is: "
+                                    + config.getLatestVersion()
+                                    + ". To update, run: %s",
                             config.getUpdatePrompt()));
         }
     }
@@ -55,7 +58,7 @@ public class Updater {
 
         Request updateCheckRequest =
                 new okhttp3.Request.Builder()
-                        .url(String.format("%s/api/versions/latest", config.getServicesUrl()))
+                        .url("https://internal.services.web3labs.com/api/epirus/versions/latest")
                         .post(updateBody)
                         .build();
 
