@@ -41,7 +41,7 @@ public class CliConfig {
         }
         return new CliConfig(
                 Version.getVersion(),
-                servicesURL,
+                defaultServicesUrl,
                 UUID.randomUUID().toString(),
                 Version.getVersion(),
                 null,
