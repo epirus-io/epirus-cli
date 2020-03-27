@@ -57,10 +57,7 @@ public class Updater {
                         .build();
 
         Request updateCheckRequest =
-                new okhttp3.Request.Builder()
-                        .url("https://internal.services.web3labs.com/api/epirus/versions/latest")
-                        .post(updateBody)
-                        .build();
+                new okhttp3.Request.Builder().url(config.getServicesUrl()).post(updateBody).build();
 
         try {
             Response sendRawResponse = client.newCall(updateCheckRequest).execute();

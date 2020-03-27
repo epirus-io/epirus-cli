@@ -12,7 +12,6 @@
  */
 package io.epirus.console.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -35,9 +34,9 @@ public class Version {
 
     private static Properties loadProperties() throws IOException {
         Properties properties = new Properties();
-        File file = new File("resources.properties");
-        System.out.println(file.getAbsolutePath());
-        properties.load(Version.class.getResourceAsStream("/epirus-version.properties"));
+        properties.load(
+                io.epirus.console.utils.Version.class.getResourceAsStream(
+                        "/epirus-version.properties"));
         return properties;
     }
 }

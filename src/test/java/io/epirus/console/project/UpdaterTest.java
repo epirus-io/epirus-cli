@@ -24,6 +24,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.gson.Gson;
 import io.epirus.console.config.CliConfig;
 import io.epirus.console.update.Updater;
+import io.epirus.console.utils.Version;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
-
-import org.web3j.utils.Version;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -83,7 +82,7 @@ public class UpdaterTest {
                         Mockito.withSettings()
                                 .useConstructor(
                                         Version.getVersion(),
-                                        "http://localhost:8081",
+                                        "http://localhost:8081/api/epirus/versions/latest",
                                         UUID.randomUUID().toString(),
                                         Version.getVersion(),
                                         null,
@@ -119,14 +118,14 @@ public class UpdaterTest {
                         "{\n"
                                 + "  \"latest\": {\n"
                                 + "    \"version\": \"%s\",\n"
-                                + "    \"install_unix\": \"curl -L get.web3j.io | sh\",\n"
+                                + "    \"install_unix\": \"curl -L get.epirus.io | sh\",\n"
                                 + "    \"install_win\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
                                 + "  }\n"
                                 + "}",
                         version);
 
         stubFor(
-                post(urlPathMatching("/api/versions/latest"))
+                post(urlPathMatching("/api/epirus/versions/latest"))
                         .willReturn(
                                 aResponse()
                                         .withStatus(200)
@@ -134,7 +133,7 @@ public class UpdaterTest {
                                         .withBody(validUpdateResponse)));
         updater.onlineUpdateCheck();
 
-        verify(postRequestedFor(urlEqualTo("/api/versions/latest")));
+        verify(postRequestedFor(urlEqualTo("/api/epirus/versions/latest")));
         // if the version parameter does not equal config.getVersion, isUpdateAvailable should
         // return true, otherwise it should return false
         assertEquals(!version.equals(config.getVersion()), config.isUpdateAvailable());
