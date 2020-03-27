@@ -47,7 +47,7 @@ public class AccountManager implements Closeable {
 
     public static void main(final CliConfig config, final String[] args) {
         if ("create".equals(args[0])) {
-            String email = InteractiveOptions.getEmail();
+            String email = new InteractiveOptions().getEmail();
             AccountManager accountManager = new AccountManager(config, new OkHttpClient());
             accountManager.createAccount(email);
             accountManager.close();

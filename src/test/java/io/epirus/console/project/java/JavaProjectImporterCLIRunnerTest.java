@@ -12,12 +12,10 @@
  */
 package io.epirus.console.project.java;
 
-import java.nio.file.Path;
-
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 public class JavaProjectImporterCLIRunnerTest {
@@ -25,8 +23,8 @@ public class JavaProjectImporterCLIRunnerTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

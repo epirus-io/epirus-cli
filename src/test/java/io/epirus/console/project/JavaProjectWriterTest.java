@@ -14,13 +14,12 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import io.epirus.console.project.templates.java.JavaTemplateBuilder;
 import io.epirus.console.project.templates.java.JavaTemplateProvider;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,8 +33,8 @@ public class JavaProjectWriterTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

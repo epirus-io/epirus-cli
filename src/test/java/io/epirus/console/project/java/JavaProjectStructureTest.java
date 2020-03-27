@@ -13,12 +13,11 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import io.epirus.console.project.ProjectStructure;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,8 +26,8 @@ public class JavaProjectStructureTest {
     private String tempDirPath;
 
     @BeforeEach
-    public void init(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    public void init() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
         projectStructure = new JavaProjectStructure(tempDirPath, "test.test", "Test");
         projectStructure.createMainDirectory();
         projectStructure.createTestDirectory();
