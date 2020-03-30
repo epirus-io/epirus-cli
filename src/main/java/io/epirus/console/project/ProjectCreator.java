@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.diogonunes.jcdp.color.ColoredPrinter;
+import com.diogonunes.jcdp.color.api.Ansi;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.config.CliConfig;
@@ -27,13 +29,15 @@ import io.epirus.console.project.java.JavaBuilder;
 import io.epirus.console.project.java.JavaProjectCreatorCLIRunner;
 import io.epirus.console.project.kotlin.KotlinBuilder;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorCLIRunner;
-import io.epirus.console.project.utils.InputVerifier;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
+import org.web3j.codegen.Console;
+
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectCreator {
@@ -45,6 +49,7 @@ public class ProjectCreator {
     private final String root;
     private final String packageName;
     private final String projectName;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectCreator.class);
 
     public ProjectCreator(final String root, final String packageName, final String projectName) {
         this.projectName = projectName;
@@ -150,34 +155,52 @@ public class ProjectCreator {
     }
 
     private void onSuccess(Project project, String projectType) {
-        String fileExtension = projectType.equals("kotlin") ? "kt" : "java";
-        String address =
-                project.getProjectWallet() == null
-                        ? ""
-                        : ("\nYour wallet address is: "
-                                + project.getProjectWallet().getWalletAddress());
+        String gradleCommand =
+                System.getProperty("os.name").toLowerCase().startsWith("windows")
+                        ? "./gradlew.bat"
+                        : "./gradlew";
+        System.out.print(System.lineSeparator());
+        ColoredPrinter cp =
+                new ColoredPrinter.Builder(0, false)
+                        .foreground(Ansi.FColor.WHITE)
+                        .background(Ansi.BColor.GREEN)
+                        .attribute(Ansi.Attribute.BOLD)
+                        .build();
+        ColoredPrinter instructionPrinter =
+                new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build();
+        ColoredPrinter commandPrinter =
+                new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build();
+        cp.println("Project Created Successfully");
+        System.out.print(System.lineSeparator());
 
-        exitSuccess(
-                "\n"
-                        + this.projectName
-                        + " has been created in "
-                        + this.root
-                        + "\n"
-                        + "To test your smart contracts (./src/test/"
-                        + projectType
-                        + "/io/web3j/generated/contracts/HelloWorldTest."
-                        + fileExtension
-                        + "): ./gradlew test"
-                        + "\n"
-                        + "To run your Web3 app (./src/main/"
-                        + projectType
-                        + "/io/web3j/"
-                        + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "."
-                        + fileExtension
-                        + "): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
-                        + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/"
-                        + address);
+        if (project.getProjectWallet() != null) {
+            instructionPrinter.println(
+                    "Project information",
+                    Ansi.Attribute.LIGHT,
+                    Ansi.FColor.WHITE,
+                    Ansi.BColor.BLACK);
+            instructionPrinter.print(
+                    String.format(
+                            "%-20s",
+                            "Wallet Address",
+                            Ansi.Attribute.CLEAR,
+                            Ansi.FColor.WHITE,
+                            Ansi.BColor.BLACK));
+            instructionPrinter.println(
+                    project.getProjectWallet().getWalletAddress(),
+                    Ansi.Attribute.BOLD,
+                    Ansi.FColor.GREEN,
+                    Ansi.BColor.BLACK);
+            System.out.print(System.lineSeparator());
+        }
+        instructionPrinter.println(
+                "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
+        instructionPrinter.print(String.format("%-20s", gradleCommand + " run"));
+        commandPrinter.println("Runs your application");
+        instructionPrinter.print(String.format("%-20s", gradleCommand + " test"));
+        commandPrinter.println("Test your application");
+        instructionPrinter.print(String.format("%-20s", "epirus deploy"));
+        commandPrinter.println("Deploys your application");
+        Console.exitSuccess();
     }
 }
