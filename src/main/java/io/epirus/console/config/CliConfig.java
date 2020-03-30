@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -22,13 +22,13 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
-
-import org.web3j.utils.Version;
+import io.epirus.console.utils.Version;
 
 public class CliConfig {
     private static final Path DEFAULT_EPIRUS_CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".epirus", ".config");
-    private static final String servicesURL = "https://internal.services.web3labs.com";
+    private static final String defaultServicesUrl =
+            "https://internal.services.web3labs.com/api/epirus/versions/latest";
 
     public static Path getDefaultEpirusConfigPath() {
         return DEFAULT_EPIRUS_CONFIG_PATH;
@@ -41,7 +41,7 @@ public class CliConfig {
         }
         return new CliConfig(
                 Version.getVersion(),
-                servicesURL,
+                defaultServicesUrl,
                 UUID.randomUUID().toString(),
                 Version.getVersion(),
                 null,

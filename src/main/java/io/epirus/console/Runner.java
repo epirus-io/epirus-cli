@@ -19,11 +19,11 @@ import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.update.Updater;
+import io.epirus.console.utils.Version;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
-import org.web3j.utils.Version;
 
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
 import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
@@ -105,6 +105,7 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
+        config.save();
         Console.exitSuccess();
     }
 }
