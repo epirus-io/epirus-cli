@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.diogonunes.jcdp.color.api.Ansi;
 import io.epirus.console.Faucet;
 import io.epirus.console.WalletFunder;
 import io.epirus.console.account.AccountManager;
@@ -30,8 +31,11 @@ import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
+import org.web3j.utils.Convert;
 
+import static io.epirus.console.PrinterUtilities.*;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
+import static org.web3j.utils.Convert.Unit.ETHER;
 
 public class DeployRunner {
     public static final String USAGE = "epirus deploy <network>";
@@ -43,18 +47,18 @@ public class DeployRunner {
 
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
+            CliConfig cliConfig =
+                    CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile());
             Web3j web3j = null;
             try {
                 web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
             } catch (Exception e) {
-                Console.exitError(e.getMessage());
+
+                printErrorAndExit(e.getMessage());
             }
             new DeployRunner(
                             Network.valueOf(args[0].toUpperCase()),
-                            new AccountManager(
-                                    CliConfig.getConfig(
-                                            CliConfig.getDefaultEpirusConfigPath().toFile()),
-                                    new OkHttpClient()),
+                            new AccountManager(cliConfig, new OkHttpClient()),
                             web3j)
                     .deploy();
         } else {
@@ -86,11 +90,15 @@ public class DeployRunner {
     }
 
     public void deploy() throws Exception {
+        coloredPrinter.println("Preparing to deploy your Web3App");
+        System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountManager);
         this.accountManager.checkIfAccountIsConfirmed();
         fundWallet();
-        waitForBalanceUpdate();
         uploadSolidityMetadata(network, workingDirectory);
+        System.out.print(System.lineSeparator());
+        coloredPrinter.println("Deploying your Web3App");
+        System.out.print(System.lineSeparator());
         runGradle(workingDirectory);
     }
 
@@ -98,25 +106,37 @@ public class DeployRunner {
         try {
             BigInteger accountBalance =
                     accountManager.getAccountBalance(credentials, network, web3j);
+            printInformationPair(
+                    "Wallet balance",
+                    20,
+                    String.format(Convert.fromWei(String.valueOf(accountBalance), ETHER) + " ETH"),
+                    Ansi.FColor.GREEN);
             if (accountBalance.equals(BigInteger.ZERO)) {
                 WalletFunder.fundWallet(
                         credentials.getAddress(),
                         Faucet.valueOf(network.getNetworkName().toUpperCase()),
                         this.accountManager.getLoginToken());
+                printInformationPair("Funded wallet", 20, "0.2 ETH", Ansi.FColor.GREEN);
+                waitForBalanceUpdate();
             }
+
         } catch (Exception e) {
-            Console.exitError("Could not fund wallet: " + e.getMessage());
+            printErrorAndExit("Could not fund wallet: " + e.getMessage());
         }
     }
 
     private void waitForBalanceUpdate() {
-        System.out.println("Checking the account balance...");
+        coloredPrinter.println(
+                "Waiting for balance update",
+                Ansi.Attribute.CLEAR,
+                Ansi.FColor.YELLOW,
+                Ansi.BColor.BLACK);
         try {
             BigInteger accountBalance =
                     accountManager.pollForAccountBalance(credentials, network, web3j, 5);
 
         } catch (Exception e) {
-            Console.exitError(e.getMessage());
+            printErrorAndExit(e.getMessage());
         }
     }
 
@@ -126,7 +146,6 @@ public class DeployRunner {
                     new File(File.separator, runLocation.toString()),
                     new String[] {"cmd.exe", "/c", "./gradlew.bat run", "-q"});
         } else {
-
             executeProcess(
                     new File(File.separator, runLocation.toString()),
                     new String[] {"bash", "-c", "./gradlew run -q"});
@@ -134,6 +153,7 @@ public class DeployRunner {
     }
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
+
         String NODE_RPC_ENDPOINT = "https://%s-eth.epirus.io/%s";
 
         String httpEndpoint =
@@ -151,13 +171,15 @@ public class DeployRunner {
                         .start()
                         .waitFor();
         if (exitCode != 0) {
-            Console.exitError("Could not build project.");
+            printErrorAndExit("Could not build project.");
         } else {
-            String epirus =
+            printInformationPair(
+                    "Wallet address",
+                    20,
                     String.format(
                             "https://%s.epirus.io/accounts/%s",
-                            network.getNetworkName(), credentials.getAddress());
-            System.out.println("Project deployed successfully at: " + epirus);
+                            network.getNetworkName(), credentials.getAddress()),
+                    Ansi.FColor.BLUE);
         }
     }
 }

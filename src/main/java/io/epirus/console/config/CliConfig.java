@@ -52,6 +52,7 @@ public class CliConfig {
         String configContents = new String(Files.readAllBytes(configFile.toPath()));
         CliConfig config = new Gson().fromJson(configContents, CliConfig.class);
         config.setVersion(Version.getVersion());
+        config.setConfigPath(DEFAULT_EPIRUS_CONFIG_PATH.toString());
         return config;
     }
 
@@ -116,12 +117,16 @@ public class CliConfig {
         return loginToken;
     }
 
-    public void setLoginToken(final String loginToken) {
+    public void setLoginToken(String loginToken) {
         this.loginToken = loginToken;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
+    }
+
+    private void setConfigPath(String defaultConfigPath) {
+        this.configPath = defaultConfigPath;
     }
 
     private String version;
