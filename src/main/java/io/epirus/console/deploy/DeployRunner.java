@@ -116,7 +116,7 @@ public class DeployRunner {
                         credentials.getAddress(),
                         Faucet.valueOf(network.getNetworkName().toUpperCase()),
                         this.accountManager.getLoginToken());
-                printInformationPair("Funded wallet", 20, "0.2 ETH", Ansi.FColor.GREEN);
+                printInformationPair("Funding wallet with", 20, "0.2 ETH", Ansi.FColor.GREEN);
                 waitForBalanceUpdate();
             }
 
