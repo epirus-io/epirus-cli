@@ -55,7 +55,6 @@ public class Runner {
         Thread updateThread = new Thread(updater::onlineUpdateCheck);
         updateThread.setDaemon(true);
         updateThread.start();
-
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
@@ -98,8 +97,8 @@ public class Runner {
                 default:
                     Console.exitError(USAGE);
             }
+            config.save();
         }
-        config.save();
         Console.exitSuccess();
     }
 }

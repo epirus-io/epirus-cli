@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.diogonunes.jcdp.color.api.Ansi;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -35,6 +36,9 @@ import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
+
+import static io.epirus.console.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
 
 public class ProjectUtils {
 
@@ -132,11 +136,15 @@ public class ProjectUtils {
                                 try {
                                     uploadFile(file, network);
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    printErrorAndExit(e.getMessage());
                                 }
                             });
+            printInformationPairWithStatus("Uploading metadata", 20, "DONE", Ansi.FColor.GREEN);
+            System.out.print(System.lineSeparator());
         } else {
-            Console.exitError(
+            printInformationPairWithStatus("Uploading metadata", 20, "FAILED", Ansi.FColor.RED);
+            System.out.print(System.lineSeparator());
+            printErrorAndExit(
                     "Could not find the metadata files in :" + pathToMetadata.getAbsolutePath());
         }
     }

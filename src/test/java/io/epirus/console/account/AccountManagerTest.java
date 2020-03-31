@@ -95,7 +95,7 @@ public class AccountManagerTest {
         when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
         doNothing().when(connectionPool).evictAll();
         accountManager.checkIfAccountIsConfirmed();
-        Assertions.assertTrue(outContent.toString().contains("Account is active."));
+        Assertions.assertTrue(outContent.toString().contains("ACTIVE"));
     }
 
     @Test

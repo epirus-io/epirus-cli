@@ -16,6 +16,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -34,6 +35,8 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
+import static io.epirus.console.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
@@ -88,21 +91,20 @@ public class AccountManager implements Closeable {
                         Console.exitError("Could not retrieve token. Try again later.");
                     } else {
 
-                        Console.exitError(tokenError);
+                        printErrorAndExit(tokenError);
                     }
                     return;
                 }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
-                config.save();
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
-                Console.exitError("Account creation failed. Please try again later.");
+                printErrorAndExit("Account creation failed. Please try again later.");
             }
 
         } catch (IOException e) {
-            Console.exitError("Could not connect to the server.\nReason:" + e.getMessage());
+            printErrorAndExit("Could not connect to the server.\nReason:" + e.getMessage());
         }
     }
 
@@ -132,16 +134,21 @@ public class AccountManager implements Closeable {
                                         + config.getLoginToken())
                         .get()
                         .build();
-        System.out.println("Checking if the account is active...");
         int tries = 10;
         while (tries-- > 0) {
             if (userConfirmedAccount(request)) {
-                System.out.println("Account is active.");
+                printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
+                System.out.print(System.lineSeparator());
+
                 return;
+            } else {
+                printInformationPairWithStatus(
+                        "Account status", 20, "PENDING ", Ansi.FColor.YELLOW);
             }
+
             Thread.sleep(5000);
         }
-        Console.exitError(
+        printErrorAndExit(
                 "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
     }
 
@@ -154,7 +161,7 @@ public class AccountManager implements Closeable {
         }
         String responseBodyString = responseBody.string();
         if (responseBodyString.equals("Invalid request")) {
-            Console.exitError("Could not check if account has been confirmed");
+            printErrorAndExit("Could not check if account has been confirmed");
         }
         JsonObject responseJsonObj = JsonParser.parseString(responseBodyString).getAsJsonObject();
         return responseJsonObj.get("active").getAsBoolean();
@@ -186,7 +193,7 @@ public class AccountManager implements Closeable {
                 }
                 Thread.sleep(5000);
             } catch (Exception e) {
-                Console.exitError("Could not check the account balance.");
+                printErrorAndExit("Could not check the account balance." + e.getMessage());
             }
         }
         return accountBalance;
