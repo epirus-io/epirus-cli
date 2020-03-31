@@ -37,7 +37,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
 
-import static io.epirus.console.PrinterUtilities.coloredPrinter;
 import static io.epirus.console.PrinterUtilities.printErrorAndExit;
 import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
 
@@ -120,11 +119,6 @@ public class ProjectUtils {
     }
 
     public static void uploadSolidityMetadata(Network network, Path workingDirectory) {
-        coloredPrinter.print(
-                String.format("%-20s", Ansi.FColor.GREEN),
-                Ansi.Attribute.CLEAR,
-                Ansi.FColor.WHITE,
-                Ansi.BColor.BLACK);
         File pathToMetadata =
                 new File(
                         String.join(
@@ -146,8 +140,10 @@ public class ProjectUtils {
                                 }
                             });
             printInformationPairWithStatus("Uploading metadata", 20, "DONE", Ansi.FColor.GREEN);
+            System.out.print(System.lineSeparator());
         } else {
             printInformationPairWithStatus("Uploading metadata", 20, "FAILED", Ansi.FColor.RED);
+            System.out.print(System.lineSeparator());
             printErrorAndExit(
                     "Could not find the metadata files in :" + pathToMetadata.getAbsolutePath());
         }
