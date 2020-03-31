@@ -38,20 +38,14 @@ public class Runner {
             "Usage: epirus version|wallet|solidity|new|import|generate-tests|audit|account ...";
 
     private static final String LOGO =
-            // Generated with https://asciiart.club/
-            "║hh»ñ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒H  \n"
-                    + "hhhhhh»ñ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒Γ  \n"
-                    + "\"╚hhhhhh»»ñ╜╜╜╜╜╜╜╜╜╜╜╜╜╜╜╜   \n"
-                    + "   \"Ühhhhhh╠ε,                \n"
-                    + "      \"Ühhhhhh╠ε              \n"
-                    + "        `\"║hhhhhh             \n"
-                    + "        ,╥▓▓▄»hhh             \n"
-                    + "      ╔▓ÑÑÑÑÑ▓▓M`             \n"
-                    + "   ╓╣ÑÑÑÑÑÑÑÅ\"                \n"
-                    + "╓╢ÑÑÑÑÑÑÑ▒Ω,,,,,      ,,,,    \n"
-                    + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ║hhhhhΓ  \n"
-                    + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ╠hhhhhΓ  \n"
-                    + "`╙╙╙╙╙╙╙╙╙╙╙╙╙╙╙\"    `╙╙╙╙\"   ";
+            "  ______       _                \n" +
+            " |  ____|     (_)               \n" +
+            " | |__   _ __  _ _ __ _   _ ___ \n" +
+            " |  __| | '_ \\| | '__| | | / __|\n" +
+            " | |____| |_) | | |  | |_| \\__ \\\n" +
+            " |______| .__/|_|_|   \\__,_|___/\n" +
+            "        | |                     \n" +
+            "        |_|                     ";
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
