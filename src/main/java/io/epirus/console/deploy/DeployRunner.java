@@ -103,14 +103,13 @@ public class DeployRunner {
     }
 
     private void fundWallet() {
+        BigInteger accountBalance = accountManager.getAccountBalance(credentials, web3j);
+        printInformationPair(
+                "Wallet balance",
+                20,
+                Convert.fromWei(String.valueOf(accountBalance), ETHER) + " ETH",
+                Ansi.FColor.GREEN);
         try {
-            BigInteger accountBalance =
-                    accountManager.getAccountBalance(credentials, network, web3j);
-            printInformationPair(
-                    "Wallet balance",
-                    20,
-                    String.format(Convert.fromWei(String.valueOf(accountBalance), ETHER) + " ETH"),
-                    Ansi.FColor.GREEN);
             if (accountBalance.equals(BigInteger.ZERO)) {
                 WalletFunder.fundWallet(
                         credentials.getAddress(),
