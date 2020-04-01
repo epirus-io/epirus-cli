@@ -29,7 +29,7 @@ import okhttp3.ResponseBody;
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
-    private static final String USAGE = "account login|logout|create";
+    private static final String USAGE = "account create"; //soon login|logout
     private static final String CLOUD_URL = "https://auth.epirus.io";
     private OkHttpClient client;
     CliConfig config;
@@ -42,7 +42,7 @@ public class AccountManager implements Closeable {
     public static void main(final CliConfig config, final String[] args) throws IOException {
 
         Scanner console = new Scanner(System.in);
-        if ("create".equals(args[0])) {
+        if (args.length > 0 && "create".equals(args[0])) {
             System.out.println("Please enter your email address: ");
             String email = console.nextLine().trim();
             AccountManager accountManager = new AccountManager(config, new OkHttpClient());
