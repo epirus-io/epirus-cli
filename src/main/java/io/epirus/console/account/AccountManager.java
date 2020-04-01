@@ -189,7 +189,7 @@ public class AccountManager implements Closeable {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
-                    printErrorAndExit(ex.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -214,7 +214,7 @@ public class AccountManager implements Closeable {
                 }
                 Thread.sleep(5000);
             } catch (Exception e) {
-                Thread.currentThread().interrupt();
+                printErrorAndExit("Could not check the account balance." + e.getMessage());
             }
         }
         return accountBalance;
