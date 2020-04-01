@@ -14,13 +14,12 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import io.epirus.console.project.templates.java.JavaTemplateBuilder;
 import io.epirus.console.project.templates.java.JavaTemplateProvider;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,8 +33,8 @@ public class JavaProjectWriterTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test
@@ -68,6 +67,35 @@ public class JavaProjectWriterTest {
                                 tempDirPath
                                         + File.separator
                                         + "tempSolidityDestination"
+                                        + File.separator
+                                        + "HelloWorld.sol")
+                        .exists());
+    }
+
+    @Test
+    public void importSolidityProjectTestSingleContract() throws IOException {
+        final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
+        file.mkdirs();
+        final File destination =
+                new File(tempDirPath + File.separator + "tempSoliditySingleImport");
+        destination.mkdirs();
+        ProjectWriter.writeResourceFile(
+                "HelloWorld.sol",
+                "HelloWorld.sol",
+                tempDirPath + File.separator + "tempSolidityDir");
+        ProjectWriter.importSolidityProject(
+                new File(
+                        tempDirPath
+                                + File.separator
+                                + "tempSolidityDir"
+                                + File.separator
+                                + "HelloWorld.sol"),
+                destination.getAbsolutePath());
+        assertTrue(
+                new File(
+                                tempDirPath
+                                        + File.separator
+                                        + "tempSoliditySingleImport"
                                         + File.separator
                                         + "HelloWorld.sol")
                         .exists());

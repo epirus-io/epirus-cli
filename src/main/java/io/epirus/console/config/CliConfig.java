@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,7 +12,8 @@
  */
 package io.epirus.console.config;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,16 +21,17 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import com.google.gson.Gson;
-
-import org.web3j.utils.Version;
+import com.google.gson.annotations.Expose;
+import io.epirus.console.utils.Version;
 
 public class CliConfig {
-    private static final Path EPIRUS_CONFIG_PATH =
+    private static final Path DEFAULT_EPIRUS_CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".epirus", ".config");
-    private static final String defaultServicesUrl = "https://auth.epirus.io";
+    private static final String defaultServicesUrl =
+            "https://internal.services.web3labs.com/api/epirus/versions/latest";
 
-    public static Path getEpirusConfigPath() {
-        return EPIRUS_CONFIG_PATH;
+    public static Path getDefaultEpirusConfigPath() {
+        return DEFAULT_EPIRUS_CONFIG_PATH;
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
@@ -50,6 +52,7 @@ public class CliConfig {
         String configContents = new String(Files.readAllBytes(configFile.toPath()));
         CliConfig config = new Gson().fromJson(configContents, CliConfig.class);
         config.setVersion(Version.getVersion());
+        config.setConfigPath(DEFAULT_EPIRUS_CONFIG_PATH.toString());
         return config;
     }
 
@@ -114,12 +117,16 @@ public class CliConfig {
         return loginToken;
     }
 
-    public void setLoginToken(final String loginToken) {
+    public void setLoginToken(String loginToken) {
         this.loginToken = loginToken;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(String version) {
         this.version = version;
+    }
+
+    private void setConfigPath(String defaultConfigPath) {
+        this.configPath = defaultConfigPath;
     }
 
     private String version;
@@ -128,6 +135,26 @@ public class CliConfig {
     private String latestVersion;
     private String updatePrompt;
     private String loginToken;
+
+    @Expose(serialize = false, deserialize = false)
+    private transient String configPath;
+
+    public CliConfig(
+            String version,
+            String servicesUrl,
+            String clientId,
+            String latestVersion,
+            String updatePrompt,
+            String loginToken,
+            Path configPath) {
+        this.version = version;
+        this.servicesUrl = servicesUrl;
+        this.clientId = clientId;
+        this.latestVersion = latestVersion;
+        this.updatePrompt = updatePrompt;
+        this.loginToken = loginToken;
+        this.configPath = configPath.toString();
+    }
 
     public CliConfig(
             String version,
@@ -142,6 +169,7 @@ public class CliConfig {
         this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
         this.loginToken = loginToken;
+        this.configPath = DEFAULT_EPIRUS_CONFIG_PATH.toString();
     }
 
     public String getVersion() {
@@ -166,6 +194,6 @@ public class CliConfig {
 
     public void save() throws IOException {
         String jsonToWrite = new Gson().toJson(this);
-        Files.write(EPIRUS_CONFIG_PATH, jsonToWrite.getBytes(Charset.defaultCharset()));
+        Files.write(Paths.get(configPath), jsonToWrite.getBytes(Charset.defaultCharset()));
     }
 }

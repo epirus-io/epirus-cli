@@ -1,5 +1,6 @@
 package <package_name>;
 
+import ch.qos.logback.classic.Level;
 import <package_name>.generated.contracts.HelloWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,12 @@ import java.nio.file.Paths;
 
 public class <project_name> {
 
-    private static final Logger log = LoggerFactory.getLogger(<project_name>.class);
+    private static final Logger log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService");
     private static final String NODE_URL = "NODE_URL";
 
     public static void main(String[] args) throws Exception {
         try {
+            ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
             Credentials credentials = loadCredentials("<wallet_name>");
             Web3j web3j = createWeb3jService("");
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new DefaultGasProvider());
@@ -74,5 +76,8 @@ public class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld");
         String response = helloWorld.greeting().send();
         log.info("Contract returned: " + response);
+        System.out.println(String.format("%-20s", "Contract address") + "https://rinkeby.epirus.io/contracts/" + helloWorld.getContractAddress());
+        System.exit(0);
+
     }
 }

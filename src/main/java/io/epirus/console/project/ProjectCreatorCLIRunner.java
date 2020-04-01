@@ -45,7 +45,7 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
     public void run() {
         if (inputIsValid(projectName, packageName)) {
             if (InputVerifier.projectExists(new File(projectName))) {
-                if (InteractiveOptions.overrideExistingProject()) {
+                if (new InteractiveOptions().overrideExistingProject()) {
                     ProjectUtils.deleteFolder(new File(projectName).toPath());
                     createProject();
                 } else {

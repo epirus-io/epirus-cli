@@ -14,15 +14,16 @@ package io.epirus.console;
 
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.CliConfig;
+import io.epirus.console.deploy.DeployRunner;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.update.Updater;
+import io.epirus.console.utils.Version;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
-import org.web3j.utils.Version;
 
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
 import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
@@ -37,34 +38,30 @@ public class Runner {
             "Usage: epirus version|wallet|solidity|new|import|generate-tests|audit|account ...";
 
     private static final String LOGO =
-            // Generated with https://asciiart.club/
-            "║hh»ñ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒H  \n"
-                    + "hhhhhh»ñ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒Γ  \n"
-                    + "\"╚hhhhhh»»ñ╜╜╜╜╜╜╜╜╜╜╜╜╜╜╜╜   \n"
-                    + "   \"Ühhhhhh╠ε,                \n"
-                    + "      \"Ühhhhhh╠ε              \n"
-                    + "        `\"║hhhhhh             \n"
-                    + "        ,╥▓▓▄»hhh             \n"
-                    + "      ╔▓ÑÑÑÑÑ▓▓M`             \n"
-                    + "   ╓╣ÑÑÑÑÑÑÑÅ\"                \n"
-                    + "╓╢ÑÑÑÑÑÑÑ▒Ω,,,,,      ,,,,    \n"
-                    + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ║hhhhhΓ  \n"
-                    + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ╠hhhhhΓ  \n"
-                    + "`╙╙╙╙╙╙╙╙╙╙╙╙╙╙╙\"    `╙╙╙╙\"   ";
+            "  ______       _                \n"
+                    + " |  ____|     (_)               \n"
+                    + " | |__   _ __  _ _ __ _   _ ___ \n"
+                    + " |  __| | '_ \\| | '__| | | / __|\n"
+                    + " | |____| |_) | | |  | |_| \\__ \\\n"
+                    + " |______| .__/|_|_|   \\__,_|___/\n"
+                    + "        | |                     \n"
+                    + "        |_|                     ";
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
-        CliConfig config = CliConfig.getConfig(CliConfig.getEpirusConfigPath().toFile());
+        CliConfig config = CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile());
         Updater updater = new Updater(config);
         updater.promptIfUpdateAvailable();
         Thread updateThread = new Thread(updater::onlineUpdateCheck);
         updateThread.setDaemon(true);
         updateThread.start();
-
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
             switch (args[0]) {
+                case "deploy":
+                    DeployRunner.main(tail(args));
+                    break;
                 case "wallet":
                     WalletRunner.run(tail(args));
                     break;
@@ -100,8 +97,8 @@ public class Runner {
                 default:
                     Console.exitError(USAGE);
             }
+            config.save();
         }
-        config.save();
         Console.exitSuccess();
     }
 }

@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id "application"
     id "distribution"
@@ -13,8 +15,8 @@ mainClassName = 'io.epirus.console.Runner'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = project.property('version')
-    picocli = '4.0.4'
+    web3jVersion = "4.5.16"
+    picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
@@ -79,6 +81,9 @@ dependencies {
             "javax.activation:activation:1.1.1",
             "org.apache.commons:commons-lang3:3.9"
 
+    compile group: 'com.diogonunes', name: 'JCDP', version: '4.0.1'
+
+
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
@@ -86,3 +91,24 @@ dependencies {
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
     testImplementation 'org.mockito:mockito-inline:3.3.0'
 }
+
+task createProperties(dependsOn: processResources) doLast {
+    // if resources dir is empty we need to create this ourselves
+    new File("$buildDir/resources/main/").mkdirs()
+
+    new File("$buildDir/resources/main/epirus-version.properties").withWriter { w ->
+        Properties p = new Properties()
+        p['version'] = project.version.toString()
+        p['timestamp'] = getTimestamp()
+        p.store w, null
+    }
+}
+
+def getTimestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S z")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(today)
+}
+
+classes { dependsOn createProperties }

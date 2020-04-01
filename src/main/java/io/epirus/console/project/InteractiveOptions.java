@@ -14,6 +14,8 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
@@ -28,9 +30,20 @@ import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 
 public class InteractiveOptions {
-    static Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
+    private PrintStream writer;
 
-    public static String getProjectName() {
+    public InteractiveOptions() {
+        scanner = new Scanner(System.in);
+        writer = System.out;
+    }
+
+    public InteractiveOptions(InputStream inputStream, PrintStream printStream) {
+        scanner = new Scanner(inputStream);
+        writer = printStream;
+    }
+
+    public String getProjectName() {
         print("Please enter the project name [Web3App]:");
         String projectName = getUserInput();
         if (projectName.trim().isEmpty()) {
@@ -42,7 +55,7 @@ public class InteractiveOptions {
         return projectName;
     }
 
-    public static String getPackageName() {
+    public String getPackageName() {
         print("Please enter the package name for your project [io.epirus]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
@@ -54,7 +67,7 @@ public class InteractiveOptions {
         return packageName;
     }
 
-    public static Optional<String> getProjectDestination(final String projectName) {
+    public Optional<String> getProjectDestination(final String projectName) {
         print(
                 "Please enter the destination of your project ["
                         + System.getProperty("user.dir")
@@ -73,7 +86,7 @@ public class InteractiveOptions {
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
     }
 
-    public static Optional<String> getGeneratedWrapperLocation() {
+    public Optional<String> getGeneratedWrapperLocation() {
         print(
                 "Please enter the path of the generated contract wrappers ["
                         + String.join(
@@ -101,7 +114,7 @@ public class InteractiveOptions {
                 : Optional.of(pathToTheWrappers);
     }
 
-    public static Optional<String> setGeneratedTestLocationJava() {
+    public Optional<String> setGeneratedTestLocationJava() {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
@@ -115,7 +128,7 @@ public class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
-    public static Optional<String> setGeneratedTestLocationKotlin() {
+    public Optional<String> setGeneratedTestLocationKotlin() {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
@@ -129,32 +142,24 @@ public class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
-    public static boolean userWantsTests() {
+    public boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
-    public static String getSolidityProjectPath() {
-        System.out.println("Please enter the path to your solidity file/folder [Required Field]: ");
+    public String getSolidityProjectPath() {
+        print("Please enter the path to your solidity file/folder [Required Field]: ");
         return getUserInput();
     }
 
-    static String getUserInput() {
-        return scanner.nextLine();
-    }
-
-    private static void print(final String text) {
-        System.out.println(text);
-    }
-
-    public static boolean overrideExistingProject() {
+    public boolean overrideExistingProject() {
         print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public static boolean userHasEpirusAccount() throws IOException {
+    public boolean userHasEpirusAccount() throws IOException {
         if (LocalWeb3jAccount.configExists()) {
             ObjectNode objectNode = LocalWeb3jAccount.readConfigAsJson();
             return LocalWeb3jAccount.loginTokenExists(objectNode);
@@ -162,15 +167,28 @@ public class InteractiveOptions {
         return false;
     }
 
-    public static boolean configFileExists() {
+    public boolean configFileExists() {
         return LocalWeb3jAccount.configExists();
     }
 
-    public static boolean userWantsEpirusAccount() throws IOException {
-
-        print("It looks like you don’t have an Epirus account, would you like to create one?");
+    public boolean userWantsEpirusAccount() throws IOException {
+        print("It looks like you don’t have a Web3j account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
+    }
+
+    public String getEmail() {
+        print("Please enter your email address: ");
+
+        return getUserInput();
+    }
+
+    private String getUserInput() {
+        return scanner.nextLine();
+    }
+
+    private void print(final String text) {
+        System.out.println(text);
     }
 }

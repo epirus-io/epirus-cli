@@ -12,10 +12,8 @@
  */
 package io.epirus.console;
 
-import java.nio.file.Path;
-
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static io.epirus.console.KeyImporterTest.WALLET_PASSWORD;
 import static org.mockito.ArgumentMatchers.contains;
@@ -28,14 +26,14 @@ public class WalletUpdaterTest {
     IODevice console = mock(IODevice.class);
 
     @Test
-    public void testWalletUpdate(@TempDir Path tempDirPath) {
+    public void testWalletUpdate() {
         when(console.readPassword(startsWith("Please enter your existing wallet file password")))
                 .thenReturn(WALLET_PASSWORD);
 
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(startsWith("Please enter a destination directory ")))
-                .thenReturn(tempDirPath.toString());
+                .thenReturn(Folders.tempBuildFolder().getAbsolutePath());
         when(console.readLine(startsWith("Would you like to delete"))).thenReturn("N");
 
         WalletUpdater.main(
