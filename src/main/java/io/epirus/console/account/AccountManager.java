@@ -34,6 +34,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 
 import static io.epirus.console.PrinterUtilities.printErrorAndExit;
 import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
@@ -97,6 +98,7 @@ public class AccountManager implements Closeable {
                 }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
+                config.save();
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
@@ -167,11 +169,30 @@ public class AccountManager implements Closeable {
         return responseJsonObj.get("active").getAsBoolean();
     }
 
-    public BigInteger getAccountBalance(Credentials credentials, Network network, Web3j web3j)
-            throws Exception {
-        return web3j.ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST)
-                .send()
-                .getBalance();
+    public BigInteger getAccountBalance(Credentials credentials, Web3j web3j) {
+        int count = 0;
+        int maxTries = 5;
+        while (true) {
+            try {
+                EthGetBalance accountBalance =
+                        web3j.ethGetBalance(
+                                        credentials.getAddress(), DefaultBlockParameterName.LATEST)
+                                .send();
+                if (accountBalance.getError() == null) {
+                    return accountBalance.getBalance();
+                }
+
+            } catch (Exception e) {
+                if (++count == maxTries) {
+                    printErrorAndExit(e.getMessage());
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
     }
 
     public BigInteger pollForAccountBalance(
