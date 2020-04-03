@@ -112,3 +112,18 @@ def getTimestamp() {
 }
 
 classes { dependsOn createProperties }
+
+task shadowBugWorkaround(type: Jar) {
+    archiveBaseName = 'nested-gradle-jar'
+    from files(file("${rootDir}/gradle/wrapper/gradle-wrapper.jar"))
+    destinationDir file('build/shadow-bug-workaround')
+}
+
+shadowJar {
+    dependsOn shadowBugWorkaround
+    zip64 = true
+    // Shadow plugin bug: explodes the nested jar.
+    // Workaround: double-nest the jar.
+    // Refer https://github.com/johnrengelman/shadow/issues/111
+    from shadowBugWorkaround
+}
