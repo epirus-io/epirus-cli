@@ -41,7 +41,7 @@ import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
-    private static final String USAGE = "account login|logout|create";
+    private static final String USAGE = "account login"; // soon we'll add logout|create
     public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
     private static final String DEFAULT_REALM = "EpirusPortal";
     private final String realm;
@@ -50,7 +50,7 @@ public class AccountManager implements Closeable {
     private final CliConfig config;
 
     public static void main(final CliConfig config, final String[] args) {
-        if ("create".equals(args[0])) {
+        if (args.length > 0 && "create".equals(args[0])) {
             String email = new InteractiveOptions().getEmail();
             AccountManager accountManager = new AccountManager(config, new OkHttpClient());
             accountManager.createAccount(email);
