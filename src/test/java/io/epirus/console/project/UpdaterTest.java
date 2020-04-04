@@ -68,8 +68,6 @@ public class UpdaterTest {
     }
 
     private void testWorksWithVersion(String version, String currentVersion) {
-        config.setPersistent(false);
-
         String validUpdateResponse =
                 String.format(
                         "{\n"

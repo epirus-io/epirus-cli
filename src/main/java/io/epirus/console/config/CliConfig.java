@@ -24,8 +24,7 @@ public class CliConfig {
     private String updatePrompt;
     private String loginToken;
     private boolean telemetryDisabled;
-
-    private boolean isPersistent = true;
+    private boolean isPersistent = false;
 
     public CliConfig(
             String clientId,

@@ -13,7 +13,6 @@
 package io.epirus.console.account;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -25,10 +24,7 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -36,33 +32,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AccountManagerTest {
-    @TempDir static File workingDirectory;
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
     static OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
     static Call call = mock(Call.class);
     static ConnectionPool connectionPool = mock(ConnectionPool.class);
     static AccountManager accountManager;
-    //    static ConfigManager configManager;
 
-    //    @BeforeAll
-    //    public static void setUp() throws IOException {
-    //        configManager =
-    //                new ConfigManager(
-    //                        "4.6.0-SNAPSHOT",
-    //                        "https://auth.epirus.io",
-    //                        "random-token",
-    //                        "4.6.0-SNAPSHOT",
-    //                        null,
-    //                        null,
-    //                        Paths.get(workingDirectory.getPath(), ".epirus", ".config"));
-    //        String jsonToWrite = new Gson().toJson(configManager);
-    //        new File(workingDirectory + File.separator + ".epirus").mkdirs();
-    //        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
-    //        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
-    //        accountManager = new AccountManager(configManager, mockedOkHttpClient);
-    //        System.setOut(new PrintStream(outContent));
-    //    }
+    @BeforeAll
+    public static void setUp() {
+        accountManager = new AccountManager(mockedOkHttpClient);
+        System.setOut(new PrintStream(outContent));
+    }
 
     @AfterAll
     public static void restoreStreams() {

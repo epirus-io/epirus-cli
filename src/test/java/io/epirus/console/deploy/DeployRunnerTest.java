@@ -13,11 +13,16 @@
 package io.epirus.console.deploy;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 
 import io.epirus.console.account.AccountManager;
+import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.utils.ClassExecutor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -36,33 +41,15 @@ import static org.mockito.Mockito.when;
 public class DeployRunnerTest extends ClassExecutor {
 
     @TempDir static File workingDirectory;
-    //    static ConfigManager configManager;
 
-    //    @BeforeEach
-    //    public void createEpirusProject() throws IOException, InterruptedException {
-    //        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" +
-    // workingDirectory};
-    //        int exitCode =
-    //                executeClassAsSubProcessAndReturnProcess(
-    //                                ProjectCreator.class,
-    //                                Collections.emptyList(),
-    //                                Arrays.asList(args),
-    //                                true)
-    //                        .start()
-    //                        .waitFor();
-    //        configManager =
-    //                new ConfigManager(
-    //                        "4.6.0-SNAPSHOT",
-    //                        "https://auth.epirus.io",
-    //                        "test-token",
-    //                        "4.6.0-SNAPSHOT",
-    //                        null,
-    //                        null);
-    //        String jsonToWrite = new Gson().toJson(configManager);
-    //        new File(workingDirectory + File.separator + ".epirus").mkdirs();
-    //        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
-    //        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
-    //    }
+    @BeforeEach
+    public void createEpirusProject() throws IOException, InterruptedException {
+        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory};
+        executeClassAsSubProcessAndReturnProcess(
+                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args), true)
+                .start()
+                .waitFor();
+    }
 
     @Test
     public void testAccountDeployment() throws Exception {
