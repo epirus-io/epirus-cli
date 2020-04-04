@@ -31,7 +31,7 @@ public class ConfigManager {
         try {
             config = getConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
         } catch (Exception e) {
-            throw new RuntimeException("Epirus configuration could not be initialized: ", e);
+            throw new ConfigException(e);
         }
     }
 

@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 public class CliConfig {
     private String clientId;
@@ -24,7 +25,9 @@ public class CliConfig {
     private String updatePrompt;
     private String loginToken;
     private boolean telemetryDisabled;
-    private boolean isPersistent = false;
+
+    @Expose(serialize = false, deserialize = false)
+    private transient boolean isPersistent = false;
 
     public CliConfig(
             String clientId,

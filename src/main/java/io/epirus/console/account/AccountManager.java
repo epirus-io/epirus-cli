@@ -61,7 +61,6 @@ public class AccountManager implements Closeable {
 
     @VisibleForTesting
     public AccountManager(OkHttpClient client) {
-        super();
         this.client = client;
         this.cloudURL = DEFAULT_CLOUD_URL;
         this.realm = DEFAULT_REALM;
@@ -69,7 +68,6 @@ public class AccountManager implements Closeable {
 
     @VisibleForTesting
     public AccountManager(OkHttpClient client, String cloudURL, String realm) {
-        super();
         this.client = client;
         this.cloudURL = cloudURL;
         this.realm = realm;
