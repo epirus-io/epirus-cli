@@ -12,7 +12,11 @@
  */
 package io.epirus.console.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class Version {
@@ -34,9 +38,13 @@ public class Version {
 
     private static Properties loadProperties() throws IOException {
         Properties properties = new Properties();
-        properties.load(
-                io.epirus.console.utils.Version.class.getResourceAsStream(
-                        "/epirus-version.properties"));
+        File propertiesFile = Paths.get("gradle.properties").toFile();
+        InputStream is =
+                propertiesFile.exists()
+                        ? new FileInputStream(propertiesFile)
+                        : io.epirus.console.utils.Version.class.getResourceAsStream(
+                                "/epirus-version.properties");
+        properties.load(is);
         return properties;
     }
 }

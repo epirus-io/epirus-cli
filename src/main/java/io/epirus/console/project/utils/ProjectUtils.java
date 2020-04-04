@@ -37,8 +37,8 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
 
-import static io.epirus.console.PrinterUtilities.printErrorAndExit;
-import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
+import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithStatus;
 
 public class ProjectUtils {
 
@@ -158,7 +158,7 @@ public class ProjectUtils {
                         .addFormDataPart(
                                 "file",
                                 file.getName(),
-                                RequestBody.create(MediaType.parse("application/json"), file))
+                                RequestBody.create(file, MediaType.parse("application/json")))
                         .build();
         Request request = new Request.Builder().url(uploadURL).post(requestBody).build();
         Call call = okHttpClient.newCall(request);

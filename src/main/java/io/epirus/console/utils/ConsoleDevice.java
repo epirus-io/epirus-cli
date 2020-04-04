@@ -10,23 +10,27 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console;
+package io.epirus.console.utils;
 
-public enum Faucet {
-    RINKEBY("Rinkeby", "https://rinkeby.faucet.epirus.io"),
-    ROPSTEN("Ropsten", "https://ropsten.faucet.epirus.io");
-    //    LOCAL("Local", "http://localhost:8000");
+import java.io.Console;
 
-    public final String name;
-    public final String url;
+/** System Console device wrapper. */
+public class ConsoleDevice implements IODevice {
 
-    Faucet(final String name, final String url) {
-        this.name = name;
-        this.url = url;
+    private Console console = System.console();
+
+    @Override
+    public void printf(String format, Object... args) {
+        console.printf(format, args);
     }
 
     @Override
-    public String toString() {
-        return name;
+    public String readLine(String fmt, Object... args) {
+        return console.readLine(fmt, args);
+    }
+
+    @Override
+    public char[] readPassword(String fmt, Object... args) {
+        return console.readPassword(fmt, args);
     }
 }

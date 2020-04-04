@@ -24,7 +24,6 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.account.AccountUtils;
-import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.java.JavaBuilder;
 import io.epirus.console.project.java.JavaProjectCreatorCLIRunner;
 import io.epirus.console.project.kotlin.KotlinBuilder;
@@ -34,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
-
-import org.web3j.codegen.Console;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.utils.Collection.tail;
@@ -62,10 +59,10 @@ public class ProjectCreator {
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValues(args, stringOptions);
-            CommandLine.run(new JavaProjectCreatorCLIRunner(), args);
+            new CommandLine(new JavaProjectCreatorCLIRunner()).execute(args);
         } else {
             args = getValues(args, stringOptions);
-            CommandLine.run(new KotlinProjectCreatorCLIRunner(), args);
+            new CommandLine(new KotlinProjectCreatorCLIRunner()).execute(args);
         }
     }
 
@@ -87,10 +84,7 @@ public class ProjectCreator {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            AccountUtils.accountInit(
-                    new AccountManager(
-                            CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile()),
-                            new OkHttpClient()));
+            AccountUtils.accountInit(new AccountManager(new OkHttpClient()));
             args = stringOptions.toArray(new String[0]);
         }
         return args;
@@ -201,6 +195,5 @@ public class ProjectCreator {
         commandPrinter.println("Test your application");
         instructionPrinter.print(String.format("%-20s", "epirus deploy"));
         commandPrinter.println("Deploys your application");
-        Console.exitSuccess();
     }
 }

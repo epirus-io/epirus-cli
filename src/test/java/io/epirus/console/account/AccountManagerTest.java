@@ -16,13 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import com.google.gson.Gson;
-import io.epirus.console.config.CliConfig;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
@@ -33,7 +27,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -50,26 +43,26 @@ public class AccountManagerTest {
     static Call call = mock(Call.class);
     static ConnectionPool connectionPool = mock(ConnectionPool.class);
     static AccountManager accountManager;
-    static CliConfig cliConfig;
+    //    static ConfigManager configManager;
 
-    @BeforeAll
-    public static void setUp() throws IOException {
-        cliConfig =
-                new CliConfig(
-                        "4.6.0-SNAPSHOT",
-                        "https://auth.epirus.io",
-                        "random-token",
-                        "4.6.0-SNAPSHOT",
-                        null,
-                        null,
-                        Paths.get(workingDirectory.getPath(), ".epirus", ".config"));
-        String jsonToWrite = new Gson().toJson(cliConfig);
-        new File(workingDirectory + File.separator + ".epirus").mkdirs();
-        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
-        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
-        accountManager = new AccountManager(cliConfig, mockedOkHttpClient);
-        System.setOut(new PrintStream(outContent));
-    }
+    //    @BeforeAll
+    //    public static void setUp() throws IOException {
+    //        configManager =
+    //                new ConfigManager(
+    //                        "4.6.0-SNAPSHOT",
+    //                        "https://auth.epirus.io",
+    //                        "random-token",
+    //                        "4.6.0-SNAPSHOT",
+    //                        null,
+    //                        null,
+    //                        Paths.get(workingDirectory.getPath(), ".epirus", ".config"));
+    //        String jsonToWrite = new Gson().toJson(configManager);
+    //        new File(workingDirectory + File.separator + ".epirus").mkdirs();
+    //        Path path = Paths.get(workingDirectory.getPath(), ".epirus", ".config");
+    //        Files.write(path, jsonToWrite.getBytes(Charset.defaultCharset()));
+    //        accountManager = new AccountManager(configManager, mockedOkHttpClient);
+    //        System.setOut(new PrintStream(outContent));
+    //    }
 
     @AfterAll
     public static void restoreStreams() {

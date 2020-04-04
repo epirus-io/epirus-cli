@@ -14,6 +14,7 @@ package io.epirus.console.project.utils;
 
 import java.io.File;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.jetty.io.RuntimeIOException;
 
 import static java.io.File.separator;
@@ -27,7 +28,8 @@ public class Folders {
                                 "build",
                                 "tmp",
                                 "testing",
-                                Long.toString(System.currentTimeMillis())));
+                                Long.toString(System.currentTimeMillis())
+                                        + RandomStringUtils.random(10, true, true)));
         if (!tmpTestLocation.mkdirs())
             throw new RuntimeIOException(
                     "Unable to create folder at " + tmpTestLocation.getAbsolutePath());

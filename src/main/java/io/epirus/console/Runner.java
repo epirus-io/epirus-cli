@@ -13,18 +13,20 @@
 package io.epirus.console;
 
 import io.epirus.console.account.AccountManager;
-import io.epirus.console.config.CliConfig;
 import io.epirus.console.deploy.DeployRunner;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
+import io.epirus.console.security.ContractAuditor;
 import io.epirus.console.update.Updater;
 import io.epirus.console.utils.Version;
+import io.epirus.console.wallet.WalletRunner;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 
+import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
 import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
 import static io.epirus.console.project.UnitTestCreator.COMMAND_GENERATE_TESTS;
@@ -49,12 +51,13 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
-        CliConfig config = CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile());
-        Updater updater = new Updater(config);
-        updater.promptIfUpdateAvailable();
-        Thread updateThread = new Thread(updater::onlineUpdateCheck);
+
+        Updater.promptIfUpdateAvailable();
+
+        Thread updateThread = new Thread(Updater::onlineUpdateCheck);
         updateThread.setDaemon(true);
         updateThread.start();
+
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
@@ -63,7 +66,7 @@ public class Runner {
                     DeployRunner.main(tail(args));
                     break;
                 case "wallet":
-                    WalletRunner.run(tail(args));
+                    WalletRunner.main(tail(args));
                     break;
                 case COMMAND_SOLIDITY:
                     SolidityFunctionWrapperGenerator.main(tail(args));
@@ -78,7 +81,7 @@ public class Runner {
                     ProjectImporter.main(tail(args));
                     break;
                 case "version":
-                    Console.exitSuccess(
+                    System.out.println(
                             "Version: "
                                     + Version.getVersion()
                                     + "\n"
@@ -89,7 +92,7 @@ public class Runner {
                     ContractAuditor.main(tail(args));
                     break;
                 case "account":
-                    AccountManager.main(config, tail(args));
+                    AccountManager.main(tail(args));
                     break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));

@@ -20,7 +20,6 @@ import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.InteractiveOptions;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -36,8 +35,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 
-import static io.epirus.console.PrinterUtilities.printErrorAndExit;
-import static io.epirus.console.PrinterUtilities.printInformationPairWithStatus;
+import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
@@ -47,12 +47,11 @@ public class AccountManager implements Closeable {
     private final String realm;
     private final String cloudURL;
     private final OkHttpClient client;
-    private final CliConfig config;
 
-    public static void main(final CliConfig config, final String[] args) {
+    public static void main(final String[] args) {
         if (args.length > 0 && "create".equals(args[0])) {
             String email = new InteractiveOptions().getEmail();
-            AccountManager accountManager = new AccountManager(config, new OkHttpClient());
+            AccountManager accountManager = new AccountManager(new OkHttpClient());
             accountManager.createAccount(email);
             accountManager.close();
         } else {
@@ -61,18 +60,17 @@ public class AccountManager implements Closeable {
     }
 
     @VisibleForTesting
-    public AccountManager(final CliConfig cliConfig, OkHttpClient client) {
+    public AccountManager(OkHttpClient client) {
+        super();
         this.client = client;
-        this.config = cliConfig;
         this.cloudURL = DEFAULT_CLOUD_URL;
         this.realm = DEFAULT_REALM;
     }
 
     @VisibleForTesting
-    public AccountManager(
-            final CliConfig cliConfig, OkHttpClient client, String cloudURL, String realm) {
+    public AccountManager(OkHttpClient client, String cloudURL, String realm) {
+        super();
         this.client = client;
-        this.config = cliConfig;
         this.cloudURL = cloudURL;
         this.realm = realm;
     }
@@ -98,7 +96,6 @@ public class AccountManager implements Closeable {
                 }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
-                config.save();
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {
@@ -221,7 +218,7 @@ public class AccountManager implements Closeable {
     }
 
     public String getLoginToken() {
-        return this.config.getLoginToken();
+        return config.getLoginToken();
     }
 
     @Override
