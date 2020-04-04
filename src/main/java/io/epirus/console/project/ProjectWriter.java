@@ -27,7 +27,7 @@ import org.web3j.crypto.WalletUtils;
 
 public class ProjectWriter {
 
-    public static final void writeResourceFile(
+    public static void writeResourceFile(
             final String file, final String fileName, final String writeLocation)
             throws IOException {
         Files.write(Paths.get(writeLocation + File.separator + fileName), getBytes(file));
@@ -37,7 +37,7 @@ public class ProjectWriter {
         return file.getBytes();
     }
 
-    public static final void copyResourceFile(final String file, final String destinationPath)
+    public static void copyResourceFile(final String file, final String destinationPath)
             throws IOException {
 
         Files.copy(
@@ -47,7 +47,7 @@ public class ProjectWriter {
                 StandardCopyOption.REPLACE_EXISTING);
     }
 
-    public static final void importSolidityProject(
+    public static void importSolidityProject(
             final File solidityImportPath, final String destination) throws IOException {
         if (solidityImportPath != null && solidityImportPath.exists()) {
             if (solidityImportPath.isFile() && solidityImportPath.getName().endsWith(".sol")) {

@@ -87,7 +87,6 @@ public class AccountManager implements Closeable {
                     if (tokenError == null || tokenError.isEmpty()) {
                         Console.exitError("Could not retrieve token. Try again later.");
                     } else {
-
                         printErrorAndExit(tokenError);
                     }
                     return;

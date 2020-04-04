@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaProjectWriterTest {
 
-    private static final io.epirus.console.project.ProjectWriter ProjectWriter =
-            new ProjectWriter();
     private static final JavaTemplateProvider templateProvider =
             new JavaTemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
 

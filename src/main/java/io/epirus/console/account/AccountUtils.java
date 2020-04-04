@@ -12,25 +12,15 @@
  */
 package io.epirus.console.account;
 
-import java.io.IOException;
-
 import io.epirus.console.project.InteractiveOptions;
 
 public class AccountUtils {
 
-    public static void accountInit(AccountManager accountManager) throws IOException {
+    public static void accountInit(AccountManager accountManager) {
         InteractiveOptions interactiveOptions = new InteractiveOptions();
 
-        if (interactiveOptions.configFileExists()) {
-            if (!interactiveOptions.userHasEpirusAccount()) {
-                if (interactiveOptions.userWantsEpirusAccount()) {
-                    accountManager.createAccount(interactiveOptions.getEmail());
-                }
-            }
-        } else {
-            if (interactiveOptions.userWantsEpirusAccount()) {
-                accountManager.createAccount(interactiveOptions.getEmail());
-            }
+        if (!interactiveOptions.userIsLoggedIn() && interactiveOptions.userWantsEpirusAccount()) {
+            accountManager.createAccount(interactiveOptions.getEmail());
         }
     }
 }

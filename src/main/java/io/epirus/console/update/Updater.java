@@ -62,9 +62,10 @@ public class Updater {
         try {
             Response sendRawResponse = client.newCall(updateCheckRequest).execute();
             JsonElement element;
+            ResponseBody body;
             if (sendRawResponse.code() == 200
-                    && sendRawResponse.body() != null
-                    && (element = JsonParser.parseString(sendRawResponse.body().string())) != null
+                    && (body = sendRawResponse.body()) != null
+                    && (element = JsonParser.parseString(body.string())) != null
                     && element.isJsonObject()) {
                 JsonObject rootObj = element.getAsJsonObject().get("latest").getAsJsonObject();
                 String latestVersion = rootObj.get("version").getAsString();

@@ -174,12 +174,10 @@ public class ProjectCreator {
                     Ansi.FColor.WHITE,
                     Ansi.BColor.BLACK);
             instructionPrinter.print(
-                    String.format(
-                            "%-20s",
-                            "Wallet Address",
-                            Ansi.Attribute.CLEAR,
-                            Ansi.FColor.WHITE,
-                            Ansi.BColor.BLACK));
+                    String.format("%-20s", "Wallet Address"),
+                    Ansi.Attribute.CLEAR,
+                    Ansi.FColor.WHITE,
+                    Ansi.BColor.BLACK);
             instructionPrinter.println(
                     project.getProjectWallet().getWalletAddress(),
                     Ansi.Attribute.BOLD,
