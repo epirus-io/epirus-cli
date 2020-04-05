@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.project;
+package io.epirus.console.web.services;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -18,7 +18,6 @@ import java.util.UUID;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.epirus.console.config.CliConfig;
-import io.epirus.console.update.Updater;
 import io.epirus.console.utils.Version;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

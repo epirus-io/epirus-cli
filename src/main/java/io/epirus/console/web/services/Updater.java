@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.update;
+package io.epirus.console.web.services;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class Updater {
 
     public static void promptIfUpdateAvailable() throws IOException {
         String version = Version.getVersion();
-        if (!config.getLatestVersion().equals(version)) {
+        if (config.getLatestVersion() != null && !config.getLatestVersion().equals(version)) {
             System.out.println(
                     String.format(
                             "Your current Epirus version is: "

@@ -52,7 +52,10 @@ public class ConfigManager {
         if (configFile.exists()) {
             return getSavedConfig(configFile);
         } else {
-            return initializeDefaultConfig(configFile);
+            CliConfig defaultConfig = initializeDefaultConfig(configFile);
+            defaultConfig.setPersistent(true);
+            defaultConfig.save();
+            return defaultConfig;
         }
     }
 }
