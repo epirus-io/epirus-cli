@@ -29,7 +29,9 @@ public class Updater {
 
     public static void promptIfUpdateAvailable() throws IOException {
         String version = Version.getVersion();
-        if (config.getLatestVersion() != null && !config.getLatestVersion().equals(version)) {
+        if (config.getLatestVersion() != null
+                && !config.getLatestVersion().equals(version)
+                && !version.contains("SNAPSHOT")) {
             System.out.println(
                     String.format(
                             "Your current Epirus version is: "
