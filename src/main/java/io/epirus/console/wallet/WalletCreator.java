@@ -10,13 +10,15 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console;
+package io.epirus.console.wallet;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+
+import io.epirus.console.utils.IODevice;
 
 import org.web3j.codegen.Console;
 import org.web3j.crypto.CipherException;

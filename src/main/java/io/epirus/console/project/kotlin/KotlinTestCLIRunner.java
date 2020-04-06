@@ -41,7 +41,7 @@ public class KotlinTestCLIRunner implements Runnable {
     public void run() {
         try {
             new UnitTestCreator(javaWrapperDir, unitTestOutputDir).generateKotlin();
-            Console.exitSuccess(
+            System.out.println(
                     "Unit tests were generated successfully at location: " + unitTestOutputDir);
         } catch (IOException e) {
             Console.exitError(e);

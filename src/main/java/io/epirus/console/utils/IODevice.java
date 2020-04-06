@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Web3 Labs Ltd.
+ * Copyright 2019 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -10,18 +10,13 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.account;
+package io.epirus.console.utils;
 
-import io.epirus.console.project.InteractiveOptions;
+/** IO device abstraction. */
+public interface IODevice {
+    void printf(String format, Object... args);
 
-public class AccountUtils {
+    String readLine(String fmt, Object... args);
 
-    public static void accountInit(AccountManager accountManager) {
-        InteractiveOptions interactiveOptions = new InteractiveOptions();
-
-        if (!interactiveOptions.isUserLoggedIn()
-                && interactiveOptions.doesUserWantEpirusAccount()) {
-            accountManager.createAccount(interactiveOptions.getEmail());
-        }
-    }
+    char[] readPassword(String fmt, Object... args);
 }

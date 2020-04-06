@@ -13,19 +13,16 @@
 package io.epirus.console.project;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
 
-import org.web3j.account.LocalWeb3jAccount;
-
+import static io.epirus.console.config.ConfigManager.config;
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 
@@ -159,19 +156,11 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public boolean userHasEpirusAccount() throws IOException {
-        if (LocalWeb3jAccount.configExists()) {
-            ObjectNode objectNode = LocalWeb3jAccount.readConfigAsJson();
-            return LocalWeb3jAccount.loginTokenExists(objectNode);
-        }
-        return false;
+    public boolean isUserLoggedIn() {
+        return config.getClientId() != null && config.getClientId().length() > 0;
     }
 
-    public boolean configFileExists() {
-        return LocalWeb3jAccount.configExists();
-    }
-
-    public boolean userWantsEpirusAccount() throws IOException {
+    public boolean doesUserWantEpirusAccount() {
         print("It looks like you don’t have a Web3j account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();

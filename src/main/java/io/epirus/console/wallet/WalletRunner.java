@@ -10,7 +10,9 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console;
+package io.epirus.console.wallet;
+
+import io.epirus.console.utils.ConsoleDevice;
 
 import org.web3j.codegen.Console;
 
@@ -19,10 +21,6 @@ import static org.web3j.utils.Collection.tail;
 /** Class for managing our wallet command line utilities. */
 public class WalletRunner {
     private static final String USAGE = "wallet create|update|send|fromkey|fund";
-
-    public static void run(String[] args) {
-        main(args);
-    }
 
     public static void main(String[] args) {
         if (args.length < 1) {

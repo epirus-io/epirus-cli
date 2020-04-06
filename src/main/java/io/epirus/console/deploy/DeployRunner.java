@@ -18,12 +18,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.diogonunes.jcdp.color.api.Ansi;
-import io.epirus.console.Faucet;
-import io.epirus.console.WalletFunder;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.account.AccountUtils;
-import io.epirus.console.config.CliConfig;
 import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.wallet.Faucet;
+import io.epirus.console.wallet.WalletFunder;
 import okhttp3.OkHttpClient;
 
 import org.web3j.account.LocalWeb3jAccount;
@@ -33,8 +32,10 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
-import static io.epirus.console.PrinterUtilities.*;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
+import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
+import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPair;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
 public class DeployRunner {
@@ -47,8 +48,6 @@ public class DeployRunner {
 
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
-            CliConfig cliConfig =
-                    CliConfig.getConfig(CliConfig.getDefaultEpirusConfigPath().toFile());
             Web3j web3j = null;
             try {
                 web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
@@ -58,7 +57,7 @@ public class DeployRunner {
             }
             new DeployRunner(
                             Network.valueOf(args[0].toUpperCase()),
-                            new AccountManager(cliConfig, new OkHttpClient()),
+                            new AccountManager(new OkHttpClient()),
                             web3j)
                     .deploy();
         } else {
