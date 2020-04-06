@@ -67,10 +67,7 @@ public class ConfigManager {
         if (configFile.exists()) {
             return getSavedConfig(configFile);
         } else {
-            CliConfig defaultConfig = initializeDefaultConfig(configFile);
-            defaultConfig.setPersistent(true);
-            defaultConfig.save();
-            return defaultConfig;
+            return initializeDefaultConfig(configFile);
         }
     }
 }
