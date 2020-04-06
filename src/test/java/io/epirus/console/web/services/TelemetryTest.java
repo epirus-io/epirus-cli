@@ -42,6 +42,13 @@ public class TelemetryTest {
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
         ConfigManager.setDevelopment();
+
+        stubFor(
+                post(urlPathMatching("/api/analytics/"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader("Content-Type", "application/json")));
     }
 
     @AfterEach
@@ -51,13 +58,6 @@ public class TelemetryTest {
 
     @Test
     public void testExpectedTelemetryWorks() {
-        stubFor(
-                post(urlPathMatching("/api/analytics/"))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", "application/json")));
-
         Telemetry.uploadTelemetry(
                 "http://localhost:8081/api/analytics",
                 new String[] {
@@ -67,6 +67,28 @@ public class TelemetryTest {
         verify(
                 postRequestedFor(urlEqualTo("/api/analytics"))
                         .withRequestBody(containing("0xceeeefe21b2f2ea5df62ed2efde1e3f1e5540f96"))
+                        .withRequestBody(notMatching(".*--telemetry.*")));
+    }
+
+    @Test
+    public void testFewerArgsWorks() {
+        Telemetry.uploadTelemetry(
+                "http://localhost:8081/api/analytics", new String[] {"--telemetry", "version"});
+
+        verify(
+                postRequestedFor(urlEqualTo("/api/analytics"))
+                        .withRequestBody(containing("version"))
+                        .withRequestBody(notMatching(".*--telemetry.*")));
+    }
+
+    @Test
+    public void testNoArgsWorks() {
+        Telemetry.uploadTelemetry(
+                "http://localhost:8081/api/analytics", new String[] {"--telemetry"});
+
+        verify(
+                postRequestedFor(urlEqualTo("/api/analytics"))
+                        .withRequestBody(containing("No args"))
                         .withRequestBody(notMatching(".*--telemetry.*")));
     }
 }

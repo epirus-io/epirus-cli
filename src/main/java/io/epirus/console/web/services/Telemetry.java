@@ -15,8 +15,6 @@ package io.epirus.console.web.services;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,12 +39,8 @@ public class Telemetry {
         if (jarFile.endsWith(".jar")) {
             Runtime.getRuntime()
                     .exec(
-                            Stream.concat(
-                                            Arrays.stream(
-                                                    new String[] {
-                                                        "java", "-jar", jarFile, "--telemetry"
-                                                    }),
-                                            Arrays.stream(args))
+                            Stream.of(new String[] {"java", "-jar", jarFile, "--telemetry"}, args)
+                                    .flatMap(Stream::of)
                                     .toArray(String[]::new));
         }
     }
@@ -57,16 +51,14 @@ public class Telemetry {
 
     public static void uploadTelemetry(String telemetryUrl, String[] args) {
         OkHttpClient client = new OkHttpClient();
-        ArrayList<String> allArgs =
-                Arrays.stream(args).skip(1).collect(Collectors.toCollection(ArrayList::new));
-        String argsToUpload = allArgs.stream().skip(1).collect(Collectors.joining(", "));
+        String argsToUpload = Stream.of(args).skip(2).collect(Collectors.joining(", "));
 
         RequestBody analyticsBody =
                 new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("os", OSUtils.determineOS().toString())
                         .addFormDataPart("clientId", config.getClientId())
-                        .addFormDataPart("data", allArgs.get(0))
+                        .addFormDataPart("data", args.length >= 2 ? args[1] : "No args")
                         .addFormDataPart("params", argsToUpload)
                         .build();
 
