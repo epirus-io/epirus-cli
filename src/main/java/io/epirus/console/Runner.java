@@ -15,6 +15,7 @@ package io.epirus.console;
 import java.util.Arrays;
 
 import io.epirus.console.account.AccountManager;
+import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
@@ -55,7 +56,8 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
-        config.setPersistent(true);
+
+        ConfigManager.setProduction();
 
         Updater.promptIfUpdateAvailable();
 

@@ -19,7 +19,8 @@ public class AccountUtils {
     public static void accountInit(AccountManager accountManager) {
         InteractiveOptions interactiveOptions = new InteractiveOptions();
 
-        if (!interactiveOptions.userIsLoggedIn() && interactiveOptions.userWantsEpirusAccount()) {
+        if (!interactiveOptions.isUserLoggedIn()
+                && interactiveOptions.doesUserWantEpirusAccount()) {
             accountManager.createAccount(interactiveOptions.getEmail());
         }
     }

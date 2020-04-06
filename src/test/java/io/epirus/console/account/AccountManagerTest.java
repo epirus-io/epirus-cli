@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import io.epirus.console.config.ConfigManager;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
@@ -24,7 +25,10 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -40,9 +44,10 @@ public class AccountManagerTest {
     static AccountManager accountManager;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp() throws IOException {
         accountManager = new AccountManager(mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
+        ConfigManager.setDevelopment();
     }
 
     @AfterAll

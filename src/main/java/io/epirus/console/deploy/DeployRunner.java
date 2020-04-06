@@ -33,7 +33,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
-import static io.epirus.console.utils.PrinterUtilities.*;
+import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
+import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPair;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
 public class DeployRunner {
