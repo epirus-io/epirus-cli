@@ -156,11 +156,11 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public boolean userIsLoggedIn() {
+    public boolean isUserLoggedIn() {
         return config.getClientId() != null && config.getClientId().length() > 0;
     }
 
-    public boolean userWantsEpirusAccount() {
+    public boolean doesUserWantEpirusAccount() {
         print("It looks like you don’t have a Web3j account, would you like to create one?");
         print("This will provide free access to the Ethereum network [Y/n]");
         String userAnswer = getUserInput();

@@ -35,7 +35,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static io.epirus.console.config.ConfigManager.config;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UpdaterTest {
     private static WireMockServer wireMockServer;
@@ -57,7 +57,7 @@ public class UpdaterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"4.5.6", "4.5.7"})
-    void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable(String version) throws Exception {
+    void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable(String version) {
         testWorksWithVersion(version, "4.5.6");
     }
 
