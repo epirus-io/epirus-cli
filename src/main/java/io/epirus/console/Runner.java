@@ -12,7 +12,8 @@
  */
 package io.epirus.console;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
@@ -61,17 +62,10 @@ public class Runner {
 
         Updater.promptIfUpdateAvailable();
 
-        if (Arrays.asList(args).contains("--telemetry")) {
-            Telemetry.uploadTelemetry(args);
-            Updater.onlineUpdateCheck();
-            exitSuccess();
-        } else if (!config.isTelemetryDisabled()) {
-            Telemetry.invokeTelemetryUpload(args);
-        }
-
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
+            performStartupTasks(args);
             switch (args[0]) {
                 case "deploy":
                     DeployRunner.main(tail(args));
@@ -113,5 +107,15 @@ public class Runner {
             }
         }
         exitSuccess();
+    }
+
+    private static void performStartupTasks(String[] args) throws IOException, URISyntaxException {
+        if (args[0].equals("--telemetry")) {
+            Telemetry.uploadTelemetry(args);
+            Updater.onlineUpdateCheck();
+            exitSuccess();
+        } else if (!config.isTelemetryDisabled()) {
+            Telemetry.invokeTelemetryUpload(args);
+        }
     }
 }
