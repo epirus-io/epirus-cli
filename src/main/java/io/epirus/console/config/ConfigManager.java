@@ -35,6 +35,11 @@ public class ConfigManager {
     }
 
     @VisibleForTesting
+    public static void setDevelopment() throws IOException {
+        config = getDefaultConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
+    }
+
+    @VisibleForTesting
     public static void setDevelopment(
             String clientId,
             String latestVersion,

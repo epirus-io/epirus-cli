@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import io.epirus.console.config.ConfigManager;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
@@ -40,9 +41,10 @@ public class AccountManagerTest {
     static AccountManager accountManager;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp() throws IOException {
         accountManager = new AccountManager(mockedOkHttpClient);
         System.setOut(new PrintStream(outContent));
+        ConfigManager.setDevelopment();
     }
 
     @AfterAll
