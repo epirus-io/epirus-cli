@@ -12,6 +12,9 @@
  */
 package io.epirus.console;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
@@ -19,9 +22,10 @@ import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.security.ContractAuditor;
-import io.epirus.console.update.Updater;
 import io.epirus.console.utils.Version;
 import io.epirus.console.wallet.WalletRunner;
+import io.epirus.console.web.services.Telemetry;
+import io.epirus.console.web.services.Updater;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
@@ -31,6 +35,7 @@ import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
 import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
 import static io.epirus.console.project.UnitTestCreator.COMMAND_GENERATE_TESTS;
+import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
 import static org.web3j.utils.Collection.tail;
 
@@ -57,13 +62,10 @@ public class Runner {
 
         Updater.promptIfUpdateAvailable();
 
-        Thread updateThread = new Thread(Updater::onlineUpdateCheck);
-        updateThread.setDaemon(true);
-        updateThread.start();
-
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
+            performStartupTasks(args);
             switch (args[0]) {
                 case "deploy":
                     DeployRunner.main(tail(args));
@@ -103,8 +105,17 @@ public class Runner {
                 default:
                     Console.exitError(USAGE);
             }
-            config.save();
         }
-        Console.exitSuccess();
+        exitSuccess();
+    }
+
+    private static void performStartupTasks(String[] args) throws IOException, URISyntaxException {
+        if (args[0].equals("--telemetry")) {
+            Telemetry.uploadTelemetry(args);
+            Updater.onlineUpdateCheck();
+            exitSuccess();
+        } else if (!config.isTelemetryDisabled()) {
+            Telemetry.invokeTelemetryUpload(args);
+        }
     }
 }
