@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 
 public class ConfigManager {
@@ -27,12 +28,21 @@ public class ConfigManager {
 
     public static CliConfig config;
 
-    static {
-        try {
-            config = getConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
-        } catch (Exception e) {
-            throw new ConfigException(e);
-        }
+    public static void setProduction() throws IOException {
+        CliConfig productionConfig = getDefaultConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
+        productionConfig.setPersistent(true);
+        config = productionConfig;
+    }
+
+    @VisibleForTesting
+    public static void setDevelopment(
+            String clientId,
+            String latestVersion,
+            String updatePrompt,
+            String loginToken,
+            boolean telemetryDisabled) {
+        config =
+                new CliConfig(clientId, latestVersion, updatePrompt, loginToken, telemetryDisabled);
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
@@ -48,7 +58,7 @@ public class ConfigManager {
         return new Gson().fromJson(configContents, CliConfig.class);
     }
 
-    private static CliConfig getConfig(File configFile) throws IOException {
+    private static CliConfig getDefaultConfig(File configFile) throws IOException {
         if (configFile.exists()) {
             return getSavedConfig(configFile);
         } else {

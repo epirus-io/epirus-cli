@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import io.epirus.console.config.CliConfig;
+import io.epirus.console.config.ConfigManager;
 import io.epirus.console.update.Updater;
 import io.epirus.console.utils.Version;
 import org.junit.jupiter.api.AfterEach;
@@ -45,9 +45,8 @@ public class UpdaterTest {
         wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        config =
-                new CliConfig(
-                        UUID.randomUUID().toString(), Version.getVersion(), null, null, false);
+        ConfigManager.setDevelopment(
+                UUID.randomUUID().toString(), Version.getVersion(), null, null, false);
     }
 
     @AfterEach

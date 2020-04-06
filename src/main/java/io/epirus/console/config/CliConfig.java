@@ -29,7 +29,7 @@ public class CliConfig {
     @Expose(serialize = false, deserialize = false)
     private transient boolean isPersistent = false;
 
-    public CliConfig(
+    protected CliConfig(
             String clientId,
             String latestVersion,
             String updatePrompt,
