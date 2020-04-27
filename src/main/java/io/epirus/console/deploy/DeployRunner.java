@@ -133,6 +133,7 @@ public class DeployRunner {
                 Ansi.BColor.BLACK);
         try {
             System.out.printf("Waiting for transaction %s to be mined...\n", txHash);
+
             BigInteger accountBalance =
                     accountManager.pollForAccountBalance(credentials, network, web3j, 5);
 

@@ -45,6 +45,7 @@ apply {
 }
 
 repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     mavenLocal()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
