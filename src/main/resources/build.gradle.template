@@ -13,6 +13,7 @@ version '0.1.0'
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
 }
@@ -28,7 +29,7 @@ ext {
 }
 
 dependencies {
-    implementation "org.web3j:core:$web3jVersion",
+    implementation "org.web3j:core:4.6.0-SNAPSHOT",
             "ch.qos.logback:logback-core:$logbackVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     implementation("org.web3j:web3j-unit:$web3jVersion")

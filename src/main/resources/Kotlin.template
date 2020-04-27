@@ -38,7 +38,7 @@ class <project_name> {
         log.level = Level.ERROR
         val credentials: Credentials? = loadCredentials("<wallet_name>")
         val web3j: Web3j? = createWeb3jService("")
-        val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_LIMIT, BigInteger.valueOf(7500000L)))
+        val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(7500000L)))
         callGreetMethod(helloWorld)
     }
 

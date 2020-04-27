@@ -15,7 +15,6 @@ package io.epirus.console.account;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Optional;
 
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
@@ -43,8 +42,8 @@ import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
     private static final String USAGE = "account create|login|logout";
-    public static final String DEFAULT_CLOUD_URL =
-            Optional.of(System.getenv("EPIRUS_APP_URL")).orElse("https://app.epirus.io");
+    public static final String DEFAULT_APP_URL =
+            System.getenv().getOrDefault("EPIRUS_APP_URL", "https://app.epirus.io");
     private final String cloudURL;
     private final OkHttpClient client;
 
@@ -62,7 +61,7 @@ public class AccountManager implements Closeable {
     @VisibleForTesting
     public AccountManager(OkHttpClient client) {
         this.client = client;
-        this.cloudURL = DEFAULT_CLOUD_URL;
+        this.cloudURL = DEFAULT_APP_URL;
     }
 
     public void createAccount(String email) {
@@ -100,7 +99,9 @@ public class AccountManager implements Closeable {
     public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
         Request request =
                 new Request.Builder()
-                        .url(cloudURL + "/api/users/status/" + config.getLoginToken())
+                        .url(
+                                String.format(
+                                        "%s/api/users/status/%s", cloudURL, config.getLoginToken()))
                         .get()
                         .build();
         int tries = 20;

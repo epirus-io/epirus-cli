@@ -45,7 +45,7 @@ apply {
 }
 
 repositories {
-
+    mavenLocal()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
 
@@ -67,7 +67,7 @@ distTar {
 dependencies {
     implementation "org.web3j:codegen:$web3jVersion",
             "org.web3j:contracts:$web3jVersion",
-            "org.web3j:core:$web3jVersion",
+            "org.web3j:core:4.6.0-SNAPSHOT",
             "org.web3j:crypto:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
             "info.picocli:picocli:$picocli",
