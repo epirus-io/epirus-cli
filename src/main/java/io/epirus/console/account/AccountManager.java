@@ -15,6 +15,7 @@ package io.epirus.console.account;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Optional;
 
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
@@ -41,10 +42,9 @@ import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithS
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
-    private static final String USAGE = "account login"; // soon we'll add logout|create
-    public static final String DEFAULT_CLOUD_URL = "https://auth.epirus.io";
-    private static final String DEFAULT_REALM = "EpirusPortal";
-    private final String realm;
+    private static final String USAGE = "account create|login|logout";
+    public static final String DEFAULT_CLOUD_URL =
+            Optional.of(System.getenv("EPIRUS_APP_URL")).orElse("https://app.epirus.io");
     private final String cloudURL;
     private final OkHttpClient client;
 
@@ -63,33 +63,19 @@ public class AccountManager implements Closeable {
     public AccountManager(OkHttpClient client) {
         this.client = client;
         this.cloudURL = DEFAULT_CLOUD_URL;
-        this.realm = DEFAULT_REALM;
-    }
-
-    @VisibleForTesting
-    public AccountManager(OkHttpClient client, String cloudURL, String realm) {
-        this.client = client;
-        this.cloudURL = cloudURL;
-        this.realm = realm;
     }
 
     public void createAccount(String email) {
-        RequestBody requestBody = createRequestBody(email);
-        Request newAccountRequest = createRequest(requestBody);
+        RequestBody requestBody = new FormBody.Builder().add("email", email).build();
+        Request newAccountRequest = createAccountRequest(requestBody);
         try {
-            Response sendRawResponse = executeClientCall(newAccountRequest);
+            Response sendRawResponse = client.newCall(newAccountRequest).execute();
             ResponseBody body;
             if (sendRawResponse.code() == 200 && (body = sendRawResponse.body()) != null) {
                 String rawResponse = body.string();
                 JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
                 if (responseJsonObj.get("token") == null) {
-                    String tokenError = responseJsonObj.get("tokenError").getAsString();
-                    if (tokenError == null || tokenError.isEmpty()) {
-                        Console.exitError("Could not retrieve token. Try again later.");
-                    } else {
-                        printErrorAndExit(tokenError);
-                    }
-                    return;
+                    Console.exitError("Could not retrieve token. Try again later.");
                 }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
@@ -104,19 +90,9 @@ public class AccountManager implements Closeable {
         }
     }
 
-    private final Response executeClientCall(Request newAccountRequest) throws IOException {
-        return client.newCall(newAccountRequest).execute();
-    }
-
-    final RequestBody createRequestBody(String email) {
-
-        return new FormBody.Builder().add("email", email).build();
-    }
-
-    final Request createRequest(RequestBody accountBody) {
-
+    final Request createAccountRequest(RequestBody accountBody) {
         return new Request.Builder()
-                .url(String.format("%s/auth/realms/%s/web3j-token/create", cloudURL, realm))
+                .url(String.format("%s/api/users/create/", cloudURL))
                 .post(accountBody)
                 .build();
     }
@@ -124,13 +100,10 @@ public class AccountManager implements Closeable {
     public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
         Request request =
                 new Request.Builder()
-                        .url(
-                                cloudURL
-                                        + "/auth/realms/EpirusPortal/web3j-token/status/"
-                                        + config.getLoginToken())
+                        .url(cloudURL + "/api/users/status/" + config.getLoginToken())
                         .get()
                         .build();
-        int tries = 10;
+        int tries = 20;
         while (tries-- > 0) {
             if (userConfirmedAccount(request)) {
                 printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
@@ -142,30 +115,26 @@ public class AccountManager implements Closeable {
                         "Account status", 20, "PENDING ", Ansi.FColor.YELLOW);
             }
 
-            Thread.sleep(5000);
+            Thread.sleep(10000);
         }
         printErrorAndExit(
                 "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {
-
         Response response = client.newCall(request).execute();
         ResponseBody responseBody = response.body();
         if (response.code() != 200 || responseBody == null) {
-            Console.exitError(response.message());
+            return false;
         }
-        String responseBodyString = responseBody.string();
-        if (responseBodyString.equals("Invalid request")) {
-            printErrorAndExit("Could not check if account has been confirmed");
-        }
-        JsonObject responseJsonObj = JsonParser.parseString(responseBodyString).getAsJsonObject();
+        JsonObject responseJsonObj =
+                JsonParser.parseString(responseBody.string()).getAsJsonObject();
         return responseJsonObj.get("active").getAsBoolean();
     }
 
     public BigInteger getAccountBalance(Credentials credentials, Web3j web3j) {
         int count = 0;
-        int maxTries = 5;
+        int maxTries = 10;
         while (true) {
             try {
                 EthGetBalance accountBalance =

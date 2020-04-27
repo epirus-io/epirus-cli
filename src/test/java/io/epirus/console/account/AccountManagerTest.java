@@ -17,14 +17,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import io.epirus.console.config.ConfigManager;
-import okhttp3.Call;
-import okhttp3.ConnectionPool;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +51,8 @@ public class AccountManagerTest {
     @Test
     public void testAccountConfirmation() throws IOException, InterruptedException {
         Request request =
-                accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
+                accountManager.createAccountRequest(
+                        new FormBody.Builder().add("email", "test@gmail.com").build());
         Response response =
                 new Response.Builder()
                         .protocol(Protocol.H2_PRIOR_KNOWLEDGE)
@@ -80,7 +74,8 @@ public class AccountManagerTest {
     @Test
     public void testAccountCreation() throws IOException {
         Request request =
-                accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
+                accountManager.createAccountRequest(
+                        new FormBody.Builder().add("email", "test@gmail.com").build());
         Response response =
                 new Response.Builder()
                         .protocol(Protocol.H2_PRIOR_KNOWLEDGE)

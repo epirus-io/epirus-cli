@@ -152,7 +152,7 @@ public class DeployRunner {
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
 
-        String NODE_RPC_ENDPOINT = "https://%s-eth.epirus.io/%s";
+        String NODE_RPC_ENDPOINT = "https://app.epirus.io/api/rpc/%s/%s/";
 
         String httpEndpoint =
                 String.format(
