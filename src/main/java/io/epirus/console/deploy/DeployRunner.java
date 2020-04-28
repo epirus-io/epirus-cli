@@ -32,6 +32,7 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
+import static io.epirus.console.account.AccountManager.DEFAULT_APP_URL;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
 import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
@@ -110,12 +111,13 @@ public class DeployRunner {
                 Ansi.FColor.GREEN);
         try {
             if (accountBalance.equals(BigInteger.ZERO)) {
-                WalletFunder.fundWallet(
-                        credentials.getAddress(),
-                        Faucet.valueOf(network.getNetworkName().toUpperCase()),
-                        this.accountManager.getLoginToken());
+                String result =
+                        WalletFunder.fundWallet(
+                                credentials.getAddress(),
+                                Faucet.valueOf(network.getNetworkName().toUpperCase()),
+                                this.accountManager.getLoginToken());
                 printInformationPair("Funding wallet with", 20, "0.2 ETH", Ansi.FColor.GREEN);
-                waitForBalanceUpdate();
+                waitForBalanceUpdate(result);
             }
 
         } catch (Exception e) {
@@ -123,13 +125,15 @@ public class DeployRunner {
         }
     }
 
-    private void waitForBalanceUpdate() {
+    private void waitForBalanceUpdate(String txHash) {
         coloredPrinter.println(
                 "Waiting for balance update",
                 Ansi.Attribute.CLEAR,
                 Ansi.FColor.YELLOW,
                 Ansi.BColor.BLACK);
         try {
+            System.out.printf("Waiting for transaction %s to be mined...\n", txHash);
+
             BigInteger accountBalance =
                     accountManager.pollForAccountBalance(credentials, network, web3j, 5);
 
@@ -152,11 +156,12 @@ public class DeployRunner {
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
 
-        String NODE_RPC_ENDPOINT = "https://%s-eth.epirus.io/%s";
+        String NODE_RPC_ENDPOINT = "%s/api/rpc/%s/%s/";
 
         String httpEndpoint =
                 String.format(
                         NODE_RPC_ENDPOINT,
+                        DEFAULT_APP_URL,
                         network.getNetworkName(),
                         LocalWeb3jAccount.readConfigAsJson().get("loginToken").asText());
         ProcessBuilder processBuilder = new ProcessBuilder(command);

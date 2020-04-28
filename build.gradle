@@ -15,7 +15,7 @@ mainClassName = 'io.epirus.console.Runner'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.5.16"
+    web3jVersion = "4.5.18"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
@@ -45,7 +45,6 @@ apply {
 }
 
 repositories {
-
     maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
 
