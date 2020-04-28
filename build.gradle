@@ -15,7 +15,7 @@ mainClassName = 'io.epirus.console.Runner'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.5.16"
+    web3jVersion = "4.5.18"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
@@ -45,8 +45,6 @@ apply {
 }
 
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    mavenLocal()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
 
@@ -68,7 +66,7 @@ distTar {
 dependencies {
     implementation "org.web3j:codegen:$web3jVersion",
             "org.web3j:contracts:$web3jVersion",
-            "org.web3j:core:4.6.0-SNAPSHOT",
+            "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
             "info.picocli:picocli:$picocli",

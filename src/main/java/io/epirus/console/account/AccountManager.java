@@ -162,7 +162,6 @@ public class AccountManager implements Closeable {
     public BigInteger pollForAccountBalance(
             Credentials credentials, Network network, Web3j web3j, int numberOfBlocksToCheck)
             throws IOException {
-        System.out.println(web3j);
         BigInteger accountBalance = null;
         BigInteger startBlock = web3j.ethBlockNumber().send().getBlockNumber();
         BigInteger stopBlock = startBlock.add(BigInteger.valueOf(numberOfBlocksToCheck));

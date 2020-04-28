@@ -13,8 +13,6 @@ version '0.1.0'
 sourceCompatibility = 1.8
 
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    mavenLocal()
     mavenCentral()
     jcenter()
 }
@@ -25,16 +23,16 @@ web3j {
 }
 
 ext {
-    web3jVersion = '4.5.15'
+    web3jVersion = '4.5.18'
     logbackVersion = '1.2.3'
 }
 
 dependencies {
-    implementation "org.web3j:core:4.6.0-SNAPSHOT",
+    implementation "org.web3j:core:$web3jVersion",
             "ch.qos.logback:logback-core:$logbackVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     implementation("org.web3j:web3j-unit:$web3jVersion")
-    implementation("org.web3j:web3j-evm:4.6.0-SNAPSHOT")
+    implementation("org.web3j:web3j-evm:$web3jVersion")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
