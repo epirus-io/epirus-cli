@@ -38,8 +38,9 @@ public class TelemetryTest {
 
     @BeforeEach
     void setup() throws IOException {
-        wireMockServer = new WireMockServer(wireMockConfig().port(8081));
+        wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         wireMockServer.start();
+        System.out.println(wireMockServer.baseUrl());
         WireMock.configureFor("localhost", wireMockServer.port());
         ConfigManager.setDevelopment();
 
@@ -59,7 +60,7 @@ public class TelemetryTest {
     @Test
     public void testExpectedTelemetryWorks() {
         Telemetry.uploadTelemetry(
-                "http://localhost:8081/api/analytics",
+                String.format("%s/api/analytics", wireMockServer.baseUrl()),
                 new String[] {
                     "--telemetry", "wallet", "fund", "0xceeeefe21b2f2ea5df62ed2efde1e3f1e5540f96"
                 });
@@ -73,7 +74,8 @@ public class TelemetryTest {
     @Test
     public void testFewerArgsWorks() {
         Telemetry.uploadTelemetry(
-                "http://localhost:8081/api/analytics", new String[] {"--telemetry", "version"});
+                String.format("%s/api/analytics", wireMockServer.baseUrl()),
+                new String[] {"--telemetry", "version"});
 
         verify(
                 postRequestedFor(urlEqualTo("/api/analytics"))
@@ -84,7 +86,8 @@ public class TelemetryTest {
     @Test
     public void testNoArgsWorks() {
         Telemetry.uploadTelemetry(
-                "http://localhost:8081/api/analytics", new String[] {"--telemetry"});
+                String.format("%s/api/analytics", wireMockServer.baseUrl()),
+                new String[] {"--telemetry"});
 
         verify(
                 postRequestedFor(urlEqualTo("/api/analytics"))

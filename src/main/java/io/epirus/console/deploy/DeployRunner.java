@@ -23,7 +23,6 @@ import io.epirus.console.account.AccountUtils;
 import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.WalletFunder;
-import okhttp3.OkHttpClient;
 
 import org.web3j.account.LocalWeb3jAccount;
 import org.web3j.codegen.Console;
@@ -56,10 +55,7 @@ public class DeployRunner {
 
                 printErrorAndExit(e.getMessage());
             }
-            new DeployRunner(
-                            Network.valueOf(args[0].toUpperCase()),
-                            new AccountManager(new OkHttpClient()),
-                            web3j)
+            new DeployRunner(Network.valueOf(args[0].toUpperCase()), new AccountManager(), web3j)
                     .deploy();
         } else {
             Console.exitError(USAGE);

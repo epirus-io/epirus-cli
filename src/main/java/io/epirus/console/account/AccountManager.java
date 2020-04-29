@@ -15,16 +15,18 @@ package io.epirus.console.account;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.utils.ConsoleDevice;
+import io.epirus.console.utils.IODevice;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -44,56 +46,96 @@ public class AccountManager implements Closeable {
     private static final String USAGE = "account create|login|logout";
     public static final String DEFAULT_APP_URL =
             System.getenv().getOrDefault("EPIRUS_APP_URL", "https://app.epirus.io");
+
+    private static final IODevice console = new ConsoleDevice();;
     private final String cloudURL;
-    private final OkHttpClient client;
+    private final OkHttpClient client = new OkHttpClient();
 
     public static void main(final String[] args) {
-        if (args.length > 0 && "create".equals(args[0])) {
+        if (args.length == 0) {
+            exitError(USAGE);
+        }
+
+        if (Arrays.asList("create", "login").contains(args[0])) {
             String email = new InteractiveOptions().getEmail();
-            AccountManager accountManager = new AccountManager(new OkHttpClient());
-            accountManager.createAccount(email);
+            AccountManager accountManager = new AccountManager();
+            if ("create".equals(args[0])) {
+                accountManager.createAccount(email);
+            } else {
+                String password =
+                        String.valueOf(console.readPassword("Please enter your password: "));
+                accountManager.authenticate(email, password);
+            }
             accountManager.close();
+        } else if ("logout".equals(args[0])) {
+            config.setLoginToken("");
+            System.out.println("Logged out successfully");
         } else {
             exitError(USAGE);
         }
     }
 
     @VisibleForTesting
-    public AccountManager(OkHttpClient client) {
-        this.client = client;
-        this.cloudURL = DEFAULT_APP_URL;
+    public AccountManager(String cloudURL) {
+        this.cloudURL = cloudURL;
+    }
+
+    public AccountManager() {
+        this(DEFAULT_APP_URL);
+    }
+
+    public String accountRequest(String url, FormBody body) {
+        Request accountRequest =
+                new Request.Builder().url(String.format("%s%s", cloudURL, url)).post(body).build();
+
+        try {
+            Response sendRawResponse = client.newCall(accountRequest).execute();
+            ResponseBody responseBody;
+            if (sendRawResponse.code() == 200 && (responseBody = sendRawResponse.body()) != null) {
+                return responseBody.string();
+            } else {
+                printErrorAndExit(
+                        "The Epirus Platform server responded with a non-2XX status code. Please try again later.");
+            }
+        } catch (IOException e) {
+            printErrorAndExit(
+                    "Could not connect to the Epirus Cloud server.\nReason:" + e.getMessage());
+        }
+        throw new RuntimeException();
     }
 
     public void createAccount(String email) {
-        RequestBody requestBody = new FormBody.Builder().add("email", email).build();
-        Request newAccountRequest = createAccountRequest(requestBody);
-        try {
-            Response sendRawResponse = client.newCall(newAccountRequest).execute();
-            ResponseBody body;
-            if (sendRawResponse.code() == 200 && (body = sendRawResponse.body()) != null) {
-                String rawResponse = body.string();
-                JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
-                if (responseJsonObj.get("token") == null) {
-                    Console.exitError("Could not retrieve token. Try again later.");
-                }
-                String token = responseJsonObj.get("token").getAsString();
-                config.setLoginToken(token);
-                System.out.println(
-                        "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
-            } else {
-                printErrorAndExit("Account creation failed. Please try again later.");
-            }
+        String accountResponse =
+                accountRequest(
+                        "/api/users/create/", new FormBody.Builder().add("email", email).build());
 
-        } catch (IOException e) {
-            printErrorAndExit("Could not connect to the server.\nReason:" + e.getMessage());
+        JsonObject responseJsonObj = JsonParser.parseString(accountResponse).getAsJsonObject();
+        if (responseJsonObj.get("token") == null) {
+            Console.exitError(
+                    "Server response did not contain the authentication token required to create an account.");
         }
+        String token = responseJsonObj.get("token").getAsString();
+        config.setLoginToken(token);
+        System.out.println(
+                "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
     }
 
-    final Request createAccountRequest(RequestBody accountBody) {
-        return new Request.Builder()
-                .url(String.format("%s/api/users/create/", cloudURL))
-                .post(accountBody)
-                .build();
+    public void authenticate(String email, String password) {
+        String authenticateResponse =
+                accountRequest(
+                        "/api/users/authenticate/",
+                        new FormBody.Builder()
+                                .add("email", email)
+                                .add("password", password)
+                                .build());
+        JsonObject responseJsonObj = JsonParser.parseString(authenticateResponse).getAsJsonObject();
+        if (responseJsonObj.get("token") == null) {
+            Console.exitError(
+                    "Server response did not contain the authentication token required to log in.");
+        }
+        String token = responseJsonObj.get("token").getAsString();
+        config.setLoginToken(token);
+        System.out.println("Successfully logged in");
     }
 
     public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {

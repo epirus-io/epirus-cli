@@ -28,7 +28,6 @@ import io.epirus.console.project.java.JavaBuilder;
 import io.epirus.console.project.java.JavaProjectCreatorCLIRunner;
 import io.epirus.console.project.kotlin.KotlinBuilder;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorCLIRunner;
-import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,7 @@ public class ProjectCreator {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            AccountUtils.accountInit(new AccountManager(new OkHttpClient()));
+            AccountUtils.accountInit(new AccountManager());
             args = stringOptions.toArray(new String[0]);
         }
         return args;
