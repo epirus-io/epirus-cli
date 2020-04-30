@@ -14,7 +14,10 @@ package io.epirus.console;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 
+import com.google.common.collect.ImmutableList;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
@@ -98,6 +101,9 @@ public class Runner {
                     break;
                 case "account":
                     AccountManager.main(tail(args));
+                    break;
+                case "login":
+                    AccountManager.main(new String[] { "login" });
                     break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));

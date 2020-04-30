@@ -43,7 +43,7 @@ import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithS
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
-    private static final String USAGE = "account create|login|logout";
+    private static final String USAGE = "account create|login|logout|status";
     public static final String DEFAULT_APP_URL =
             System.getenv().getOrDefault("EPIRUS_APP_URL", "https://app.epirus.io");
 
@@ -60,16 +60,32 @@ public class AccountManager implements Closeable {
             String email = new InteractiveOptions().getEmail();
             AccountManager accountManager = new AccountManager();
             if ("create".equals(args[0])) {
-                accountManager.createAccount(email);
+                if (accountManager.createAccount(email)) {
+                    System.out.println(
+                            "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+                } else {
+                    Console.exitError(
+                            "Server response did not contain the authentication token required to create an account.");
+                }
             } else {
                 String password =
                         String.valueOf(console.readPassword("Please enter your password: "));
-                accountManager.authenticate(email, password);
+                if (accountManager.authenticate(email, password)) {
+                    System.out.println("Successfully logged in");
+                } else {
+                    Console.exitError(
+                            "Server response did not contain the authentication token required to log in.");
+                }
             }
             accountManager.close();
         } else if ("logout".equals(args[0])) {
             config.setLoginToken("");
             System.out.println("Logged out successfully");
+        } else if ("status".equals(args[0])) {
+            System.out.println(
+                    config.getLoginToken() != null && config.getLoginToken().length() > 0
+                            ? "Status: logged in"
+                            : "Status: not logged in");
         } else {
             exitError(USAGE);
         }
@@ -104,23 +120,22 @@ public class AccountManager implements Closeable {
         throw new RuntimeException();
     }
 
-    public void createAccount(String email) {
+    public boolean createAccount(String email) {
         String accountResponse =
                 accountRequest(
                         "/api/users/create/", new FormBody.Builder().add("email", email).build());
 
         JsonObject responseJsonObj = JsonParser.parseString(accountResponse).getAsJsonObject();
+
         if (responseJsonObj.get("token") == null) {
-            Console.exitError(
-                    "Server response did not contain the authentication token required to create an account.");
+            return false;
         }
         String token = responseJsonObj.get("token").getAsString();
         config.setLoginToken(token);
-        System.out.println(
-                "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+        return true;
     }
 
-    public void authenticate(String email, String password) {
+    public boolean authenticate(String email, String password) {
         String authenticateResponse =
                 accountRequest(
                         "/api/users/authenticate/",
@@ -130,15 +145,18 @@ public class AccountManager implements Closeable {
                                 .build());
         JsonObject responseJsonObj = JsonParser.parseString(authenticateResponse).getAsJsonObject();
         if (responseJsonObj.get("token") == null) {
-            Console.exitError(
-                    "Server response did not contain the authentication token required to log in.");
+            return false;
         }
         String token = responseJsonObj.get("token").getAsString();
         config.setLoginToken(token);
-        System.out.println("Successfully logged in");
+        return true;
     }
 
-    public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
+    public boolean checkIfAccountIsConfirmed() throws IOException, InterruptedException {
+        return checkIfAccountIsConfirmed(20);
+    }
+
+    public boolean checkIfAccountIsConfirmed(int tries) throws IOException, InterruptedException {
         Request request =
                 new Request.Builder()
                         .url(
@@ -146,22 +164,16 @@ public class AccountManager implements Closeable {
                                         "%s/api/users/status/%s", cloudURL, config.getLoginToken()))
                         .get()
                         .build();
-        int tries = 20;
         while (tries-- > 0) {
             if (userConfirmedAccount(request)) {
-                printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
-                System.out.print(System.lineSeparator());
-
-                return;
+                return true;
             } else {
                 printInformationPairWithStatus(
                         "Account status", 20, "PENDING ", Ansi.FColor.YELLOW);
             }
-
             Thread.sleep(10000);
         }
-        printErrorAndExit(
-                "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
+        return false;
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {

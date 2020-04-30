@@ -190,7 +190,7 @@ public class ProjectCreator {
         commandPrinter.println("Runs your application");
         instructionPrinter.print(String.format("%-20s", gradleCommand + " test"));
         commandPrinter.println("Test your application");
-        instructionPrinter.print(String.format("%-20s", "epirus deploy"));
+        instructionPrinter.print(String.format("%-20s", "epirus deploy rinkeby|ropsten"));
         commandPrinter.println("Deploys your application");
     }
 }

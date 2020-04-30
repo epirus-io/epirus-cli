@@ -12,81 +12,75 @@
  */
 package io.epirus.console.account;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
-import okhttp3.*;
-import org.junit.jupiter.api.AfterAll;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import io.epirus.console.config.ConfigManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.mockito.Mockito.mock;
+import java.io.IOException;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AccountManagerTest {
-    private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static final PrintStream originalOut = System.out;
-    static OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
-    static Call call = mock(Call.class);
-    static ConnectionPool connectionPool = mock(ConnectionPool.class);
     static AccountManager accountManager;
 
     @BeforeAll
     public static void setUp() throws IOException {
-        /*        accountManager = new AccountManager(mockedOkHttpClient);
-        System.setOut(new PrintStream(outContent));
-        ConfigManager.setDevelopment();*/
+        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
+        wireMockServer.start();
+        WireMock.configureFor("localhost", wireMockServer.port());
+        accountManager = new AccountManager(wireMockServer.baseUrl());
+        ConfigManager.setDevelopment();
     }
 
-    @AfterAll
-    public static void restoreStreams() {
-        System.setOut(originalOut);
-    }
-
-    @Test
-    public void testAccountConfirmation() throws IOException, InterruptedException {
-        /*Request request =
-                accountManager.createAccountRequest(
-                        new FormBody.Builder().add("email", "test@gmail.com").build());
-        Response response =
-                new Response.Builder()
-                        .protocol(Protocol.H2_PRIOR_KNOWLEDGE)
-                        .message("")
-                        .body(
-                                ResponseBody.create(
-                                        "{\"active\":true}", MediaType.parse("application/json")))
-                        .code(200)
-                        .request(request)
-                        .build();
-        when(call.execute()).thenReturn(response);
-        when(mockedOkHttpClient.newCall(any(Request.class))).thenReturn(call);
-        when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
-        doNothing().when(connectionPool).evictAll();
-        accountManager.checkIfAccountIsConfirmed();
-        Assertions.assertTrue(outContent.toString().contains("ACTIVE"));*/
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void testAccountConfirmation(boolean active) throws IOException, InterruptedException {
+        stubFor(
+                get(urlPathMatching("/api/users/status/.*"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody(String.format("{\"active\": \"%s\"}", active))));
+        assertEquals(active, accountManager.checkIfAccountIsConfirmed(1));
     }
 
     @Test
-    public void testAccountCreation() throws IOException {
-        /*Response response =
-                new Response.Builder()
-                        .protocol(Protocol.H2_PRIOR_KNOWLEDGE)
-                        .message("")
-                        .body(
-                                ResponseBody.create(
-                                        "{\n"
-                                                + "    \"token\": \"8190c700-1f10-4c50-8bb2-1ce78bf0412b\",\n"
-                                                + "    \"createdTimestamp\": \"1583234909601\"\n"
-                                                + "}",
-                                        MediaType.parse("application/json")))
-                        .code(200)
-                        .request(request)
-                        .build();
-        when(call.execute()).thenReturn(response);
-        when(mockedOkHttpClient.newCall(any(Request.class))).thenReturn(call);
-        when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
-        doNothing().when(connectionPool).evictAll();
-        accountManager.createAccount("test@gmail.com");
-        Assertions.assertTrue(outContent.toString().contains("Account created successfully."));*/
+    public void testAccountCreation() {
+        stubFor(
+                post(urlPathMatching("/api/users/create/"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody(
+                                                "{\n"
+                                                        + "    \"token\": \"8190c700-1f10-4c50-8bb2-1ce78bf0412b\"\n"
+                                                        + "}")));
+
+        assertTrue(accountManager.createAccount("test@gmail.com"));
+    }
+
+    @Test
+    public void testAccountAuthenticate() {
+        stubFor(
+                post(urlPathMatching("/api/users/authenticate/"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody(
+                                                "{\n"
+                                                        + "    \"token\": \"8190c700-1f10-4c50-8bb2-1ce78bf0412b\"\n"
+                                                        + "}")));
+
+        assertTrue(accountManager.authenticate("test@gmail.com", "password"));
     }
 }

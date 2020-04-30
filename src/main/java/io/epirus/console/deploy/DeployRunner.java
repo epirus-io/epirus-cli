@@ -33,9 +33,7 @@ import org.web3j.utils.Convert;
 
 import static io.epirus.console.account.AccountManager.DEFAULT_APP_URL;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
-import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
-import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
-import static io.epirus.console.utils.PrinterUtilities.printInformationPair;
+import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
 public class DeployRunner {
@@ -89,7 +87,13 @@ public class DeployRunner {
         coloredPrinter.println("Preparing to deploy your Web3App");
         System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountManager);
-        this.accountManager.checkIfAccountIsConfirmed();
+        if (accountManager.checkIfAccountIsConfirmed()) {
+            printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
+            System.out.print(System.lineSeparator());
+        } else {
+            printErrorAndExit(
+                    "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
+        }
         fundWallet();
         uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());

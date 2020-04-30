@@ -40,7 +40,6 @@ public class TelemetryTest {
     void setup() throws IOException {
         wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         wireMockServer.start();
-        System.out.println(wireMockServer.baseUrl());
         WireMock.configureFor("localhost", wireMockServer.port());
         ConfigManager.setDevelopment();
 
