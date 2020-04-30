@@ -61,7 +61,7 @@ public class DeployRunnerTest extends ClassExecutor {
                         any(Web3j.class),
                         any(int.class)))
                 .thenReturn(BigInteger.TEN);
-        doNothing().when(accountManager).checkIfAccountIsConfirmed();
+        when(accountManager.checkIfAccountIsConfirmed()).thenReturn(true);
         DeployRunner deployRunner =
                 spy(
                         new DeployRunner(
