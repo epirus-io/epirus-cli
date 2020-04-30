@@ -19,9 +19,9 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-public class Version {
+public class CliVersion {
 
-    private Version() {}
+    private CliVersion() {}
 
     public static final String DEFAULT = "none";
 
@@ -42,8 +42,7 @@ public class Version {
         InputStream is =
                 propertiesFile.exists()
                         ? new FileInputStream(propertiesFile)
-                        : io.epirus.console.utils.Version.class.getResourceAsStream(
-                                "/epirus-version.properties");
+                        : CliVersion.class.getResourceAsStream("/epirus-version.properties");
         properties.load(is);
         return properties;
     }

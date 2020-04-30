@@ -14,11 +14,12 @@ package io.epirus.console.web.services;
 
 import java.io.IOException;
 
+import com.github.zafarkhaja.semver.Version;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.epirus.console.utils.CliVersion;
 import io.epirus.console.utils.OSUtils;
-import io.epirus.console.utils.Version;
 import okhttp3.*;
 
 import static io.epirus.console.config.ConfigManager.config;
@@ -28,9 +29,9 @@ public class Updater {
             "https://internal.services.web3labs.com/api/epirus/versions/latest";
 
     public static void promptIfUpdateAvailable() throws IOException {
-        String version = Version.getVersion();
+        String version = CliVersion.getVersion();
         if (config.getLatestVersion() != null
-                && !config.getLatestVersion().equals(version)
+                && Version.valueOf(config.getLatestVersion()).greaterThan(Version.valueOf(version))
                 && !version.contains("SNAPSHOT")) {
             System.out.println(
                     String.format(
@@ -71,7 +72,7 @@ public class Updater {
                     && element.isJsonObject()) {
                 JsonObject rootObj = element.getAsJsonObject().get("latest").getAsJsonObject();
                 String latestVersion = rootObj.get("version").getAsString();
-                if (!latestVersion.equals(Version.getVersion())) {
+                if (!latestVersion.equals(CliVersion.getVersion())) {
                     config.setLatestVersion(latestVersion);
                     config.setUpdatePrompt(
                             rootObj.get(

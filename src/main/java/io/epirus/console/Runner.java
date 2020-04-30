@@ -14,10 +14,7 @@ package io.epirus.console;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
 
-import com.google.common.collect.ImmutableList;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
@@ -25,7 +22,7 @@ import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.security.ContractAuditor;
-import io.epirus.console.utils.Version;
+import io.epirus.console.utils.CliVersion;
 import io.epirus.console.wallet.WalletRunner;
 import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
@@ -91,10 +88,10 @@ public class Runner {
                 case "version":
                     System.out.println(
                             "Version: "
-                                    + Version.getVersion()
+                                    + CliVersion.getVersion()
                                     + "\n"
                                     + "Build timestamp: "
-                                    + Version.getTimestamp());
+                                    + CliVersion.getTimestamp());
                     break;
                 case "audit":
                     ContractAuditor.main(tail(args));
@@ -103,7 +100,7 @@ public class Runner {
                     AccountManager.main(tail(args));
                     break;
                 case "login":
-                    AccountManager.main(new String[] { "login" });
+                    AccountManager.main(new String[] {"login"});
                     break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));
