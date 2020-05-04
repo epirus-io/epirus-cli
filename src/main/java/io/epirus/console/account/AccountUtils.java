@@ -14,6 +14,8 @@ package io.epirus.console.account;
 
 import io.epirus.console.project.InteractiveOptions;
 
+import org.web3j.codegen.Console;
+
 public class AccountUtils {
 
     public static void accountInit(AccountManager accountManager) {
@@ -21,7 +23,13 @@ public class AccountUtils {
 
         if (!interactiveOptions.isUserLoggedIn()
                 && interactiveOptions.doesUserWantEpirusAccount()) {
-            accountManager.createAccount(interactiveOptions.getEmail());
+            if (accountManager.createAccount(interactiveOptions.getEmail())) {
+                System.out.println(
+                        "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+            } else {
+                Console.exitError(
+                        "Server response did not contain the authentication token required to create an account.");
+            }
         }
     }
 }

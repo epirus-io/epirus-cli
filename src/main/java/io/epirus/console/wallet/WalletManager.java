@@ -32,12 +32,6 @@ abstract class WalletManager {
 
     WalletManager() {
         console = new ConsoleDevice();
-
-        if (console == null) {
-            exitError(
-                    "Unable to access console - please ensure you are running "
-                            + "from the command line");
-        }
     }
 
     WalletManager(IODevice console) {

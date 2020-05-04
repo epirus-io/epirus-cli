@@ -15,16 +15,18 @@ package io.epirus.console.account;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.utils.ConsoleDevice;
+import io.epirus.console.utils.IODevice;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -41,62 +43,120 @@ import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithS
 import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager implements Closeable {
-    private static final String USAGE = "account create|login|logout";
+    private static final String USAGE = "account create|login|logout|status";
     public static final String DEFAULT_APP_URL =
             System.getenv().getOrDefault("EPIRUS_APP_URL", "https://app.epirus.io");
+
+    private static final IODevice console = new ConsoleDevice();;
     private final String cloudURL;
-    private final OkHttpClient client;
+    private final OkHttpClient client = new OkHttpClient();
 
     public static void main(final String[] args) {
-        if (args.length > 0 && "create".equals(args[0])) {
+        if (args.length == 0) {
+            exitError(USAGE);
+        }
+
+        if (Arrays.asList("create", "login").contains(args[0])) {
             String email = new InteractiveOptions().getEmail();
-            AccountManager accountManager = new AccountManager(new OkHttpClient());
-            accountManager.createAccount(email);
+            AccountManager accountManager = new AccountManager();
+            if ("create".equals(args[0])) {
+                if (accountManager.createAccount(email)) {
+                    System.out.println(
+                            "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+                } else {
+                    Console.exitError(
+                            "Server response did not contain the authentication token required to create an account.");
+                }
+            } else {
+                String password =
+                        String.valueOf(console.readPassword("Please enter your password: "));
+                if (accountManager.authenticate(email, password)) {
+                    System.out.println("Successfully logged in");
+                } else {
+                    Console.exitError(
+                            "Server response did not contain the authentication token required to log in.");
+                }
+            }
             accountManager.close();
+        } else if ("logout".equals(args[0])) {
+            config.setLoginToken("");
+            System.out.println("Logged out successfully");
+        } else if ("status".equals(args[0])) {
+            System.out.println(
+                    config.getLoginToken() != null && config.getLoginToken().length() > 0
+                            ? "Status: logged in"
+                            : "Status: not logged in");
         } else {
             exitError(USAGE);
         }
     }
 
     @VisibleForTesting
-    public AccountManager(OkHttpClient client) {
-        this.client = client;
-        this.cloudURL = DEFAULT_APP_URL;
+    public AccountManager(String cloudURL) {
+        this.cloudURL = cloudURL;
     }
 
-    public void createAccount(String email) {
-        RequestBody requestBody = new FormBody.Builder().add("email", email).build();
-        Request newAccountRequest = createAccountRequest(requestBody);
+    public AccountManager() {
+        this(DEFAULT_APP_URL);
+    }
+
+    public String accountRequest(String url, FormBody body) {
+        Request accountRequest =
+                new Request.Builder().url(String.format("%s%s", cloudURL, url)).post(body).build();
+
         try {
-            Response sendRawResponse = client.newCall(newAccountRequest).execute();
-            ResponseBody body;
-            if (sendRawResponse.code() == 200 && (body = sendRawResponse.body()) != null) {
-                String rawResponse = body.string();
-                JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
-                if (responseJsonObj.get("token") == null) {
-                    Console.exitError("Could not retrieve token. Try again later.");
-                }
-                String token = responseJsonObj.get("token").getAsString();
-                config.setLoginToken(token);
-                System.out.println(
-                        "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
+            Response sendRawResponse = client.newCall(accountRequest).execute();
+            ResponseBody responseBody;
+            if (sendRawResponse.code() == 200 && (responseBody = sendRawResponse.body()) != null) {
+                return responseBody.string();
             } else {
-                printErrorAndExit("Account creation failed. Please try again later.");
+                printErrorAndExit(
+                        "The Epirus Platform server responded with a non-2XX status code. Please try again later.");
             }
-
         } catch (IOException e) {
-            printErrorAndExit("Could not connect to the server.\nReason:" + e.getMessage());
+            printErrorAndExit(
+                    "Could not connect to the Epirus Cloud server.\nReason:" + e.getMessage());
         }
+        throw new RuntimeException();
     }
 
-    final Request createAccountRequest(RequestBody accountBody) {
-        return new Request.Builder()
-                .url(String.format("%s/api/users/create/", cloudURL))
-                .post(accountBody)
-                .build();
+    public boolean createAccount(String email) {
+        String accountResponse =
+                accountRequest(
+                        "/api/users/create/", new FormBody.Builder().add("email", email).build());
+
+        JsonObject responseJsonObj = JsonParser.parseString(accountResponse).getAsJsonObject();
+
+        if (responseJsonObj.get("token") == null) {
+            return false;
+        }
+        String token = responseJsonObj.get("token").getAsString();
+        config.setLoginToken(token);
+        return true;
     }
 
-    public void checkIfAccountIsConfirmed() throws IOException, InterruptedException {
+    public boolean authenticate(String email, String password) {
+        String authenticateResponse =
+                accountRequest(
+                        "/api/users/authenticate/",
+                        new FormBody.Builder()
+                                .add("email", email)
+                                .add("password", password)
+                                .build());
+        JsonObject responseJsonObj = JsonParser.parseString(authenticateResponse).getAsJsonObject();
+        if (responseJsonObj.get("token") == null) {
+            return false;
+        }
+        String token = responseJsonObj.get("token").getAsString();
+        config.setLoginToken(token);
+        return true;
+    }
+
+    public boolean checkIfAccountIsConfirmed() throws IOException, InterruptedException {
+        return checkIfAccountIsConfirmed(20);
+    }
+
+    public boolean checkIfAccountIsConfirmed(int tries) throws IOException, InterruptedException {
         Request request =
                 new Request.Builder()
                         .url(
@@ -104,22 +164,16 @@ public class AccountManager implements Closeable {
                                         "%s/api/users/status/%s", cloudURL, config.getLoginToken()))
                         .get()
                         .build();
-        int tries = 20;
         while (tries-- > 0) {
             if (userConfirmedAccount(request)) {
-                printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
-                System.out.print(System.lineSeparator());
-
-                return;
+                return true;
             } else {
                 printInformationPairWithStatus(
                         "Account status", 20, "PENDING ", Ansi.FColor.YELLOW);
             }
-
             Thread.sleep(10000);
         }
-        printErrorAndExit(
-                "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
+        return false;
     }
 
     private boolean userConfirmedAccount(Request request) throws IOException {

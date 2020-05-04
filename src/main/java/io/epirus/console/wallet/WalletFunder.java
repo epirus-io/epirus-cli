@@ -39,7 +39,6 @@ public class WalletFunder {
     private static final String USAGE =
             String.format(
                     "fund <network %s> <destination-address>", Arrays.toString(Faucet.values()));
-    private static Faucet selectedFaucet = null;
 
     public static void main(IODevice console, String[] args) {
         if (args.length != 2 && args.length != 4) {
@@ -47,7 +46,7 @@ public class WalletFunder {
         }
 
         try {
-            selectedFaucet = Faucet.valueOf(args[0].toUpperCase());
+            Faucet selectedFaucet = Faucet.valueOf(args[0].toUpperCase());
 
             String fund =
                     console.readLine(
