@@ -32,6 +32,9 @@ public class ConfigManager {
         CliConfig productionConfig = getDefaultConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
         productionConfig.setPersistent(true);
         config = productionConfig;
+        if (!DEFAULT_EPIRUS_CONFIG_PATH.toFile().exists()) {
+            config.save();
+        }
     }
 
     @VisibleForTesting
