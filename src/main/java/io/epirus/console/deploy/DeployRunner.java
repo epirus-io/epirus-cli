@@ -87,7 +87,7 @@ public class DeployRunner {
         coloredPrinter.println("Preparing to deploy your Web3App");
         System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountManager);
-        if (accountManager.checkIfAccountIsConfirmed()) {
+        if (accountManager.checkIfAccountIsConfirmed(20)) {
             printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
             System.out.print(System.lineSeparator());
         } else {

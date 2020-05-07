@@ -186,11 +186,11 @@ public class ProjectCreator {
         }
         instructionPrinter.println(
                 "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
-        instructionPrinter.print(String.format("%-20s", gradleCommand + " run"));
+        instructionPrinter.print(String.format("%-40s", gradleCommand + " run"));
         commandPrinter.println("Runs your application");
-        instructionPrinter.print(String.format("%-20s", gradleCommand + " test"));
+        instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
         commandPrinter.println("Test your application");
-        instructionPrinter.print(String.format("%-20s", "epirus deploy rinkeby|ropsten"));
+        instructionPrinter.print(String.format("%-40s", "epirus deploy rinkeby|ropsten"));
         commandPrinter.println("Deploys your application");
     }
 }
