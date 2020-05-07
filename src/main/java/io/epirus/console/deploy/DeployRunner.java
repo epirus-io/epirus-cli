@@ -58,7 +58,6 @@ public class DeployRunner {
             } catch (Exception e) {
                 printErrorAndExit(e.getMessage());
             }
-            System.out.println("deploying");
             new DeployRunner(Network.valueOf(args[0].toUpperCase()), new AccountManager(), web3j)
                     .deploy();
         } else {
