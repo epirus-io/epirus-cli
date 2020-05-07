@@ -111,7 +111,7 @@ public class AccountManager implements Closeable {
                 return responseBody.string();
             } else {
                 printErrorAndExit(
-                        "The Epirus Platform server responded with a non-2XX status code. Please try again later.");
+                        "Your login attempt failed. Please check your username & password are correct, and if the problem persists, try again later.");
             }
         } catch (IOException e) {
             printErrorAndExit(
@@ -152,10 +152,6 @@ public class AccountManager implements Closeable {
         return true;
     }
 
-    public boolean checkIfAccountIsConfirmed() throws IOException, InterruptedException {
-        return checkIfAccountIsConfirmed(20);
-    }
-
     public boolean checkIfAccountIsConfirmed(int tries) throws IOException, InterruptedException {
         Request request =
                 new Request.Builder()
@@ -179,6 +175,11 @@ public class AccountManager implements Closeable {
     private boolean userConfirmedAccount(Request request) throws IOException {
         Response response = client.newCall(request).execute();
         ResponseBody responseBody = response.body();
+
+        if (response.code() == 401) {
+            exitError("Your current login token is invalid. Please log out & log in again.");
+        }
+
         if (response.code() != 200 || responseBody == null) {
             return false;
         }
