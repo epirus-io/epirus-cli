@@ -32,6 +32,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
 import static io.epirus.console.account.AccountManager.DEFAULT_APP_URL;
+import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
@@ -47,12 +48,17 @@ public class DeployRunner {
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
             Web3j web3j = null;
+            if (config.getLoginToken() == null || config.getLoginToken().length() == 0) {
+                System.out.println(
+                        "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one, or alternatively log in.");
+                AccountManager.main(new String[] {"create"});
+            }
             try {
                 web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
             } catch (Exception e) {
-
                 printErrorAndExit(e.getMessage());
             }
+            System.out.println("deploying");
             new DeployRunner(Network.valueOf(args[0].toUpperCase()), new AccountManager(), web3j)
                     .deploy();
         } else {
