@@ -43,7 +43,7 @@ public class CliConfig {
     }
 
     public String getClientId() {
-        return clientId;
+        return System.getenv().getOrDefault("EPIRUS_CLIENT_ID", clientId);
     }
 
     public String getLatestVersion() {

@@ -18,9 +18,11 @@ import java.net.URISyntaxException;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
+import io.epirus.console.logging.EpirusExceptionHandler;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
 import io.epirus.console.project.UnitTestCreator;
+import io.epirus.console.project.testing.ProjectTester;
 import io.epirus.console.security.ContractAuditor;
 import io.epirus.console.utils.CliVersion;
 import io.epirus.console.wallet.WalletRunner;
@@ -56,6 +58,9 @@ public class Runner {
                     + "        |_|                     ";
 
     public static void main(String[] args) throws Exception {
+        EpirusExceptionHandler globalExceptionHandler = new EpirusExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(globalExceptionHandler);
+
         System.out.println(LOGO);
 
         ConfigManager.setProduction();
@@ -104,6 +109,9 @@ public class Runner {
                     break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));
+                    break;
+                case "test":
+                    ProjectTester.main();
                     break;
                 default:
                     Console.exitError(USAGE);
