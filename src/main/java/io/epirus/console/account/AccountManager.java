@@ -109,9 +109,11 @@ public class AccountManager implements Closeable {
             ResponseBody responseBody;
             if (sendRawResponse.code() == 200 && (responseBody = sendRawResponse.body()) != null) {
                 return responseBody.string();
-            } else {
+            } else if (sendRawResponse.code() == 401) {
                 printErrorAndExit(
-                        "Your login attempt failed. Please check your username & password are correct, and if the problem persists, try again later.");
+                        "Your login attempt failed. Please check your username & password are correct.");
+            } else {
+                printErrorAndExit("Your login attempt failed. Please try again later.");
             }
         } catch (IOException e) {
             printErrorAndExit(
