@@ -29,19 +29,26 @@ public class ProjectTester {
         String currentDirPath = System.getProperty("user.dir");
 
         if (OSUtils.determineOS() == OSUtils.OS.WINDOWS) {
-            setExecutable(currentDirPath, "gradlew");
-            runTests(new File(currentDirPath), new String[] {"bash", "-c", "./gradlew test"});
-        } else if (OSUtils.determineOS() == OSUtils.OS.LINUX) {
             setExecutable(currentDirPath, "gradlew.bat");
             runTests(new File(currentDirPath), new String[] {"cmd.exe", "/c", "gradlew.bat test"});
+        } else if (OSUtils.determineOS() == OSUtils.OS.LINUX) {
+            setExecutable(currentDirPath, "gradlew");
+            runTests(new File(currentDirPath), new String[] {"bash", "-c", "./gradlew test"});
         }
     }
 
     private static void runTests(File workingDir, String[] command)
             throws IOException, InterruptedException {
-        int exitCode = new ProcessBuilder(command).directory(workingDir).start().waitFor();
+        int exitCode =
+                new ProcessBuilder(command)
+                        .directory(workingDir)
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .start()
+                        .waitFor();
         if (exitCode != 0) {
-            Console.exitError("Could not build project.");
+            Console.exitError("Tests failed. For more details, see the test output.");
+        } else {
+            System.out.println("Epirus successfully tested your application.");
         }
     }
 }
