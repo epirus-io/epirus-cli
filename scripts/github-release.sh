@@ -36,6 +36,9 @@ API_JSON="{
 
 
 export RESULT=$(curl -H "Authorization: token ${GITHUB_PERSONAL_ACCESS_TOKEN}" --data "$API_JSON" -s https://api.github.com/repos/epirus-io/epirus-cli/releases)
+
+echo "$RESULT"
+
 export UPLOAD_URL=$(echo ${RESULT} | jq -r ".upload_url")
 
 echo "$UPLOAD_URL"
