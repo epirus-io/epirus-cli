@@ -43,7 +43,7 @@ public class CliConfig {
     }
 
     public String getClientId() {
-        return System.getenv().getOrDefault("EPIRUS_CLIENT_ID", clientId);
+        return clientId;
     }
 
     public String getLatestVersion() {
@@ -55,7 +55,7 @@ public class CliConfig {
     }
 
     public String getLoginToken() {
-        return loginToken;
+        return System.getenv().getOrDefault("EPIRUS_LOGIN_TOKEN", loginToken);
     }
 
     public boolean isTelemetryDisabled() {
