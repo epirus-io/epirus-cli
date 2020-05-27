@@ -45,7 +45,7 @@ import static org.web3j.codegen.Console.exitError;
 public class AccountManager implements Closeable {
     private static final String USAGE = "account create|login|logout|status";
     public static final String DEFAULT_APP_URL =
-            System.getenv().getOrDefault("EPIRUS_APP_URL", "https://app.epirus.io");
+            System.getenv().getOrDefault("EPIRUS_APP_URL", "https://portal.epirus.io");
 
     private static final IODevice console = new ConsoleDevice();;
     private final String cloudURL;

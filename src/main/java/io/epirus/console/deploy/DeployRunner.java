@@ -50,7 +50,7 @@ public class DeployRunner {
             Web3j web3j = null;
             if (config.getLoginToken() == null || config.getLoginToken().length() == 0) {
                 System.out.println(
-                        "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://app.epirus.io/account/signup). If you do have an account, you can log in below:");
+                        "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://portal.epirus.io/account/signup). If you do have an account, you can log in below:");
                 AccountManager.main(new String[] {"login"});
             }
             try {
