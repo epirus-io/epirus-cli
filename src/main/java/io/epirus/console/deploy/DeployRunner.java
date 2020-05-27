@@ -49,14 +49,8 @@ public class DeployRunner {
         if (args.length == 1) {
             Web3j web3j = null;
             if (config.getLoginToken() == null || config.getLoginToken().length() == 0) {
-                System.out.println(
-<<<<<<< Updated upstream
-                        "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one, or alternatively log in.");
-                AccountManager.main(new String[] {"create"});
-=======
-                        "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://portal.epirus.io/account/signup). If you do have an account, you can log in below:");
+                System.out.println("You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://portal.epirus.io/account/signup). If you do have an account, you can log in below:");
                 AccountManager.main(new String[] {"login"});
->>>>>>> Stashed changes
             }
             try {
                 web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
