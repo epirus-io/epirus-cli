@@ -107,6 +107,10 @@ public class Runner {
                 case "login":
                     AccountManager.main(new String[] {"login"});
                     break;
+                case "logout":
+                    config.setLoginToken("");
+                    System.out.println("Logged out successfully");
+                    break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));
                     break;
