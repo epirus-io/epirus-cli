@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.utils.ConsoleDevice;
 import io.epirus.console.utils.IODevice;
+import io.epirus.web3j.Epirus;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -225,7 +226,7 @@ public class AccountManager implements Closeable {
         while (web3j.ethBlockNumber().send().getBlockNumber().compareTo(stopBlock) < 0) {
             try {
                 accountBalance =
-                        Web3j.build(Network.valueOf(network.getNetworkName().toUpperCase()))
+                        Epirus.buildWeb3j(Network.valueOf(network.getNetworkName().toUpperCase()))
                                 .ethGetBalance(
                                         credentials.getAddress(), DefaultBlockParameterName.LATEST)
                                 .send()

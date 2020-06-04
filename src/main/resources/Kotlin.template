@@ -2,11 +2,13 @@ package <package_name>;
 
 import ch.qos.logback.classic.Level
 import <package_name>.generated.contracts.HelloWorld
+import io.epirus.web3j.Epirus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.web3j.crypto.CipherException
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.Network
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.ContractGasProvider
@@ -37,7 +39,7 @@ class <project_name> {
         log as ch.qos.logback.classic.Logger
         log.level = Level.ERROR
         val credentials: Credentials? = loadCredentials("<wallet_name>")
-        val web3j: Web3j? = createWeb3jService("")
+        val web3j: Web3j? = getDeployWeb3j()
         val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(7500000L)))
         callGreetMethod(helloWorld)
     }
@@ -67,26 +69,14 @@ class <project_name> {
         return WalletUtils.loadCredentials(password, File(pathToWallet))
     }
 
-    private fun createWeb3jService(url: String?): Web3j? {
-        val nodeURLProperty = System.getProperty(NODE_URL)
-        val nodeURLEnv = System.getenv(NODE_URL)
-        if (url == null || url.isEmpty()) {
-            if (nodeURLProperty == null || nodeURLProperty.isEmpty()) {
-                if (nodeURLEnv == null || nodeURLEnv.isEmpty()) {
-                    log.info("Please make sure the node url is valid.")
-                    log.info("You can edit the node url programmatically, use java -D$NODE_URL=\"\" or as an environmental variable e.g export $NODE_URL=\"\"")
-                    System.exit(1)
-                } else {
-                    log.info("Connecting to $nodeURLEnv")
-                    return Web3j.build(HttpService(nodeURLEnv))
-                }
-            } else {
-                log.info("Connecting to $nodeURLProperty")
-                return Web3j.build(HttpService(nodeURLProperty))
-            }
+    private fun getDeployWeb3j(): Web3j {
+        val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))
+        return if (nodeUrl == null || nodeUrl.isEmpty()) {
+            Epirus.buildWeb3j(Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase()))
+        } else {
+            log.info("Connecting to $nodeUrl")
+            Web3j.build(HttpService(nodeUrl))
         }
-        log.info("Connecting to $url")
-        return Web3j.build(HttpService(url))
     }
 
     @Throws(Exception::class)

@@ -25,12 +25,14 @@ web3j {
 ext {
     web3jVersion = '4.5.18'
     logbackVersion = '1.2.3'
+    web3jEpirusVersion = '0.0.2'
 }
 
 dependencies {
-    implementation "org.web3j:core:$web3jVersion",
+    implementation "org.web3j:core:4.6.0",
             "ch.qos.logback:logback-core:$logbackVersion",
-            "ch.qos.logback:logback-classic:$logbackVersion"
+            "ch.qos.logback:logback-classic:$logbackVersion",
+            "io.epirus:epirus-web3j:$web3jEpirusVersion"
     implementation("org.web3j:web3j-unit:$web3jVersion")
     implementation("org.web3j:web3j-evm:$web3jVersion")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

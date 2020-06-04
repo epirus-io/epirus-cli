@@ -15,13 +15,14 @@ mainClassName = 'io.epirus.console.Runner'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.5.18"
+    web3jVersion = "4.6.0"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
+    web3jEpirusVersion = '0.0.2'
 }
 
 
@@ -69,6 +70,7 @@ dependencies {
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
+            "io.epirus:epirus-web3j:$web3jEpirusVersion",
             "info.picocli:picocli:$picocli",
             files('libs/smartcheck.jar'),
             "javax.xml.bind:jaxb-api:2.2.11",
