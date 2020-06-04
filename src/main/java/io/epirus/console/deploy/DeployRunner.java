@@ -23,15 +23,14 @@ import io.epirus.console.account.AccountUtils;
 import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.WalletFunder;
+import io.epirus.web3j.Epirus;
 
-import org.web3j.account.LocalWeb3jAccount;
 import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
-import static io.epirus.console.account.AccountManager.DEFAULT_APP_URL;
 import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static io.epirus.console.utils.PrinterUtilities.*;
@@ -54,7 +53,7 @@ public class DeployRunner {
                 AccountManager.main(new String[] {"login"});
             }
             try {
-                web3j = Web3j.build(Network.valueOf(args[0].toUpperCase()));
+                web3j = Epirus.buildWeb3j(Network.valueOf(args[0].toUpperCase()));
             } catch (Exception e) {
                 printErrorAndExit(e.getMessage());
             }
@@ -160,17 +159,8 @@ public class DeployRunner {
     }
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
-
-        String NODE_RPC_ENDPOINT = "%s/api/rpc/%s/%s/";
-
-        String httpEndpoint =
-                String.format(
-                        NODE_RPC_ENDPOINT,
-                        DEFAULT_APP_URL,
-                        network.getNetworkName(),
-                        LocalWeb3jAccount.readConfigAsJson().get("loginToken").asText());
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.environment().put("NODE_URL", httpEndpoint);
+        processBuilder.environment().put("DEPLOY_NETWORK", network.getNetworkName());
         int exitCode =
                 processBuilder
                         .directory(workingDir)
