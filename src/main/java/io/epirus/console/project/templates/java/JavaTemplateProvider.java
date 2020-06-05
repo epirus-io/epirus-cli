@@ -155,6 +155,10 @@ public class JavaTemplateProvider implements TemplateProvider {
                     new File(pathToSolidityFolder), projectStructure.getSolidityPath());
         }
         ProjectWriter.writeResourceFile(
+                TemplateReader.readFile("Dockerfile.template"),
+                "Dockerfile",
+                projectStructure.getProjectRoot());
+        ProjectWriter.writeResourceFile(
                 loadGradlewWrapperSettings(),
                 "gradle-wrapper.properties",
                 projectStructure.getWrapperPath());
