@@ -13,14 +13,25 @@
 package io.epirus.console.project;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.project.wallet.ProjectWallet;
+import io.epirus.console.project.wallet.ProjectWalletUtils;
+
+import org.web3j.crypto.CipherException;
 
 import static io.epirus.console.config.ConfigManager.config;
 import static java.io.File.separator;
@@ -81,6 +92,78 @@ public class InteractiveOptions {
             }
         }
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
+    }
+
+    public Map<String, String> getWalletLocation() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        ProjectWalletUtils walletUtils = new ProjectWalletUtils();
+        if (userAnsweredYes("Would you like to use a global wallet [Y/n] ?")) {
+            if (walletUtils.userHasGlobalWallets()) {
+                print("Please choose your wallet:");
+                int i = 0;
+                for (String walletName : walletUtils.getListOfGlobalWallets()) {
+                    print("[" + i++ + "] : " + walletName);
+                }
+                int walletNumber = Integer.parseInt(getUserInput());
+                if (walletNumber >= 0 && walletNumber <= i) {
+                    print("Please enter your wallet password.");
+                    String walletPassword = getUserInput();
+                    walletCredentials.put(
+                            "path", walletUtils.getListOfGlobalWallets().get(walletNumber));
+                    walletCredentials.put("password", walletPassword);
+                    return walletCredentials;
+
+                } else {
+                    print("Please choose a valid wallet number");
+                    System.exit(1);
+                }
+            } else {
+                if (userAnsweredYes(
+                        "Looks like you don't have any global wallets. Would you like to generate one [Y/n] ?")) {
+                    print("Please enter your wallet password.");
+                    String walletPassword = getUserInput();
+                    ProjectWallet projectWallet = null;
+                    try {
+                        projectWallet =
+                                new ProjectWallet(
+                                        walletPassword,
+                                        ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH);
+                    } catch (NoSuchAlgorithmException
+                            | NoSuchProviderException
+                            | InvalidAlgorithmParameterException
+                            | CipherException
+                            | IOException e) {
+                        e.printStackTrace();
+                    }
+                    print("Wallet has been generated in : " + projectWallet.getWalletPath());
+                    walletCredentials.put("path", projectWallet.getWalletPath());
+                    walletCredentials.put("password", walletPassword);
+                    return walletCredentials;
+                }
+            }
+        } else {
+            if (userAnsweredYes("Would you like to use an existing wallet [Y/n] ?")) {
+                print("Please enter your wallet path: ");
+                String walletPath = getUserInput();
+                print(
+                        "Please enter your wallet password (Leave empty if your wallet is not password protected)");
+                String walletPassword = getUserInput();
+                walletCredentials.put("path", walletPath);
+                walletCredentials.put("password", walletPassword);
+
+            } else {
+                return Collections.emptyMap();
+            }
+        }
+        return Collections.emptyMap();
+    }
+
+    private boolean userAnsweredYes(String message) {
+        print(message);
+        String answer = getUserInput();
+        return answer.trim().isEmpty()
+                || answer.trim().toLowerCase().equals("y")
+                || answer.trim().toLowerCase().equals("yes");
     }
 
     public Optional<String> getGeneratedWrapperLocation() {

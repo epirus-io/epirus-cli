@@ -16,16 +16,18 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.Map;
+import java.util.Optional;
 
 import io.epirus.console.project.AbstractProject;
 import io.epirus.console.project.Project;
 import io.epirus.console.project.ProjectStructure;
-import io.epirus.console.project.ProjectWallet;
 import io.epirus.console.project.ProjectWriter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateBuilder;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateProvider;
 import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.project.wallet.ProjectWallet;
 
 import org.web3j.commons.JavaVersion;
 import org.web3j.crypto.CipherException;
@@ -35,7 +37,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
     protected KotlinProject(
             boolean withTests,
             boolean withFatJar,
-            boolean withWallet,
+            Optional<Map> withCredentials,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
@@ -43,7 +45,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         super(
                 withTests,
                 withFatJar,
-                withWallet,
+                withCredentials,
                 withSampleCode,
                 command,
                 solidityImportPath,
@@ -93,9 +95,9 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                         .withWrapperGradleSettings("gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
-        if (projectWallet != null) {
-            templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
-            templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
+        if (withCredentials.isPresent()) {
+            templateBuilder.withWalletNameReplacement((String) withCredentials.get().get("path"));
+            templateBuilder.withPasswordFileName((String) withCredentials.get().get("password"));
         }
         if (command.equals("new")) {
             templateBuilder

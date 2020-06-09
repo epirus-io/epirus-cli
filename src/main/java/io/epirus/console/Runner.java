@@ -111,6 +111,9 @@ public class Runner {
                     config.setLoginToken("");
                     System.out.println("Logged out successfully");
                     break;
+                case "accountwallet":
+                    AccountManager.main(new String[] {"accountwallet"});
+                    break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));
                     break;

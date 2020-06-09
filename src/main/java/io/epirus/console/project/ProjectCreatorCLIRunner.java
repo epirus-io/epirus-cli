@@ -23,11 +23,10 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public abstract class ProjectCreatorCLIRunner implements Runnable {
     @CommandLine.Option(
-            names = {"-o", "--output-dir"},
-            description = "Destination base directory.",
-            required = false,
-            showDefaultValue = ALWAYS)
-    public String outputDir = System.getProperty("user.dir");
+            names = {"-n", "--project-name"},
+            description = "Project name.",
+            required = true)
+    public String projectName;
 
     @CommandLine.Option(
             names = {"-p", "--package"},
@@ -36,10 +35,11 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
     public String packageName;
 
     @CommandLine.Option(
-            names = {"-n", "--project-name"},
-            description = "Project name.",
-            required = true)
-    public String projectName;
+            names = {"-o", "--output-dir"},
+            description = "Destination base directory.",
+            required = false,
+            showDefaultValue = ALWAYS)
+    public String outputDir = System.getProperty("user.dir");
 
     @Override
     public void run() {
@@ -59,7 +59,7 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
 
     protected abstract void createProject();
 
-    boolean inputIsValid(String... requiredArgs) {
+    private boolean inputIsValid(String... requiredArgs) {
         return InputVerifier.requiredArgsAreNotEmpty(requiredArgs)
                 && InputVerifier.classNameIsValid(projectName)
                 && InputVerifier.packageNameIsValid(packageName);

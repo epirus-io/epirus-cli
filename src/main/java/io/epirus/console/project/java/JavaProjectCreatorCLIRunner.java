@@ -12,20 +12,42 @@
  */
 package io.epirus.console.project.java;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectCreatorCLIRunner;
-import picocli.CommandLine.Command;
+import picocli.CommandLine;
 
-import static io.epirus.console.project.ProjectCreator.COMMAND_JAVA;
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@Command(name = COMMAND_JAVA, mixinStandardHelpOptions = true, version = "4.0", sortOptions = false)
 public class JavaProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
+    @CommandLine.Option(
+            names = {"-w", "--wallet-path"},
+            description = "Path to your wallet file",
+            required = true)
+    public String walletPath;
+
+    @CommandLine.Option(
+            names = {"-k", "--wallet-password"},
+            description = "Wallet password",
+            required = true,
+            showDefaultValue = ALWAYS)
+    public String walletPassword;
 
     protected void createProject() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        walletCredentials.put("path", walletPath);
+        walletCredentials.put("password", walletPassword);
         new ProjectCreator(outputDir, packageName, projectName)
-                .generateJava(true, Optional.empty(), true, true, true, COMMAND_NEW);
+                .generateJava(
+                        true,
+                        Optional.empty(),
+                        Optional.of(walletCredentials),
+                        true,
+                        true,
+                        COMMAND_NEW);
     }
 }

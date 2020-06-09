@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
@@ -69,6 +70,7 @@ public class ProjectCreator {
     private static String[] getValues(String[] args, List<String> stringOptions)
             throws IOException {
         String projectName;
+        Map<String, String> walletCredentials;
         if (args.length == 0) {
             InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
@@ -76,6 +78,11 @@ public class ProjectCreator {
             stringOptions.add(projectName);
             stringOptions.add("-p");
             stringOptions.add(interactiveOptions.getPackageName());
+            walletCredentials = interactiveOptions.getWalletLocation();
+            stringOptions.add("-w");
+            stringOptions.add(walletCredentials.get("path"));
+            stringOptions.add("-k");
+            stringOptions.add(walletCredentials.get("password"));
             interactiveOptions
                     .getProjectDestination(projectName)
                     .ifPresent(
@@ -92,7 +99,7 @@ public class ProjectCreator {
     public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWalletProvider,
+            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -103,7 +110,7 @@ public class ProjectCreator {
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
                             .withTests(withTests)
-                            .withWalletProvider(withWalletProvider)
+                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);
@@ -121,7 +128,7 @@ public class ProjectCreator {
     public void generateKotlin(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWalletProvider,
+            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -132,7 +139,7 @@ public class ProjectCreator {
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
                             .withTests(withTests)
-                            .withWalletProvider(withWalletProvider)
+                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);

@@ -38,36 +38,12 @@ class <project_name> {
     fun start(args: Array<String>) {
         log as ch.qos.logback.classic.Logger
         log.level = Level.ERROR
-        val credentials: Credentials? = loadCredentials("<wallet_name>")
+        val credentials: Credentials? = WalletUtils.loadCredentials("<password_file_name>", "<wallet_name>")
         val web3j: Web3j? = getDeployWeb3j()
         val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(7500000L)))
         callGreetMethod(helloWorld)
     }
 
-    @Throws(IOException::class, CipherException::class)
-    private fun loadCredentials(walletName: String): Credentials? {
-        val pathToProjectResources = java.lang.String.join(
-                File.separator,
-                System.getProperty("user.dir"),
-                "src",
-                "test",
-                "resources",
-                "wallet"
-        )
-        val pathToWallet =
-                java.lang.String.join(File.separator, pathToProjectResources, walletName)
-        val pathToWalletPasswordFile = java.lang.String.join(
-                File.separator,
-                pathToProjectResources,
-                "<password_file_name>"
-        )
-        val file = File(pathToWalletPasswordFile)
-        log.info("Reading wallet password from resources.")
-        val password = String(Files.readAllBytes(Paths.get(file.toURI())))
-        log.info("Loading wallet file: $walletName from resources.")
-        log.info("Creating credentials from wallet.")
-        return WalletUtils.loadCredentials(password, File(pathToWallet))
-    }
 
     private fun getDeployWeb3j(): Web3j {
         val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))

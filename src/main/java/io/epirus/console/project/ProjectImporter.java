@@ -53,6 +53,7 @@ public class ProjectImporter extends ProjectCreator {
             stringOptions.add(interactiveOptions.getPackageName());
             stringOptions.add("-s");
             stringOptions.add(interactiveOptions.getSolidityProjectPath());
+
             interactiveOptions
                     .getProjectDestination(projectName)
                     .ifPresent(

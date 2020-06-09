@@ -41,7 +41,7 @@ public class KotlinProjectImporterCLIRunner extends KotlinProjectCreatorCLIRunne
                 .generateKotlin(
                         generateTests,
                         Optional.of(new File(solidityImportPath)),
-                        true,
+                        Optional.empty(),
                         false,
                         false,
                         COMMAND_IMPORT);
