@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import io.epirus.console.account.AccountManager;
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployRunner;
+import io.epirus.console.docker.Dockerizer;
 import io.epirus.console.logging.EpirusExceptionHandler;
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectImporter;
@@ -45,7 +46,7 @@ import static org.web3j.utils.Collection.tail;
 public class Runner {
 
     private static final String USAGE =
-            "Usage: epirus version|wallet|solidity|new|import|generate-tests|audit|account ...";
+            "Usage: epirus version|wallet|solidity|new|import|generate-tests|audit|account|docker ...";
 
     private static final String LOGO =
             "  ______       _                \n"
@@ -72,6 +73,9 @@ public class Runner {
         } else {
             performStartupTasks(args);
             switch (args[0]) {
+                case "docker":
+                    Dockerizer.main(tail(args));
+                    break;
                 case "deploy":
                     DeployRunner.main(tail(args));
                     break;
