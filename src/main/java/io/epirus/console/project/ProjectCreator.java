@@ -13,11 +13,12 @@
 package io.epirus.console.project;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
@@ -53,11 +54,12 @@ public class ProjectCreator {
         this.root = root;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         final List<String> stringOptions = new ArrayList<>();
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValues(args, stringOptions);
+            System.out.println(Arrays.toString(args));
             new CommandLine(new JavaProjectCreatorCLIRunner()).execute(args);
         } else {
             args = getValues(args, stringOptions);
@@ -66,16 +68,21 @@ public class ProjectCreator {
     }
 
     @NotNull
-    private static String[] getValues(String[] args, List<String> stringOptions)
-            throws IOException {
-        String projectName;
+    private static String[] getValues(String[] args, List<String> stringOptions) {
         if (args.length == 0) {
             InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
-            projectName = interactiveOptions.getProjectName();
+            final String projectName = interactiveOptions.getProjectName();
             stringOptions.add(projectName);
             stringOptions.add("-p");
             stringOptions.add(interactiveOptions.getPackageName());
+
+            final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+            stringOptions.add("-w");
+            stringOptions.add(walletCredentials.get("path"));
+            stringOptions.add("-k");
+            stringOptions.add(walletCredentials.get("password"));
+
             interactiveOptions
                     .getProjectDestination(projectName)
                     .ifPresent(
@@ -92,7 +99,7 @@ public class ProjectCreator {
     public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWalletProvider,
+            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -103,7 +110,7 @@ public class ProjectCreator {
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
                             .withTests(withTests)
-                            .withWalletProvider(withWalletProvider)
+                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);
@@ -121,7 +128,7 @@ public class ProjectCreator {
     public void generateKotlin(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWalletProvider,
+            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -132,7 +139,7 @@ public class ProjectCreator {
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
                             .withTests(withTests)
-                            .withWalletProvider(withWalletProvider)
+                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);

@@ -30,25 +30,13 @@ public class <project_name> {
     public static void main(String[] args) throws Exception {
         try {
             ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
-            Credentials credentials = loadCredentials("<wallet_name>");
+            Credentials credentials = WalletUtils.loadCredentials("<password_file_name>","<wallet_name>");
             Web3j web3j = getDeployWeb3j();
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new StaticGasProvider(DefaultGasProvider.GAS_LIMIT, BigInteger.valueOf(7500000L)));
             callGreetMethod(helloWorld);
         } catch (Exception e) {
             log.info(e.getMessage());
         }
-    }
-
-    private static Credentials loadCredentials(String walletName) throws IOException, CipherException {
-        String pathToProjectResources = String.join(File.separator, System.getProperty("user.dir"), "src", "test", "resources", "wallet");
-        String pathToWallet = String.join(File.separator, pathToProjectResources, walletName);
-        String pathToWalletPasswordFile = String.join(File.separator, pathToProjectResources, "<password_file_name>");
-        File file = new File(pathToWalletPasswordFile);
-        log.info("Reading wallet password from resources.");
-        String password = new String(Files.readAllBytes(Paths.get(file.toURI())));
-        log.info("Loading wallet file: " + walletName + " from resources.");
-        log.info("Creating credentials from wallet.");
-        return WalletUtils.loadCredentials(password, new File(pathToWallet));
     }
 
     private static Web3j getDeployWeb3j() throws Exception {

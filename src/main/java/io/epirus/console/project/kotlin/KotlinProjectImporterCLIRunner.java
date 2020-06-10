@@ -13,6 +13,8 @@
 package io.epirus.console.project.kotlin;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.ProjectImporter;
@@ -37,11 +39,14 @@ public class KotlinProjectImporterCLIRunner extends KotlinProjectCreatorCLIRunne
     boolean generateTests = false;
 
     protected void createProject() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        walletCredentials.put("path", walletPath);
+        walletCredentials.put("password", walletPassword);
         new ProjectImporter(outputDir, packageName, projectName)
                 .generateKotlin(
                         generateTests,
                         Optional.of(new File(solidityImportPath)),
-                        true,
+                        Optional.of(walletCredentials),
                         false,
                         false,
                         COMMAND_IMPORT);

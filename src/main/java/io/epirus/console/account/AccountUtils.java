@@ -12,9 +12,18 @@
  */
 package io.epirus.console.account;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.project.wallet.ProjectWallet;
+import io.epirus.console.project.wallet.ProjectWalletUtils;
 
 import org.web3j.codegen.Console;
+import org.web3j.crypto.CipherException;
 
 public class AccountUtils {
 
@@ -30,6 +39,38 @@ public class AccountUtils {
                 Console.exitError(
                         "Server response did not contain the authentication token required to create an account.");
             }
+        }
+    }
+
+    public static void accountDefaultWalletInit() {
+        if (!ProjectWalletUtils.userHasGlobalWallet()) {
+            try {
+                ProjectWallet projectWallet =
+                        new ProjectWallet("", ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH);
+                boolean walletWasRenamed =
+                        new File(
+                                        projectWallet.getWalletPath()
+                                                + File.separator
+                                                + projectWallet.getWalletName())
+                                .renameTo(
+                                        new File(
+                                                ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH
+                                                        + File.separator
+                                                        + ProjectWalletUtils.DEFAULT_WALLET_NAME));
+                if (!walletWasRenamed) {
+                    Console.exitError("Could not rename default test wallet.");
+                }
+                System.out.println("Default wallet was created successfully.");
+
+            } catch (NoSuchAlgorithmException
+                    | NoSuchProviderException
+                    | InvalidAlgorithmParameterException
+                    | CipherException
+                    | IOException e) {
+                Console.exitError("Could not create default wallet reason: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Account has default wallet.");
         }
     }
 }

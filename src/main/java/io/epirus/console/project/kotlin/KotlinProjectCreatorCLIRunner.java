@@ -12,6 +12,8 @@
  */
 package io.epirus.console.project.kotlin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.ProjectCreator;
@@ -27,8 +29,18 @@ import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
         version = "4.0",
         sortOptions = false)
 public class KotlinProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
+
     protected void createProject() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        walletCredentials.put("path", walletPath);
+        walletCredentials.put("password", walletPassword);
         new ProjectCreator(outputDir, packageName, projectName)
-                .generateKotlin(true, Optional.empty(), true, true, true, COMMAND_NEW);
+                .generateKotlin(
+                        true,
+                        Optional.empty(),
+                        Optional.of(walletCredentials),
+                        true,
+                        true,
+                        COMMAND_NEW);
     }
 }

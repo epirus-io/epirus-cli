@@ -15,12 +15,18 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import io.epirus.console.account.AccountUtils;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.project.wallet.ProjectWalletUtils;
 
 import static io.epirus.console.config.ConfigManager.config;
 import static java.io.File.separator;
@@ -81,6 +87,68 @@ public class InteractiveOptions {
             }
         }
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
+    }
+
+    public Map<String, String> getWalletLocation() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        ProjectWalletUtils walletUtils = new ProjectWalletUtils();
+        if (userAnsweredYes("Would you like to use the default global wallet [Y/n] ?")) {
+            if (walletUtils.userHasGlobalWallets()) {
+                print("Please choose your wallet:");
+                int i = displayGlobalWallets(walletUtils);
+                int walletNumber = Integer.parseInt(getUserInput());
+                if (walletNumber >= 0 && walletNumber <= i) {
+                    print("Please enter your wallet password.");
+                    String walletPassword = getUserInput();
+                    walletCredentials.put(
+                            "path", walletUtils.getListOfGlobalWallets().get(walletNumber));
+                    walletCredentials.put("password", walletPassword);
+                    return walletCredentials;
+
+                } else {
+                    print("Wallet number is not valid. Exiting ...");
+                    System.exit(1);
+                }
+            } else {
+                if (userAnsweredYes(
+                        "Looks like you don't have any global wallets. Would you like to generate one [Y/n] ?")) {
+                    AccountUtils.accountDefaultWalletInit();
+                    walletCredentials.put("path", ProjectWalletUtils.getGlobalWalletAbsolutePath());
+                    walletCredentials.put("password", "");
+                    return walletCredentials;
+                }
+            }
+        } else {
+            print("Please enter your wallet path: ");
+            String walletPath = getUserInput();
+            if (walletPath.isEmpty() || !Files.exists(Paths.get(walletPath))) {
+                print("Wallet path is invalid. Exiting ...");
+                System.exit(1);
+            }
+            print(
+                    "Please enter your wallet password [Leave empty if your wallet is not password protected]");
+            String walletPassword = getUserInput();
+            walletCredentials.put("path", walletPath);
+            walletCredentials.put("password", walletPassword);
+            return walletCredentials;
+        }
+        return walletCredentials;
+    }
+
+    private int displayGlobalWallets(ProjectWalletUtils walletUtils) {
+        int i = 0;
+        for (String walletName : walletUtils.getListOfGlobalWallets()) {
+            print("[" + i++ + "] : " + walletName);
+        }
+        return i;
+    }
+
+    private boolean userAnsweredYes(String message) {
+        print(message);
+        String answer = getUserInput();
+        return answer.trim().isEmpty()
+                || answer.trim().toLowerCase().equals("y")
+                || answer.trim().toLowerCase().equals("yes");
     }
 
     public Optional<String> getGeneratedWrapperLocation() {

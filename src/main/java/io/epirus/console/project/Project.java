@@ -17,6 +17,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import io.epirus.console.project.wallet.ProjectWallet;
+
 import org.web3j.crypto.CipherException;
 
 public interface Project {

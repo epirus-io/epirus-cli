@@ -56,7 +56,6 @@ public class AccountManager implements Closeable {
         if (args.length == 0) {
             exitError(USAGE);
         }
-
         if (Arrays.asList("create", "login").contains(args[0])) {
             String email = new InteractiveOptions().getEmail();
             AccountManager accountManager = new AccountManager();
@@ -87,6 +86,10 @@ public class AccountManager implements Closeable {
                     config.getLoginToken() != null && config.getLoginToken().length() > 0
                             ? "Status: logged in"
                             : "Status: not logged in");
+        } else if ("wallet".equals(args[0])) {
+            if (config.getLoginToken() != null && config.getLoginToken().length() > 0) {
+                AccountUtils.accountDefaultWalletInit();
+            }
         } else {
             exitError(USAGE);
         }

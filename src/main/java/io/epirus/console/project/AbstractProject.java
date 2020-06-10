@@ -14,23 +14,21 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.util.Map;
+import java.util.Optional;
 
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.utils.ProgressCounter;
-import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.project.wallet.ProjectWallet;
 
 import org.web3j.codegen.Console;
-import org.web3j.crypto.CipherException;
 
 public abstract class AbstractProject<T extends AbstractProject<T>> {
     private T project;
 
     protected final boolean withTests;
     protected final boolean withFatJar;
-    protected final boolean withWallet;
+    protected final Optional<Map> withCredentials;
     protected final boolean withSampleCode;
     protected final String command;
     protected final String solidityImportPath;
@@ -43,14 +41,14 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
     protected AbstractProject(
             boolean withTests,
             boolean withFatJar,
-            boolean withWallet,
+            Optional<Map> withCredentials,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
             ProjectStructure projectStructure) {
         this.withTests = withTests;
         this.withFatJar = withFatJar;
-        this.withWallet = withWallet;
+        this.withCredentials = withCredentials;
         this.withSampleCode = withSampleCode;
         this.command = command;
         this.solidityImportPath = solidityImportPath;
@@ -120,25 +118,6 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         }
     }
 
-    protected void generateWallet()
-            throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
-        projectStructure.createWalletDirectory();
-        projectWallet =
-                new ProjectWallet(
-                        ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getPasswordFileName(),
-                ".gitignore",
-                projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getWalletPassword(),
-                projectWallet.getPasswordFileName(),
-                projectStructure.getWalletPath());
-    }
-
     protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
         projectStructure.createMainDirectory();
         projectStructure.createTestDirectory();
@@ -146,13 +125,8 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         projectStructure.createWrapperDirectory();
     }
 
-    public void createProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+    public void createProject() throws IOException, InterruptedException {
         generateTopLevelDirectories(projectStructure);
-        if (withWallet) {
-            generateWallet();
-        }
         getTemplateProvider().generateFiles(projectStructure);
         progressCounter.processing("Creating " + projectStructure.projectName);
         buildGradleProject(projectStructure.getProjectRoot());

@@ -12,11 +12,14 @@
  */
 package io.epirus.console.project;
 
+import java.util.Map;
+import java.util.Optional;
+
 public abstract class AbstractProjectBuilder<T extends AbstractProjectBuilder<T>> {
     private T builder;
 
     protected String solidityImportPath;
-    protected boolean withWallet;
+    protected Optional<Map> withCredentials;
     protected boolean withTests;
     protected String projectName;
     protected String packageName;
@@ -35,8 +38,8 @@ public abstract class AbstractProjectBuilder<T extends AbstractProjectBuilder<T>
         return builder;
     }
 
-    public T withWalletProvider(boolean withWalletProvider) {
-        builder.withWallet = withWalletProvider;
+    public T withCredentials(Optional<Map> withCredentials) {
+        builder.withCredentials = withCredentials;
         return this.builder;
     }
 

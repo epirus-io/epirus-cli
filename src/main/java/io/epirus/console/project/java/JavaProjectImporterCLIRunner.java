@@ -13,8 +13,11 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import io.epirus.console.project.ProjectCreatorCLIRunner;
 import io.epirus.console.project.ProjectImporter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -23,7 +26,7 @@ import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_IMPORT)
-public class JavaProjectImporterCLIRunner extends JavaProjectCreatorCLIRunner {
+public class JavaProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
     @Option(
             names = {"-s", "--solidity-path"},
             description = "Path to solidity file/folder",
@@ -38,11 +41,14 @@ public class JavaProjectImporterCLIRunner extends JavaProjectCreatorCLIRunner {
     boolean generateTests = false;
 
     protected void createProject() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        walletCredentials.put("path", walletPath);
+        walletCredentials.put("password", walletPassword);
         new ProjectImporter(outputDir, packageName, projectName)
                 .generateJava(
                         generateTests,
                         Optional.of(new File(solidityImportPath)),
-                        true,
+                        Optional.of(walletCredentials),
                         false,
                         false,
                         COMMAND_IMPORT);
