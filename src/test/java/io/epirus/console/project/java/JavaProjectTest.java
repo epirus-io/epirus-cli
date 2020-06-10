@@ -13,11 +13,16 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import org.web3j.crypto.WalletUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,11 +33,21 @@ public class JavaProjectTest {
     public void setUpProject() throws Exception {
         final String rootDirectory = Folders.tempBuildFolder().getAbsolutePath();
         projectStructure = new JavaProjectStructure(rootDirectory, "test", "test");
+        Map<String, String> walletCredentials = new HashMap<>();
+        final File testWalletDirectory = new File(rootDirectory + File.separator + "keystore");
+        testWalletDirectory.mkdirs();
+        String absoluteWalletPath =
+                testWalletDirectory
+                        + File.separator
+                        + WalletUtils.generateNewWalletFile("", testWalletDirectory);
+        walletCredentials.put("path", absoluteWalletPath);
+        walletCredentials.put("password", "");
         JavaProject javaProject =
                 new JavaBuilder()
                         .withProjectName(projectStructure.getProjectName())
                         .withPackageName(projectStructure.getPackageName())
                         .withRootDirectory(rootDirectory)
+                        .withCredentials(Optional.of(walletCredentials))
                         .build();
         javaProject.createProject();
     }

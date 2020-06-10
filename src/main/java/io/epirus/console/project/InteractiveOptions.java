@@ -15,8 +15,9 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -91,7 +92,7 @@ public class InteractiveOptions {
     public Map<String, String> getWalletLocation() {
         Map<String, String> walletCredentials = new HashMap<>();
         ProjectWalletUtils walletUtils = new ProjectWalletUtils();
-        if (userAnsweredYes("Would you like to use a global wallet [Y/n] ?")) {
+        if (userAnsweredYes("Would you like to use the default global wallet [Y/n] ?")) {
             if (walletUtils.userHasGlobalWallets()) {
                 print("Please choose your wallet:");
                 int i = displayGlobalWallets(walletUtils);
@@ -118,20 +119,20 @@ public class InteractiveOptions {
                 }
             }
         } else {
-            if (userAnsweredYes("Would you like to use an existing wallet [Y/n] ?")) {
-                print("Please enter your wallet path: ");
-                String walletPath = getUserInput();
-                print(
-                        "Please enter your wallet password (Leave empty if your wallet is not password protected)");
-                String walletPassword = getUserInput();
-                walletCredentials.put("path", walletPath);
-                walletCredentials.put("password", walletPassword);
-                return walletCredentials;
-            } else {
-                return Collections.emptyMap();
+            print("Please enter your wallet path: ");
+            String walletPath = getUserInput();
+            if (walletPath.isEmpty() || !Files.exists(Paths.get(walletPath))) {
+                print("Wallet path is invalid. Exiting ...");
+                System.exit(1);
             }
+            print(
+                    "Please enter your wallet password [Leave empty if your wallet is not password protected]");
+            String walletPassword = getUserInput();
+            walletCredentials.put("path", walletPath);
+            walletCredentials.put("password", walletPassword);
+            return walletCredentials;
         }
-        return Collections.emptyMap();
+        return walletCredentials;
     }
 
     private int displayGlobalWallets(ProjectWalletUtils walletUtils) {

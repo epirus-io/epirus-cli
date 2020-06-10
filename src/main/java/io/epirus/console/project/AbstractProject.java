@@ -14,19 +14,14 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.utils.ProgressCounter;
-import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.project.wallet.ProjectWallet;
 
 import org.web3j.codegen.Console;
-import org.web3j.crypto.CipherException;
 
 public abstract class AbstractProject<T extends AbstractProject<T>> {
     private T project;
@@ -121,25 +116,6 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
                     new File(pathToDirectory),
                     new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
         }
-    }
-
-    protected void generateWallet()
-            throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
-        projectStructure.createWalletDirectory();
-        projectWallet =
-                new ProjectWallet(
-                        ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getPasswordFileName(),
-                ".gitignore",
-                projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getWalletPassword(),
-                projectWallet.getPasswordFileName(),
-                projectStructure.getWalletPath());
     }
 
     protected void generateTopLevelDirectories(ProjectStructure projectStructure) {

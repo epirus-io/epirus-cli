@@ -69,7 +69,7 @@ public class ProjectUtils {
 
     public static Optional<Path> loadProjectWalletFile(Path path) {
         String pathToProjectResources =
-                String.join(File.separator, path.toString(), "src", "test", "resources", "wallet");
+                String.join(File.separator, path.toString(), "keystore", "TEST_WALLET.json");
         try {
             return Optional.of(
                     Files.list(Paths.get(pathToProjectResources))
@@ -101,13 +101,7 @@ public class ProjectUtils {
         }
     }
 
-    public static Credentials createCredentials(Path walletPath, Path walletPasswordPath) {
-        String walletPassword = null;
-        try {
-            walletPassword = new String(Files.readAllBytes(walletPasswordPath));
-        } catch (IOException e) {
-            Console.exitError("Could not read password file: " + e.getMessage());
-        }
+    public static Credentials createCredentials(Path walletPath, String walletPassword) {
         try {
             return WalletUtils.loadCredentials(walletPassword, walletPath.toFile());
         } catch (IOException e) {

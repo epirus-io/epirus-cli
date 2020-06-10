@@ -69,7 +69,6 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
         if (withCredentials.isPresent()) {
-
             templateBuilder.withWalletNameReplacement((String) withCredentials.get().get("path"));
             templateBuilder.withPasswordFileName((String) withCredentials.get().get("password"));
         }
