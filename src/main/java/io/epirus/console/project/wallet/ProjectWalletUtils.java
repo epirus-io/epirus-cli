@@ -29,14 +29,17 @@ public class ProjectWalletUtils {
             System.getProperty("user.home") + separator + ".epirus" + separator + "keystore";
     public static final String DEFAULT_WALLET_NAME = "TEST_WALLET.json";
     private final String customWalletPath;
+    private final String customWalletName;
     private List<String> customWallets;
 
-    public ProjectWalletUtils(String walletPath) {
+    public ProjectWalletUtils(String walletPath, String customWalletName) {
         this.customWalletPath = walletPath;
+        this.customWalletName = customWalletName;
     }
 
     public ProjectWalletUtils() {
         this.customWalletPath = DEFAULT_WALLET_LOOKUP_PATH;
+        this.customWalletName = DEFAULT_WALLET_NAME;
     }
 
     public List<String> getListOfGlobalWallets() {
@@ -58,5 +61,14 @@ public class ProjectWalletUtils {
 
     public static boolean userHasGlobalWallet() {
         return new File(DEFAULT_WALLET_LOOKUP_PATH + separator + DEFAULT_WALLET_NAME).exists();
+    }
+
+    public static String getGlobalWalletAbsolutePath() {
+        if (userHasGlobalWallet()) {
+            return new File(DEFAULT_WALLET_LOOKUP_PATH + separator + DEFAULT_WALLET_NAME)
+                    .getAbsolutePath();
+        } else {
+            return "";
+        }
     }
 }

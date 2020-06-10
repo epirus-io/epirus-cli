@@ -33,9 +33,9 @@ public class JavaProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
     @CommandLine.Option(
             names = {"-k", "--wallet-password"},
             description = "Wallet password",
-            required = true,
+            required = false,
             showDefaultValue = ALWAYS)
-    public String walletPassword;
+    public String walletPassword = "";
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();

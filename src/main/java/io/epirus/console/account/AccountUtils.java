@@ -43,7 +43,6 @@ public class AccountUtils {
     }
 
     public static void accountDefaultWalletInit() {
-        InteractiveOptions userInteractiveOptions = new InteractiveOptions();
         if (!ProjectWalletUtils.userHasGlobalWallet()) {
             try {
                 ProjectWallet projectWallet =

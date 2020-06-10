@@ -86,7 +86,7 @@ public class AccountManager implements Closeable {
                     config.getLoginToken() != null && config.getLoginToken().length() > 0
                             ? "Status: logged in"
                             : "Status: not logged in");
-        } else if ("accountwallet".equals(args[0])) {
+        } else if ("wallet".equals(args[0])) {
             if (config.getLoginToken() != null && config.getLoginToken().length() > 0) {
                 AccountUtils.accountDefaultWalletInit();
             }
