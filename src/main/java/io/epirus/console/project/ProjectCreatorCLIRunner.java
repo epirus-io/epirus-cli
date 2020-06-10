@@ -18,6 +18,8 @@ import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
 import picocli.CommandLine;
 
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
@@ -37,9 +39,19 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
     @CommandLine.Option(
             names = {"-o", "--output-dir"},
             description = "Destination base directory.",
-            required = false,
             showDefaultValue = ALWAYS)
     public String outputDir = System.getProperty("user.dir");
+
+    @CommandLine.Option(
+            names = {"-w", "--wallet-path"},
+            description = "Path to your wallet file")
+    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
+
+    @CommandLine.Option(
+            names = {"-k", "--wallet-password"},
+            description = "Wallet password",
+            showDefaultValue = ALWAYS)
+    public String walletPassword = "";
 
     @Override
     public void run() {

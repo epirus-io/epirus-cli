@@ -22,7 +22,6 @@ import picocli.CommandLine;
 
 import static io.epirus.console.project.ProjectCreator.COMMAND_KOTLIN;
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = COMMAND_KOTLIN,
@@ -30,18 +29,6 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         version = "4.0",
         sortOptions = false)
 public class KotlinProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file",
-            required = true)
-    public String walletPath;
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            required = true,
-            showDefaultValue = ALWAYS)
-    public String walletPassword;
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();

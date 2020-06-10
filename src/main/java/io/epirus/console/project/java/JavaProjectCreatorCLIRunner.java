@@ -18,24 +18,10 @@ import java.util.Optional;
 
 import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.ProjectCreatorCLIRunner;
-import picocli.CommandLine;
 
 import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public class JavaProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file",
-            required = true)
-    public String walletPath;
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            required = false,
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();

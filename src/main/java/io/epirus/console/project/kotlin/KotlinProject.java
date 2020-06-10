@@ -13,24 +13,17 @@
 package io.epirus.console.project.kotlin;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.AbstractProject;
 import io.epirus.console.project.Project;
 import io.epirus.console.project.ProjectStructure;
-import io.epirus.console.project.ProjectWriter;
 import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateBuilder;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateProvider;
-import io.epirus.console.project.utils.ProjectUtils;
-import io.epirus.console.project.wallet.ProjectWallet;
 
 import org.web3j.commons.JavaVersion;
-import org.web3j.crypto.CipherException;
 
 public class KotlinProject extends AbstractProject<KotlinProject> implements Project {
 
@@ -63,25 +56,6 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
     @Override
     protected KotlinProject getProjectInstance() {
         return this;
-    }
-
-    protected void generateWallet()
-            throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
-        projectStructure.createWalletDirectory();
-        projectWallet =
-                new ProjectWallet(
-                        ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getPasswordFileName(),
-                ".gitignore",
-                projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getWalletPassword(),
-                projectWallet.getPasswordFileName(),
-                projectStructure.getWalletPath());
     }
 
     public KotlinTemplateProvider getTemplateProvider() {

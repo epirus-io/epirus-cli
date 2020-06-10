@@ -14,6 +14,7 @@ package io.epirus.console.project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.epirus.console.project.java.JavaProjectImporterCLIRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterCLIRunner;
@@ -43,16 +44,21 @@ public class ProjectImporter extends ProjectCreator {
 
     @NotNull
     private static String[] getValues(String[] args, List<String> stringOptions) {
-        String projectName;
         if (args.length == 0) {
             InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
-            projectName = interactiveOptions.getProjectName();
+            final String projectName = interactiveOptions.getProjectName();
             stringOptions.add(projectName);
             stringOptions.add("-p");
             stringOptions.add(interactiveOptions.getPackageName());
             stringOptions.add("-s");
             stringOptions.add(interactiveOptions.getSolidityProjectPath());
+
+            final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+            stringOptions.add("-w");
+            stringOptions.add(walletCredentials.get("path"));
+            stringOptions.add("-k");
+            stringOptions.add(walletCredentials.get("password"));
 
             interactiveOptions
                     .getProjectDestination(projectName)

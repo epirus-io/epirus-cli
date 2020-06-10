@@ -24,6 +24,7 @@ import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.WalletFunder;
 import io.epirus.web3j.Epirus;
+import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
@@ -33,8 +34,11 @@ import org.web3j.utils.Convert;
 
 import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public class DeployRunner {
     public static final String USAGE = "epirus deploy <network>";
@@ -43,6 +47,17 @@ public class DeployRunner {
     private final Credentials credentials;
     private final AccountManager accountManager;
     private final Web3j web3j;
+
+    @CommandLine.Option(
+            names = {"-w", "--wallet-path"},
+            description = "Path to your wallet file")
+    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
+
+    @CommandLine.Option(
+            names = {"-k", "--wallet-password"},
+            description = "Wallet password",
+            showDefaultValue = ALWAYS)
+    public String walletPassword = "";
 
     public static void main(String[] args) throws Exception {
         if (args.length == 1) {
@@ -65,13 +80,15 @@ public class DeployRunner {
     }
 
     public DeployRunner(
-            Network network, AccountManager accountManager, Web3j web3j, Path workingDirectory) {
+            Network network,
+            AccountManager accountManager,
+            Web3j web3j,
+            Path workingDirectory,
+            String walletPath) {
         this.workingDirectory = workingDirectory;
         this.network = network;
-        Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
-        Path walletPasswordPath =
-                ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
-        this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
+        this.walletPath = walletPath;
+        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
         this.accountManager = accountManager;
         this.web3j = web3j;
     }
@@ -79,10 +96,7 @@ public class DeployRunner {
     public DeployRunner(Network network, AccountManager accountManager, Web3j web3j) {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
-        Path walletPath = ProjectUtils.loadProjectWalletFile(workingDirectory).get();
-        Path walletPasswordPath =
-                ProjectUtils.loadProjectPasswordWalletFile(workingDirectory).get();
-        this.credentials = ProjectUtils.createCredentials(walletPath, walletPasswordPath);
+        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
         this.accountManager = accountManager;
         this.web3j = web3j;
     }

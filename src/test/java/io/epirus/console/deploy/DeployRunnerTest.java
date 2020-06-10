@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Paths;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -26,7 +29,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 
@@ -41,10 +46,29 @@ import static org.mockito.Mockito.when;
 public class DeployRunnerTest extends ClassExecutor {
 
     @TempDir static File workingDirectory;
+    private String absoluteWalletPath;
 
     @BeforeEach
-    public void createEpirusProject() throws IOException, InterruptedException {
-        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory};
+    public void createEpirusProject()
+            throws IOException, InterruptedException, NoSuchAlgorithmException,
+                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+        final File testWalletDirectory =
+                new File(workingDirectory.getPath() + File.separator + "keystore");
+        testWalletDirectory.mkdirs();
+        absoluteWalletPath =
+                testWalletDirectory
+                        + File.separator
+                        + WalletUtils.generateNewWalletFile("", testWalletDirectory);
+        final String[] args = {
+            "--java",
+            "-p",
+            "org.com",
+            "-n",
+            "Test",
+            "-o" + workingDirectory,
+            "-w",
+            absoluteWalletPath
+        };
         executeClassAsSubProcessAndReturnProcess(
                         ProjectCreator.class, Collections.emptyList(), Arrays.asList(args), true)
                 .start()
@@ -68,7 +92,8 @@ public class DeployRunnerTest extends ClassExecutor {
                                 Network.RINKEBY,
                                 accountManager,
                                 web3j,
-                                Paths.get(workingDirectory + File.separator + "Test")));
+                                Paths.get(workingDirectory + File.separator + "Test"),
+                                absoluteWalletPath));
         doNothing().when(deployRunner).deploy();
         deployRunner.deploy();
         verify(deployRunner, times(1)).deploy();

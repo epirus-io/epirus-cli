@@ -13,6 +13,8 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.ProjectCreatorCLIRunner;
@@ -39,11 +41,14 @@ public class JavaProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
     boolean generateTests = false;
 
     protected void createProject() {
+        Map<String, String> walletCredentials = new HashMap<>();
+        walletCredentials.put("path", walletPath);
+        walletCredentials.put("password", walletPassword);
         new ProjectImporter(outputDir, packageName, projectName)
                 .generateJava(
                         generateTests,
                         Optional.of(new File(solidityImportPath)),
-                        Optional.empty(),
+                        Optional.of(walletCredentials),
                         false,
                         false,
                         COMMAND_IMPORT);
