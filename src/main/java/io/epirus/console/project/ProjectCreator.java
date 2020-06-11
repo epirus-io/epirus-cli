@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +58,6 @@ public class ProjectCreator {
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValues(args, stringOptions);
-            System.out.println(Arrays.toString(args));
             new CommandLine(new JavaProjectCreatorCLIRunner()).execute(args);
         } else {
             args = getValues(args, stringOptions);

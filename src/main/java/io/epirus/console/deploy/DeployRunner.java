@@ -178,12 +178,9 @@ public class DeployRunner implements Runnable {
     @Override
     public void run() {
         if (walletJson.isEmpty()) {
-            System.out.println("wallet set from file");
             this.credentials =
                     ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
         } else {
-            System.out.println("wallet json set from argument");
-            System.out.println(walletJson);
             this.credentials = ProjectUtils.createCredentials(walletJson, walletPassword);
         }
 
@@ -209,7 +206,6 @@ public class DeployRunner implements Runnable {
             System.out.print(System.lineSeparator());
             runGradle(workingDirectory);
         } catch (Exception e) {
-            e.printStackTrace();
             printErrorAndExit(
                     "Epirus failed to deploy the project. For more information please see the log file.");
         }

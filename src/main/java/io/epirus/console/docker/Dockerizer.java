@@ -40,6 +40,13 @@ public class Dockerizer implements Runnable {
         executeDocker(new String[] {"docker", "build", "-t", "web3app", "."});
     }
 
+    public Dockerizer(boolean localMode, String command) {
+        this.localMode = localMode;
+        this.command = command;
+    }
+
+    public Dockerizer() {}
+
     private void dockerRun() throws IOException, InterruptedException {
         String walletJson =
                 new String(
@@ -71,7 +78,6 @@ public class Dockerizer implements Runnable {
 
     private void executeDocker(String[] command) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        System.out.println(String.join(" ", command));
         int exitCode =
                 processBuilder
                         .directory(Paths.get(System.getProperty("user.dir")).toFile())

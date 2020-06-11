@@ -30,7 +30,9 @@ public class <project_name> {
     public static void main(String[] args) throws Exception {
         try {
             ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
-            Credentials credentials = WalletUtils.loadCredentials("<password_file_name>","<wallet_name>");
+            String walletJson = System.getenv("EPIRUS_WALLET");
+            String walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "<password_file_name>");
+            Credentials credentials = walletJson != null ? WalletUtils.loadJsonCredentials(walletPassword, walletJson) : WalletUtils.loadCredentials(walletPassword,"<wallet_name>>");
             Web3j web3j = getDeployWeb3j();
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new StaticGasProvider(DefaultGasProvider.GAS_LIMIT, BigInteger.valueOf(7500000L)));
             callGreetMethod(helloWorld);
