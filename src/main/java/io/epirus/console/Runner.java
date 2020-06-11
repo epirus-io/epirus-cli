@@ -29,6 +29,7 @@ import io.epirus.console.utils.CliVersion;
 import io.epirus.console.wallet.WalletRunner;
 import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
+import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
@@ -74,7 +75,7 @@ public class Runner {
             performStartupTasks(args);
             switch (args[0]) {
                 case "docker":
-                    Dockerizer.main(tail(args));
+                    new CommandLine(new Dockerizer()).execute(tail(args));
                     break;
                 case "deploy":
                     DeployRunner.main(tail(args));

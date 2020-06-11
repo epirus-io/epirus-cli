@@ -94,8 +94,8 @@ public class DeployRunnerTest extends ClassExecutor {
                                 web3j,
                                 Paths.get(workingDirectory + File.separator + "Test"),
                                 absoluteWalletPath));
-        doNothing().when(deployRunner).deploy();
-        deployRunner.deploy();
-        verify(deployRunner, times(1)).deploy();
+        doNothing().when(deployRunner).run();
+        deployRunner.run();
+        verify(deployRunner, times(1)).run();
     }
 }

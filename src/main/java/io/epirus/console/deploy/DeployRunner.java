@@ -40,13 +40,12 @@ import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-public class DeployRunner {
+public class DeployRunner implements Runnable {
     public static final String USAGE = "epirus deploy <network>";
     private final Path workingDirectory;
-    private final Network network;
-    private final Credentials credentials;
+    private Credentials credentials;
     private final AccountManager accountManager;
-    private final Web3j web3j;
+    private Web3j web3j;
 
     @CommandLine.Option(
             names = {"-w", "--wallet-path"},
@@ -54,26 +53,29 @@ public class DeployRunner {
     public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
 
     @CommandLine.Option(
+            names = {"-j", "--wallet-json"},
+            description = "Wallet binary")
+    public String walletJson = "";
+
+    @CommandLine.Option(
             names = {"-k", "--wallet-password"},
             description = "Wallet password",
             showDefaultValue = ALWAYS)
     public String walletPassword = "";
 
-    public static void main(String[] args) throws Exception {
-        if (args.length == 1) {
-            Web3j web3j = null;
+    @CommandLine.Parameters(index = "0", description = "The network to deploy to.")
+    public Network network;
+
+    public static void main(String[] args) {
+        if (args.length >= 1) {
             if (config.getLoginToken() == null || config.getLoginToken().length() == 0) {
                 System.out.println(
                         "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://portal.epirus.io/account/signup). If you do have an account, you can log in below:");
                 AccountManager.main(new String[] {"login"});
             }
-            try {
-                web3j = Epirus.buildWeb3j(Network.valueOf(args[0].toUpperCase()));
-            } catch (Exception e) {
-                printErrorAndExit(e.getMessage());
-            }
-            new DeployRunner(Network.valueOf(args[0].toUpperCase()), new AccountManager(), web3j)
-                    .deploy();
+            new CommandLine(new DeployRunner())
+                    .setCaseInsensitiveEnumValuesAllowed(true)
+                    .execute(args);
         } else {
             Console.exitError(USAGE);
         }
@@ -93,31 +95,9 @@ public class DeployRunner {
         this.web3j = web3j;
     }
 
-    public DeployRunner(Network network, AccountManager accountManager, Web3j web3j) {
+    public DeployRunner() {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
-        this.network = network;
-        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
-        this.accountManager = accountManager;
-        this.web3j = web3j;
-    }
-
-    public void deploy() throws Exception {
-        coloredPrinter.println("Preparing to deploy your Web3App");
-        System.out.print(System.lineSeparator());
-        AccountUtils.accountInit(accountManager);
-        if (accountManager.checkIfAccountIsConfirmed(20)) {
-            printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
-            System.out.print(System.lineSeparator());
-        } else {
-            printErrorAndExit(
-                    "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
-        }
-        fundWallet();
-        uploadSolidityMetadata(network, workingDirectory);
-        System.out.print(System.lineSeparator());
-        coloredPrinter.println("Deploying your Web3App");
-        System.out.print(System.lineSeparator());
-        runGradle(workingDirectory);
+        this.accountManager = new AccountManager();
     }
 
     private void fundWallet() {
@@ -192,6 +172,46 @@ public class DeployRunner {
                             "https://%s.epirus.io/accounts/%s",
                             network.getNetworkName(), credentials.getAddress()),
                     Ansi.FColor.BLUE);
+        }
+    }
+
+    @Override
+    public void run() {
+        if (walletJson.isEmpty()) {
+            System.out.println("wallet set from file");
+            this.credentials =
+                    ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
+        } else {
+            System.out.println("wallet json set from argument");
+            System.out.println(walletJson);
+            this.credentials = ProjectUtils.createCredentials(walletJson, walletPassword);
+        }
+
+        try {
+
+            this.web3j = Epirus.buildWeb3j(network);
+            coloredPrinter.println("Preparing to deploy your Web3App");
+            System.out.print(System.lineSeparator());
+            AccountUtils.accountInit(accountManager);
+
+            if (accountManager.checkIfAccountIsConfirmed(20)) {
+                printInformationPairWithStatus("Account status", 20, "ACTIVE ", Ansi.FColor.GREEN);
+                System.out.print(System.lineSeparator());
+            } else {
+                printErrorAndExit(
+                        "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
+            }
+
+            fundWallet();
+            uploadSolidityMetadata(network, workingDirectory);
+            System.out.print(System.lineSeparator());
+            coloredPrinter.println("Deploying your Web3App");
+            System.out.print(System.lineSeparator());
+            runGradle(workingDirectory);
+        } catch (Exception e) {
+            e.printStackTrace();
+            printErrorAndExit(
+                    "Epirus failed to deploy the project. For more information please see the log file.");
         }
     }
 }
