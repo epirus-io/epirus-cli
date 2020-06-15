@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collections;
 
+import io.epirus.console.Epirus;
 import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
@@ -56,13 +57,10 @@ public class KotlinNewProjectCommandTest extends ClassExecutor {
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"new", "kotlin", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                NewProjectCommand.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
                         .inheritIO()
                         .start()
                         .waitFor();

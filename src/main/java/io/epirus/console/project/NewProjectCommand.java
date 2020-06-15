@@ -30,7 +30,7 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class NewProjectCommand implements  Runnable {
+public class NewProjectCommand implements Runnable {
 
     public static final String COMMAND_NEW = "new";
     public static final String COMMAND_JAVA = "--java";

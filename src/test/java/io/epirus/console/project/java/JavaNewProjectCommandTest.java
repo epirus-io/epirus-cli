@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import io.epirus.console.Epirus;
-import io.epirus.console.EpirusCommand;
 import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
@@ -61,10 +60,7 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
         final String[] args = {"new", "java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                Epirus.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
                         .inheritIO()
                         .start()
                         .waitFor();
