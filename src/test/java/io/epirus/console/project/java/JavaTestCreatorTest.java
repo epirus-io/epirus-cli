@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ProjectImporter;
-import io.epirus.console.project.UnitTestCreator;
+import io.epirus.console.project.ImportProjectCommand;
+import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -68,7 +68,7 @@ public class JavaTestCreatorTest extends ClassExecutor {
                         .getCanonicalPath();
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class,
+                                ImportProjectCommand.class,
                                 Collections.emptyList(),
                                 Arrays.asList(args),
                                 true)
@@ -79,7 +79,7 @@ public class JavaTestCreatorTest extends ClassExecutor {
         final String[] unitTestsArgs = {"--java", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                UnitTestCreator.class,
+                                UnitTestCommand.class,
                                 Collections.emptyList(),
                                 Arrays.asList(unitTestsArgs),
                                 true)

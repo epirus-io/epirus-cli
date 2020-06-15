@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ProjectImporter;
+import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,7 +62,7 @@ public class KotlinProjectImporterTest extends ClassExecutor {
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class,
+                                ImportProjectCommand.class,
                                 Collections.emptyList(),
                                 Arrays.asList(args),
                                 true)
@@ -96,7 +96,10 @@ public class KotlinProjectImporterTest extends ClassExecutor {
         final String[] args = {"-p=", "-n=", "-s="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        ProjectImporter.class, Collections.emptyList(), Arrays.asList(args), false);
+                        ImportProjectCommand.class,
+                        Collections.emptyList(),
+                        Arrays.asList(args),
+                        false);
         pb.redirectErrorStream(true);
         Process process = pb.start();
         try (BufferedReader reader =

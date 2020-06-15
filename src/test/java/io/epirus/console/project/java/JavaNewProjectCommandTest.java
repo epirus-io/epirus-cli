@@ -13,13 +13,17 @@
 package io.epirus.console.project.java;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ImportProjectCommand;
+import io.epirus.console.Epirus;
+import io.epirus.console.EpirusCommand;
+import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,38 +35,33 @@ import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JavaProjectImporterTest extends ClassExecutor {
-    static String tempDirPath;
-    private String formattedPath =
-            new File(String.join(separator, "src", "test", "resources", "Solidity"))
-                    .getAbsolutePath();
+public class JavaNewProjectCommandTest extends ClassExecutor {
+    private static String tempDirPath;
 
     @BeforeAll
-    public static void setUpStreams() {
+    static void setUpStreams() {
         tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
-        final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
-        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
-                new JavaProjectImporterCLIRunner();
-        new CommandLine(projectImporterCLIRunner).parseArgs(args);
-        assertEquals(projectImporterCLIRunner.packageName, "org.com");
-        assertEquals(projectImporterCLIRunner.projectName, "Test");
-        assertEquals(projectImporterCLIRunner.solidityImportPath, tempDirPath);
+        final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
+        final JavaProjectCreatorCLIRunner javaProjectCreatorCLIRunner =
+                new JavaProjectCreatorCLIRunner();
+        new CommandLine(javaProjectCreatorCLIRunner).parseArgs(args);
+        assert javaProjectCreatorCLIRunner.packageName.equals("org.com");
+        assert javaProjectCreatorCLIRunner.projectName.equals("Test");
+        assert javaProjectCreatorCLIRunner.outputDir.equals(tempDirPath);
     }
 
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {
-            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
-        };
+        final String[] args = {"new", "java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ImportProjectCommand.class,
+                                Epirus.class,
                                 Collections.emptyList(),
                                 Arrays.asList(args),
                                 true)
@@ -74,29 +73,30 @@ public class JavaProjectImporterTest extends ClassExecutor {
 
     @Test
     @Order(3)
-    public void verifyWhenInteractiveThatTestsHaveBeenGenerated() {
-        String pathToTests =
-                String.join(
-                        separator,
-                        tempDirPath,
-                        "Test5",
-                        "src",
-                        "test",
-                        "java",
-                        "org",
-                        "com",
-                        "generated",
-                        "contracts",
-                        "Test2Test.java");
-        assertTrue(new File(pathToTests).exists());
+    public void verifyThatTestsAreGenerated() {
+        final File pathToTests =
+                new File(
+                        String.join(
+                                separator,
+                                tempDirPath,
+                                "Test",
+                                "src",
+                                "test",
+                                "java",
+                                "org",
+                                "com",
+                                "generated",
+                                "contracts",
+                                "HelloWorldTest.java"));
+        assertTrue(pathToTests.exists());
     }
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"--java", "-p=", "-n=", "-s="};
+        final String[] args = {"--java", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        ImportProjectCommand.class,
+                        NewProjectCommand.class,
                         Collections.emptyList(),
                         Arrays.asList(args),
                         false);
@@ -114,5 +114,29 @@ public class JavaProjectImporterTest extends ClassExecutor {
                             .count());
         }
         process.waitFor();
+    }
+
+    @Test
+    public void testWhenInteractiveAndArgumentsAreCorrect()
+            throws IOException, InterruptedException {
+        final String[] args = {"new", "--java"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                NewProjectCommand.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("test", 0, "test".length());
+        writer.newLine();
+        writer.write("org.com", 0, "org.com".length());
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
     }
 }

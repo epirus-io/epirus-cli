@@ -16,31 +16,51 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.project.ProjectCreator;
-import io.epirus.console.project.ProjectCreatorCLIRunner;
+import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.account.AccountService;
+import io.epirus.console.account.AccountUtils;
+import io.epirus.console.project.InteractiveOptions;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
-import static io.epirus.console.project.ProjectCreator.COMMAND_KOTLIN;
-import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
+import static io.epirus.console.project.NewProjectCommand.COMMAND_NEW;
 
 @CommandLine.Command(
-        name = COMMAND_KOTLIN,
+        name = "kotlin",
+        description = "Create a new kotlin Web3j Project",
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        version = "4.0",
-        sortOptions = false)
-public class KotlinProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
+        versionProvider = EpirusVersionProvider.class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = "Epirus CLI is licensed under the Apache License 2.0")
+public class KotlinProjectCreatorCLIRunner extends KotlinProjectCLIRunner {
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        new ProjectCreator(outputDir, packageName, projectName)
-                .generateKotlin(
-                        true,
-                        Optional.empty(),
-                        Optional.of(walletCredentials),
-                        true,
-                        true,
-                        COMMAND_NEW);
+        generateKotlin(
+                true, Optional.empty(), Optional.of(walletCredentials), true, true, COMMAND_NEW);
+    }
+
+    @NotNull
+    public void buildInteractively() {
+        InteractiveOptions interactiveOptions = new InteractiveOptions();
+        projectName = interactiveOptions.getProjectName();
+        packageName = interactiveOptions.getPackageName();
+
+        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        walletPath = walletCredentials.get("path");
+        walletPassword = walletCredentials.get("password");
+
+        interactiveOptions
+                .getProjectDestination(projectName)
+                .ifPresent(projectDest -> outputDir = projectDest);
+
+        AccountUtils.accountInit(new AccountService());
     }
 }

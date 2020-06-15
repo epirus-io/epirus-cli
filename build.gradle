@@ -11,7 +11,7 @@ plugins {
 }
 
 description 'epirus command line tools'
-mainClassName = 'io.epirus.console.Runner'
+mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
 ext {
@@ -47,6 +47,7 @@ apply {
 
 repositories {
     maven { url "https://dl.bintray.com/ethereum/maven/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 test {
@@ -65,7 +66,7 @@ distTar {
 }
 
 dependencies {
-    implementation "org.web3j:codegen:$web3jVersion",
+    implementation "org.web3j:codegen:4.7.0-SNAPSHOT",
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
