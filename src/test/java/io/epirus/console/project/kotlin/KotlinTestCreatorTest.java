@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ImportProjectCommand;
-import io.epirus.console.project.UnitTestCommand;
+import io.epirus.console.Epirus;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +50,12 @@ public class KotlinTestCreatorTest extends ClassExecutor {
     @Test
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
+            "import",
+            "kotlin",
+            "-p=org.com",
+            "-n=Testing",
+            "-o=" + tempDirPath,
+            "-s=" + formattedPath
         };
         final String pathToJavaWrappers =
                 new File(
@@ -68,18 +72,17 @@ public class KotlinTestCreatorTest extends ClassExecutor {
                         .getCanonicalPath();
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ImportProjectCommand.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
                         .inheritIO()
                         .start()
                         .waitFor();
         Assertions.assertEquals(0, exitCode);
-        final String[] unitTestsArgs = {"-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
+        final String[] unitTestsArgs = {
+            "generate-tests", "kotlin", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
+        };
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                UnitTestCommand.class,
+                                Epirus.class,
                                 Collections.emptyList(),
                                 Arrays.asList(unitTestsArgs),
                                 true)

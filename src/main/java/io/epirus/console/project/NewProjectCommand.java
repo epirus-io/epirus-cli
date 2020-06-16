@@ -33,7 +33,6 @@ import picocli.CommandLine;
 public class NewProjectCommand implements Runnable {
 
     public static final String COMMAND_NEW = "new";
-    public static final String COMMAND_JAVA = "--java";
 
     @Override
     public void run() {

@@ -23,6 +23,7 @@ import io.epirus.console.config.ConfigManager;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.NewProjectCommand;
+import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.testing.ProjectTestCommand;
 import io.epirus.console.security.ContractAuditCommand;
 import io.epirus.console.wallet.WalletCommand;
@@ -52,7 +53,8 @@ import static org.web3j.codegen.Console.exitSuccess;
             AccountCommand.class,
             LoginCommand.class,
             LogoutCommand.class,
-            ProjectTestCommand.class
+            ProjectTestCommand.class,
+            UnitTestCommand.class
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,
@@ -85,6 +87,17 @@ public class EpirusCommand {
         this.environmentVariables = environmentVariables;
     }
 
+    // FIXME: not sure where this goes
+    private static void performStartupTasks(String[] args) throws IOException, URISyntaxException {
+        if (args[0].equals("--telemetry")) {
+            Telemetry.uploadTelemetry(args);
+            Updater.onlineUpdateCheck();
+            exitSuccess();
+        } else if (!config.isTelemetryDisabled()) {
+            Telemetry.invokeTelemetryUpload(args);
+        }
+    }
+
     public int parse(final String[] args) {
         final CommandLine commandLine = new CommandLine(this);
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
@@ -98,16 +111,5 @@ public class EpirusCommand {
         }
 
         return commandLine.execute(args);
-    }
-
-    // FIXME: not sure where this goes
-    private static void performStartupTasks(String[] args) throws IOException, URISyntaxException {
-        if (args[0].equals("--telemetry")) {
-            Telemetry.uploadTelemetry(args);
-            Updater.onlineUpdateCheck();
-            exitSuccess();
-        } else if (!config.isTelemetryDisabled()) {
-            Telemetry.invokeTelemetryUpload(args);
-        }
     }
 }

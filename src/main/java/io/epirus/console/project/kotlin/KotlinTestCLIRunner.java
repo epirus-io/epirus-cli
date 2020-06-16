@@ -19,7 +19,6 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
-import io.epirus.console.project.java.JavaTestCLIRunner;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
@@ -32,7 +31,6 @@ import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        subcommands = {JavaTestCLIRunner.class, KotlinTestCLIRunner.class},
         versionProvider = EpirusVersionProvider.class,
         synopsisHeading = "%n",
         descriptionHeading = "%nDescription:%n%n",
@@ -43,13 +41,13 @@ public class KotlinTestCLIRunner implements Runnable {
     @CommandLine.Option(
             names = {"-i", "--java-wrapper-directory"},
             description = "The class path of your generated wrapper.",
-            required = true)
+            required = false)
     public String javaWrapperDir;
 
     @CommandLine.Option(
             names = {"-o", "--output-directory"},
             description = "The path where the unit tests will be generated.",
-            required = true)
+            required = false)
     public String unitTestOutputDir;
 
     @VisibleForTesting

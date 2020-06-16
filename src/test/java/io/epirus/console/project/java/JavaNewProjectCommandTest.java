@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import io.epirus.console.Epirus;
 import io.epirus.console.project.NewProjectCommand;
@@ -57,13 +59,8 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"new", "java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
-        int exitCode =
-                executeClassAsSubProcessAndReturnProcess(
-                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
-                        .inheritIO()
-                        .start()
-                        .waitFor();
+        final String[] args = {"java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        int exitCode = new CommandLine(NewProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
     }
 
@@ -89,13 +86,10 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"--java", "-n=", "-p="};
+        final String[] args = {"new", "java", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        NewProjectCommand.class,
-                        Collections.emptyList(),
-                        Arrays.asList(args),
-                        false);
+                        Epirus.class, Collections.emptyList(), Arrays.asList(args), false);
         pb.redirectErrorStream(true);
         Process process = pb.start();
         try (BufferedReader reader =
@@ -115,23 +109,34 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
-        final String[] args = {"new", "--java"};
+        final String[] args = {"new", "java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
-                                NewProjectCommand.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
                         .start();
+
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
+
+        writer.write("Test1", 0, "Test1".length());
         writer.newLine();
         writer.write("org.com", 0, "org.com".length());
+        writer.newLine();
+        writer.write("y", 0, "y".length());
+        writer.newLine();
+        writer.write("0", 0, "0".length());
+        writer.newLine();
+        writer.write(" ", 0, " ".length());
         writer.newLine();
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
         writer.close();
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(string -> System.out.println(string + "\n"));
+        }
+
         process.waitFor();
         assertEquals(0, process.exitValue());
     }

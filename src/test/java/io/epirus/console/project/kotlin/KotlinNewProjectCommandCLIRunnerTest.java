@@ -33,17 +33,7 @@ public class KotlinNewProjectCommandCLIRunnerTest {
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
         Assertions.assertThrows(
-                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
-    }
-
-    @Test
-    public void testWhenNoArgsArePassed() {
-        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
-                new KotlinProjectCreatorCLIRunner();
-        final String[] args = {};
-        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
-        Assertions.assertThrows(
-                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
+                CommandLine.UnmatchedArgumentException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test

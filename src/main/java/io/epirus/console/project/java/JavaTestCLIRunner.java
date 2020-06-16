@@ -19,7 +19,6 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
-import io.epirus.console.project.kotlin.KotlinTestCLIRunner;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
@@ -32,7 +31,6 @@ import org.web3j.codegen.unit.gen.java.JavaClassGenerator;
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        subcommands = {JavaTestCLIRunner.class, KotlinTestCLIRunner.class},
         versionProvider = EpirusVersionProvider.class,
         synopsisHeading = "%n",
         descriptionHeading = "%nDescription:%n%n",

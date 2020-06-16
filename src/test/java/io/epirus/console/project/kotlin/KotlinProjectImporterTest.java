@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ImportProjectCommand;
+import io.epirus.console.Epirus;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,14 +58,17 @@ public class KotlinProjectImporterTest extends ClassExecutor {
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "import",
+            "kotlin",
+            "-p=org.com",
+            "-n=Test5",
+            "-o=" + tempDirPath,
+            "-s=" + formattedPath,
+            "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ImportProjectCommand.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -93,13 +96,10 @@ public class KotlinProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"-p=", "-n=", "-s="};
+        final String[] args = {"import", "kotlin", "-p=", "-n=", "-s="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        ImportProjectCommand.class,
-                        Collections.emptyList(),
-                        Arrays.asList(args),
-                        false);
+                        Epirus.class, Collections.emptyList(), Arrays.asList(args), false);
         pb.redirectErrorStream(true);
         Process process = pb.start();
         try (BufferedReader reader =
