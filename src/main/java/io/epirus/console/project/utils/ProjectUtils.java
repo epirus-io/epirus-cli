@@ -101,6 +101,15 @@ public class ProjectUtils {
         }
     }
 
+    public static Credentials createCredentials(String walletJson, String walletPassword) {
+        try {
+            return WalletUtils.loadJsonCredentials(walletPassword, walletJson);
+        } catch (IOException | CipherException e) {
+            Console.exitError("Could not create credentials: " + e.getMessage());
+        }
+        return null;
+    }
+
     public static Credentials createCredentials(Path walletPath, String walletPassword) {
         try {
             return WalletUtils.loadCredentials(walletPassword, walletPath.toFile());

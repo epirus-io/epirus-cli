@@ -34,7 +34,11 @@ public class ProjectWallet {
                     InvalidAlgorithmParameterException, CipherException, IOException {
         this.walletPassword = walletPassword;
         this.walletPath = walletPath;
-        this.walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletPath));
+        File walletFile = new File(walletPath);
+        if (!walletFile.exists() && !walletFile.mkdirs()) {
+            throw new IOException("Failed to create keystore directory");
+        }
+        this.walletName = WalletUtils.generateNewWalletFile(walletPassword, walletFile);
         this.walletPasswordName =
                 walletName.substring(
                                 walletName.lastIndexOf("--") + 2, walletName.lastIndexOf(".json"))

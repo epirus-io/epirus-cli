@@ -12,22 +12,93 @@
  */
 package io.epirus.console.docker;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import org.apache.commons.lang3.ArrayUtils;
+import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
 import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
 
-public class Dockerizer {
-    private static final String USAGE = "docker build|run";
+@CommandLine.Command(name = "docker")
+public class Dockerizer implements Runnable {
+    @CommandLine.Option(names = {"-l", "--local"})
+    boolean localMode;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        if (args.length < 1) {
-            Console.exitError(USAGE);
-        } else {
-            switch (args[0]) {
+    @CommandLine.Parameters(index = "0", description = "The docker command to run.")
+    private String command;
+
+    private static final String USAGE = "docker build|run";
+    private File workingDirectory;
+
+    private void dockerBuild() throws IOException, InterruptedException {
+        executeDocker(new String[] {"docker", "build", "-t", "web3app", "."});
+    }
+
+    public Dockerizer(File workingDirectory, boolean localMode, String command) {
+        this.workingDirectory = workingDirectory;
+        this.localMode = localMode;
+        this.command = command;
+    }
+
+    public Dockerizer(File workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
+
+    private void dockerRun() throws IOException, InterruptedException {
+        String walletJson =
+                new String(
+                        Files.readAllBytes(
+                                Paths.get(DEFAULT_WALLET_LOOKUP_PATH, DEFAULT_WALLET_NAME)));
+        String[] args =
+                new String[] {
+                    "docker",
+                    "run",
+                    "--env",
+                    String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
+                    "--env",
+                    String.format("EPIRUS_WALLET=%s", walletJson),
+                };
+
+        if (localMode) {
+            args =
+                    ArrayUtils.addAll(
+                            args,
+                            "-v",
+                            String.format(
+                                    "%s/.epirus:/root/.epirus", System.getProperty("user.home")));
+        }
+
+        args = ArrayUtils.addAll(args, "web3app");
+
+        executeDocker(args);
+    }
+
+    private void executeDocker(String[] command) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        int exitCode =
+                processBuilder
+                        .directory(workingDirectory)
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start()
+                        .waitFor();
+        if (exitCode != 0) {
+            printErrorAndExit("Could not run project.");
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            switch (command) {
                 case "build":
                     dockerBuild();
                     break;
@@ -37,34 +108,8 @@ public class Dockerizer {
                 default:
                     Console.exitError(USAGE);
             }
-        }
-    }
-
-    private static void dockerBuild() throws IOException, InterruptedException {
-        executeDocker(new String[] {"docker", "build", "-t", "web3app", "."});
-    }
-
-    private static void dockerRun() throws IOException, InterruptedException {
-        executeDocker(
-                new String[] {
-                    "docker",
-                    "run",
-                    "--env",
-                    String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
-                    "web3app"
-                });
-    }
-
-    private static void executeDocker(String[] command) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        int exitCode =
-                processBuilder
-                        .directory(Paths.get(System.getProperty("user.dir")).toFile())
-                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                        .start()
-                        .waitFor();
-        if (exitCode != 0) {
-            printErrorAndExit("Could not build project.");
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

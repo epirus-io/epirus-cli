@@ -13,6 +13,7 @@
 package io.epirus.console.utils;
 
 import java.io.Console;
+import java.util.Scanner;
 
 /** System Console device wrapper. */
 public class ConsoleDevice implements IODevice {
@@ -31,6 +32,7 @@ public class ConsoleDevice implements IODevice {
 
     @Override
     public char[] readPassword(String fmt, Object... args) {
-        return console.readPassword(fmt, args);
+        if (console != null) return console.readPassword(fmt, args);
+        return new Scanner(System.in).nextLine().toCharArray();
     }
 }
