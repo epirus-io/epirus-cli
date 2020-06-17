@@ -45,8 +45,10 @@ public class AccountUtils {
     public static void accountDefaultWalletInit() {
         if (!ProjectWalletUtils.userHasGlobalWallet()) {
             try {
+
                 ProjectWallet projectWallet =
                         new ProjectWallet("", ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH);
+
                 boolean walletWasRenamed =
                         new File(
                                         projectWallet.getWalletPath()
@@ -67,6 +69,7 @@ public class AccountUtils {
                     | InvalidAlgorithmParameterException
                     | CipherException
                     | IOException e) {
+                e.printStackTrace();
                 Console.exitError("Could not create default wallet reason: " + e.getMessage());
             }
         } else {

@@ -12,6 +12,7 @@
  */
 package io.epirus.console;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -75,7 +76,8 @@ public class Runner {
             performStartupTasks(args);
             switch (args[0]) {
                 case "docker":
-                    new CommandLine(new Dockerizer()).execute(tail(args));
+                    new CommandLine(new Dockerizer(new File(System.getProperty("user.dir"))))
+                            .execute(tail(args));
                     break;
                 case "deploy":
                     DeployRunner.main(tail(args));

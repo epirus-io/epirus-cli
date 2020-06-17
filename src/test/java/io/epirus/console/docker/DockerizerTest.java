@@ -12,16 +12,38 @@
  */
 package io.epirus.console.docker;
 
-import io.epirus.console.ProjectTest;
-import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.nio.file.Paths;
 
+import io.epirus.console.ProjectTest;
+import io.epirus.console.account.AccountUtils;
+import io.epirus.console.config.ConfigManager;
+import org.junit.jupiter.api.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DockerizerTest extends ProjectTest {
 
-    @Test
-    public void testDockerBuild() {
-        new Dockerizer(true, "run").run();
+    @BeforeEach
+    public void setupWallet() {
+        AccountUtils.accountDefaultWalletInit();
+        ConfigManager.setDevelopment("", "", "", "<login_token>", true);
     }
 
+    @Disabled("must have a login token & docker installed")
     @Test
-    public void testDockerRun() {}
+    @Order(1)
+    public void testDockerBuild() {
+        new Dockerizer(
+                        Paths.get(workingDirectory.getAbsolutePath(), "Test").toFile(),
+                        true,
+                        "build")
+                .run();
+    }
+
+    @Disabled("must have a login token & docker installed")
+    @Test
+    @Order(2)
+    public void testDockerRun() {
+        new Dockerizer(new File(System.getProperty("user.home")), true, "run").run();
+    }
 }

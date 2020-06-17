@@ -12,6 +12,7 @@
  */
 package io.epirus.console.docker;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -35,17 +36,21 @@ public class Dockerizer implements Runnable {
     private String command;
 
     private static final String USAGE = "docker build|run";
+    private File workingDirectory;
 
     private void dockerBuild() throws IOException, InterruptedException {
         executeDocker(new String[] {"docker", "build", "-t", "web3app", "."});
     }
 
-    public Dockerizer(boolean localMode, String command) {
+    public Dockerizer(File workingDirectory, boolean localMode, String command) {
+        this.workingDirectory = workingDirectory;
         this.localMode = localMode;
         this.command = command;
     }
 
-    public Dockerizer() {}
+    public Dockerizer(File workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
     private void dockerRun() throws IOException, InterruptedException {
         String walletJson =
@@ -71,7 +76,7 @@ public class Dockerizer implements Runnable {
                                     "%s/.epirus:/root/.epirus", System.getProperty("user.home")));
         }
 
-        args = ArrayUtils.addAll(args, "web3app", "-j", walletJson);
+        args = ArrayUtils.addAll(args, "web3app");
 
         executeDocker(args);
     }
@@ -80,7 +85,7 @@ public class Dockerizer implements Runnable {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         int exitCode =
                 processBuilder
-                        .directory(Paths.get(System.getProperty("user.dir")).toFile())
+                        .directory(workingDirectory)
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start()

@@ -53,11 +53,6 @@ public class DeployRunner implements Runnable {
     public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
 
     @CommandLine.Option(
-            names = {"-j", "--wallet-json"},
-            description = "Wallet binary")
-    public String walletJson = "";
-
-    @CommandLine.Option(
             names = {"-k", "--wallet-password"},
             description = "Wallet password",
             showDefaultValue = ALWAYS)
@@ -177,7 +172,8 @@ public class DeployRunner implements Runnable {
 
     @Override
     public void run() {
-        if (walletJson.isEmpty()) {
+        String walletJson = System.getenv("WALLET_JSON");
+        if (walletJson == null || walletJson.isEmpty()) {
             this.credentials =
                     ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
         } else {
