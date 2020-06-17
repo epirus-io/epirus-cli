@@ -55,10 +55,7 @@ public class ProjectTest extends ClassExecutor {
         };
         int result =
                 executeClassAsSubProcessAndReturnProcess(
-                                Epirus.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
                         .start()
                         .waitFor();
         if (result != 0) {

@@ -21,7 +21,6 @@ import io.epirus.console.account.AccountService;
 import org.junit.jupiter.api.Test;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 
