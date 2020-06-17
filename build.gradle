@@ -15,7 +15,7 @@ mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.6.0"
+    web3jVersion = "4.6.1"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
@@ -66,7 +66,7 @@ distTar {
 }
 
 dependencies {
-    implementation "org.web3j:codegen:4.7.0-SNAPSHOT",
+    implementation "org.web3j:codegen:$web3jVersion",
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
@@ -78,7 +78,6 @@ dependencies {
             "com.sun.xml.bind:jaxb-core:2.2.11",
             "com.sun.xml.bind:jaxb-impl:2.2.11",
             "javax.activation:activation:1.1.1",
-            "org.web3j:hosted-providers:$web3jVersion",
             "com.google.code.gson:gson:$gsonVersion",
             "javax.activation:activation:1.1.1",
             "org.apache.commons:commons-lang3:3.9",

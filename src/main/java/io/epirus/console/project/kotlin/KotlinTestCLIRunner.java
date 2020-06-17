@@ -100,10 +100,8 @@ public class KotlinTestCLIRunner implements Runnable {
                                                                 .lastIndexOf(".")),
                                         unitTestOutputDir)
                                 .writeClass();
-                    } catch (IOException e) {
-                        Console.exitError(e);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Console.exitError(e);
                     }
                 });
     }
