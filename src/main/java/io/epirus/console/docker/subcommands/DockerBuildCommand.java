@@ -38,12 +38,12 @@ import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerBuildCommand implements DockerOperations, Runnable {
 
-    @CommandLine.Option(names = {"-w", "--wallet-path"})
-    Path walletPath = Paths.get(DEFAULT_WALLET_LOOKUP_PATH, DEFAULT_WALLET_NAME);
+    @CommandLine.Option(names = {"-d", "--directory"})
+    Path directory = Paths.get(System.getProperty("user.dir"));
 
     public void run() {
         try {
-            executeDocker(new String[] {"docker", "build", "-t", "web3app", "."}, walletPath);
+            executeDocker(new String[] {"docker", "build", "-t", "web3app", "."}, directory);
         } catch (Exception e) {
             Console.exitError(e);
         }

@@ -47,6 +47,9 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @CommandLine.Option(names = {"-w", "--wallet-path"})
     Path walletPath = Paths.get(DEFAULT_WALLET_LOOKUP_PATH, DEFAULT_WALLET_NAME);
 
+    @CommandLine.Option(names = {"-d", "--directory"})
+    Path directory = Paths.get(System.getProperty("user.dir"));
+
     @Override
     public void run() {
         String walletJson = null;
@@ -77,7 +80,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         args = ArrayUtils.addAll(args, "web3app");
 
         try {
-            executeDocker(args, walletPath);
+            executeDocker(args, directory);
         } catch (Exception e) {
             Console.exitError(e);
         }

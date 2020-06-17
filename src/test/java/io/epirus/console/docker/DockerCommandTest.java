@@ -36,7 +36,7 @@ public class DockerCommandTest extends ProjectTest {
         new CommandLine(new DockerCommand())
                 .execute(
                         "build",
-                        "-w",
+                        "-d",
                         Paths.get(workingDirectory.getAbsolutePath(), "Test").toString());
     }
 
