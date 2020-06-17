@@ -21,9 +21,6 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
-
 @CommandLine.Command(
         name = "build",
         description = "Build project in docker",
