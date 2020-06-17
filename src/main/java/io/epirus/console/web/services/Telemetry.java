@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.epirus.console.Runner;
+import io.epirus.console.EpirusCommand;
 import io.epirus.console.utils.OSUtils;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -34,7 +34,12 @@ public class Telemetry {
     public static void invokeTelemetryUpload(String... args)
             throws URISyntaxException, IOException {
         final String jarFile =
-                new File(Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+                new File(
+                                EpirusCommand.class
+                                        .getProtectionDomain()
+                                        .getCodeSource()
+                                        .getLocation()
+                                        .toURI())
                         .getPath();
         if (jarFile.endsWith(".jar")) {
             Runtime.getRuntime()

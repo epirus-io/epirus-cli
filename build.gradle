@@ -11,11 +11,11 @@ plugins {
 }
 
 description 'epirus command line tools'
-mainClassName = 'io.epirus.console.Runner'
+mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.6.0"
+    web3jVersion = "4.6.1"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
@@ -47,6 +47,7 @@ apply {
 
 repositories {
     maven { url "https://dl.bintray.com/ethereum/maven/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 test {
@@ -77,7 +78,6 @@ dependencies {
             "com.sun.xml.bind:jaxb-core:2.2.11",
             "com.sun.xml.bind:jaxb-impl:2.2.11",
             "javax.activation:activation:1.1.1",
-            "org.web3j:hosted-providers:$web3jVersion",
             "com.google.code.gson:gson:$gsonVersion",
             "javax.activation:activation:1.1.1",
             "org.apache.commons:commons-lang3:3.9",

@@ -25,20 +25,28 @@ import org.web3j.crypto.WalletUtils;
 
 import static org.web3j.codegen.Console.exitError;
 
-/** Common functions used by the wallet console tools. */
-abstract class WalletManager {
+/** Interactive wallet console */
+public abstract class WalletManager {
 
     final IODevice console;
 
-    WalletManager() {
+    public WalletManager() {
         console = new ConsoleDevice();
     }
 
-    WalletManager(IODevice console) {
+    public WalletManager(IODevice console) {
         this.console = console;
     }
 
-    String getPassword(String initialPrompt) {
+    protected String request(final String message, final Object... args) {
+        return console.readLine(message, args).trim();
+    }
+
+    protected void notify(final String message, final Object... args) {
+        console.printf(message, args);
+    }
+
+    protected String getPassword(String initialPrompt) {
         while (true) {
             char[] input1 = console.readPassword(initialPrompt);
             char[] input2 = console.readPassword("Please re-enter the password: ");
@@ -51,7 +59,7 @@ abstract class WalletManager {
         }
     }
 
-    String getDestinationDir() {
+    protected String getDestinationDir() {
         String defaultDir = WalletUtils.getTestnetKeyDirectory();
         String destinationDir =
                 console.readLine(
@@ -65,7 +73,7 @@ abstract class WalletManager {
         }
     }
 
-    File createDir(String destinationDir) {
+    protected File createDir(String destinationDir) {
         File destination = new File(destinationDir);
 
         if (!destination.exists()) {
@@ -83,7 +91,7 @@ abstract class WalletManager {
         return destination;
     }
 
-    Credentials getCredentials(File walletFile) {
+    protected Credentials getCredentials(File walletFile) {
         if (!walletFile.exists() || !walletFile.isFile()) {
             exitError("Unable to read wallet file: " + walletFile);
         }
