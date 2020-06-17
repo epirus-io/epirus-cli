@@ -17,16 +17,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.project.ProjectCreatorCLIRunner;
-import io.epirus.console.project.ProjectImporter;
-import picocli.CommandLine.Command;
+import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.project.InteractiveOptions;
+import org.jetbrains.annotations.NotNull;
+import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
-import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
+import static io.epirus.console.project.ImportProjectCommand.COMMAND_IMPORT;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@Command(name = COMMAND_IMPORT)
-public class JavaProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
+@CommandLine.Command(
+        name = "java",
+        description = "Import existing solidity contracts into a new Java Web3j Project",
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider.class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = "Epirus CLI is licensed under the Apache License 2.0")
+public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
     @Option(
             names = {"-s", "--solidity-path"},
             description = "Path to solidity file/folder",
@@ -44,13 +56,30 @@ public class JavaProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        new ProjectImporter(outputDir, packageName, projectName)
-                .generateJava(
-                        generateTests,
-                        Optional.of(new File(solidityImportPath)),
-                        Optional.of(walletCredentials),
-                        false,
-                        false,
-                        COMMAND_IMPORT);
+        generateJava(
+                generateTests,
+                Optional.of(new File(solidityImportPath)),
+                Optional.of(walletCredentials),
+                false,
+                false,
+                COMMAND_IMPORT);
+    }
+
+    @NotNull
+    protected void buildInteractively() {
+        InteractiveOptions interactiveOptions = new InteractiveOptions();
+        projectName = interactiveOptions.getProjectName();
+        packageName = interactiveOptions.getPackageName();
+        solidityImportPath = interactiveOptions.getSolidityProjectPath();
+
+        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        walletPath = walletCredentials.get("path");
+        walletPassword = walletCredentials.get("password");
+
+        interactiveOptions
+                .getProjectDestination(projectName)
+                .ifPresent(projectDest -> outputDir = projectDest);
+
+        generateTests = interactiveOptions.userWantsTests();
     }
 }

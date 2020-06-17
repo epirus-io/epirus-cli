@@ -19,7 +19,6 @@ import java.util.Optional;
 import io.epirus.console.project.AbstractProject;
 import io.epirus.console.project.Project;
 import io.epirus.console.project.ProjectStructure;
-import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.project.templates.java.JavaTemplateBuilder;
 import io.epirus.console.project.templates.java.JavaTemplateProvider;
 
@@ -46,7 +45,7 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
-        new UnitTestCreator(
+        new JavaTestCLIRunner(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
                 .generateJava();

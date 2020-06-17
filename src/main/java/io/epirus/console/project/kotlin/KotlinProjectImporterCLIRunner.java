@@ -17,14 +17,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.project.ProjectImporter;
+import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.project.InteractiveOptions;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
-import static io.epirus.console.project.ProjectImporter.COMMAND_IMPORT;
+import static io.epirus.console.project.ImportProjectCommand.COMMAND_IMPORT;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@CommandLine.Command(name = COMMAND_IMPORT)
-public class KotlinProjectImporterCLIRunner extends KotlinProjectCreatorCLIRunner {
+@CommandLine.Command(
+        name = "kotlin",
+        description = "Import existing solidity contracts into a new Kotlin Web3j Project",
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider.class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = "Epirus CLI is licensed under the Apache License 2.0")
+public class KotlinProjectImporterCLIRunner extends KotlinProjectCLIRunner {
     @CommandLine.Option(
             names = {"-s", "--solidity-path"},
             description = "Path to solidity file/folder",
@@ -42,13 +55,30 @@ public class KotlinProjectImporterCLIRunner extends KotlinProjectCreatorCLIRunne
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        new ProjectImporter(outputDir, packageName, projectName)
-                .generateKotlin(
-                        generateTests,
-                        Optional.of(new File(solidityImportPath)),
-                        Optional.of(walletCredentials),
-                        false,
-                        false,
-                        COMMAND_IMPORT);
+        generateKotlin(
+                generateTests,
+                Optional.of(new File(solidityImportPath)),
+                Optional.of(walletCredentials),
+                false,
+                false,
+                COMMAND_IMPORT);
+    }
+
+    @NotNull
+    protected void buildInteractively() {
+        InteractiveOptions interactiveOptions = new InteractiveOptions();
+        projectName = interactiveOptions.getProjectName();
+        packageName = interactiveOptions.getPackageName();
+        solidityImportPath = interactiveOptions.getSolidityProjectPath();
+
+        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        walletPath = walletCredentials.get("path");
+        walletPassword = walletCredentials.get("password");
+
+        interactiveOptions
+                .getProjectDestination(projectName)
+                .ifPresent(projectDest -> outputDir = projectDest);
+
+        generateTests = interactiveOptions.userWantsTests();
     }
 }
