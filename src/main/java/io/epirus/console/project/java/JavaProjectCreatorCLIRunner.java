@@ -16,51 +16,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.account.AccountService;
-import io.epirus.console.account.AccountUtils;
-import io.epirus.console.project.InteractiveOptions;
-import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
+import io.epirus.console.project.ProjectCreator;
+import io.epirus.console.project.ProjectCreatorCLIRunner;
 
-import static io.epirus.console.project.NewProjectCommand.COMMAND_NEW;
+import static io.epirus.console.project.ProjectCreator.COMMAND_NEW;
 
-@CommandLine.Command(
-        name = "java",
-        description = "Create a new java Web3j Project",
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider.class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class JavaProjectCreatorCLIRunner extends JavaProjectCLIRunner {
+public class JavaProjectCreatorCLIRunner extends ProjectCreatorCLIRunner {
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        generateJava(
-                true, Optional.empty(), Optional.of(walletCredentials), true, true, COMMAND_NEW);
-    }
-
-    @NotNull
-    protected void buildInteractively() {
-        InteractiveOptions interactiveOptions = new InteractiveOptions();
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
-
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
-        walletPath = walletCredentials.get("path");
-        walletPassword = walletCredentials.get("password");
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
-        AccountUtils.accountInit(new AccountService());
+        new ProjectCreator(outputDir, packageName, projectName)
+                .generateJava(
+                        true,
+                        Optional.empty(),
+                        Optional.of(walletCredentials),
+                        true,
+                        true,
+                        COMMAND_NEW);
     }
 }

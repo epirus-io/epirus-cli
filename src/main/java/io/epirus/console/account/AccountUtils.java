@@ -27,12 +27,12 @@ import org.web3j.crypto.CipherException;
 
 public class AccountUtils {
 
-    public static void accountInit(AccountService accountService) {
+    public static void accountInit(AccountManager accountManager) {
         InteractiveOptions interactiveOptions = new InteractiveOptions();
 
         if (!interactiveOptions.isUserLoggedIn()
                 && interactiveOptions.doesUserWantEpirusAccount()) {
-            if (accountService.createAccount(interactiveOptions.getEmail())) {
+            if (accountManager.createAccount(interactiveOptions.getEmail())) {
                 System.out.println(
                         "Account created successfully. You can now use Epirus Cloud. Please confirm your e-mail within 24 hours to continue using all features without interruption.");
             } else {

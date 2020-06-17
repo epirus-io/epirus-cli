@@ -19,6 +19,7 @@ import java.util.Optional;
 import io.epirus.console.project.AbstractProject;
 import io.epirus.console.project.Project;
 import io.epirus.console.project.ProjectStructure;
+import io.epirus.console.project.UnitTestCreator;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateBuilder;
 import io.epirus.console.project.templates.kotlin.KotlinTemplateProvider;
 
@@ -46,7 +47,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
 
-        new KotlinTestCLIRunner(
+        new UnitTestCreator(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
                 .generateKotlin();
