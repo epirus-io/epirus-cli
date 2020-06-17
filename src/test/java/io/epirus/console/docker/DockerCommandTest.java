@@ -12,16 +12,16 @@
  */
 package io.epirus.console.docker;
 
-import java.io.File;
 import java.nio.file.Paths;
 
 import io.epirus.console.ProjectTest;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.config.ConfigManager;
 import org.junit.jupiter.api.*;
+import picocli.CommandLine;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DockerizerTest extends ProjectTest {
+public class DockerCommandTest extends ProjectTest {
 
     @BeforeEach
     public void setupWallet() {
@@ -33,17 +33,17 @@ public class DockerizerTest extends ProjectTest {
     @Test
     @Order(1)
     public void testDockerBuild() {
-        new Dockerizer(
-                        Paths.get(workingDirectory.getAbsolutePath(), "Test").toFile(),
-                        true,
-                        "build")
-                .run();
+        new CommandLine(new DockerCommand())
+                .execute(
+                        "build",
+                        "-w",
+                        Paths.get(workingDirectory.getAbsolutePath(), "Test").toString());
     }
 
     @Disabled("must have a login token & docker installed")
     @Test
     @Order(2)
     public void testDockerRun() {
-        new Dockerizer(new File(System.getProperty("user.home")), true, "run").run();
+        new CommandLine(new DockerCommand()).execute("run", "-w", System.getProperty("user.home"));
     }
 }

@@ -13,16 +13,17 @@
 package io.epirus.console.docker;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
 
 public interface DockerOperations {
-    default void executeDocker(String[] command) throws IOException, InterruptedException {
+    default void executeDocker(String[] command, Path walletPath)
+            throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         int exitCode =
                 processBuilder
-                        .directory(Paths.get(System.getProperty("user.dir")).toFile())
+                        .directory(walletPath.toFile())
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .start()
                         .waitFor();

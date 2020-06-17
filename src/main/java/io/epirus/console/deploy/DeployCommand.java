@@ -104,7 +104,6 @@ public class DeployCommand implements Runnable {
             this.credentials = ProjectUtils.createCredentials(walletJson, walletPassword);
         }
 
-
         try {
             web3j = Epirus.buildWeb3j(Network.valueOf(deployNetwork.toUpperCase()));
         } catch (Exception e) {

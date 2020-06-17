@@ -20,7 +20,6 @@ import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import io.epirus.console.project.ProjectCreator;
 import io.epirus.console.project.utils.ClassExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
@@ -44,7 +43,8 @@ public class ProjectTest extends ClassExecutor {
                         + File.separator
                         + WalletUtils.generateNewWalletFile("", testWalletDirectory);
         final String[] args = {
-            "--java",
+            "new",
+            "java",
             "-p",
             "org.com",
             "-n",
@@ -55,7 +55,7 @@ public class ProjectTest extends ClassExecutor {
         };
         int result =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class,
+                                Epirus.class,
                                 Collections.emptyList(),
                                 Arrays.asList(args),
                                 true)

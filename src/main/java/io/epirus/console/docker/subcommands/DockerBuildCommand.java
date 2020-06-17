@@ -12,11 +12,17 @@
  */
 package io.epirus.console.docker.subcommands;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.DockerOperations;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
+
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 
 @CommandLine.Command(
         name = "build",
@@ -31,9 +37,13 @@ import org.web3j.codegen.Console;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerBuildCommand implements DockerOperations, Runnable {
+
+    @CommandLine.Option(names = {"-w", "--wallet-path"})
+    Path walletPath = Paths.get(DEFAULT_WALLET_LOOKUP_PATH, DEFAULT_WALLET_NAME);
+
     public void run() {
         try {
-            executeDocker(new String[] {"docker", "build", "-t", "web3app", "."});
+            executeDocker(new String[] {"docker", "build", "-t", "web3app", "."}, walletPath);
         } catch (Exception e) {
             Console.exitError(e);
         }
