@@ -33,9 +33,10 @@ import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import picocli.CommandLine;
+
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
-import picocli.CommandLine;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -113,7 +114,8 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
-            throws IOException, InterruptedException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            throws IOException, InterruptedException, NoSuchAlgorithmException,
+                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
         final String[] args = {"new", "java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
