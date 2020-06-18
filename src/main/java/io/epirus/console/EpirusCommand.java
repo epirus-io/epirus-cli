@@ -20,6 +20,7 @@ import io.epirus.console.account.AccountCommand;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
 import io.epirus.console.config.ConfigManager;
+import io.epirus.console.deploy.DeployCommand;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.NewProjectCommand;
@@ -54,7 +55,8 @@ import static org.web3j.codegen.Console.exitSuccess;
             LoginCommand.class,
             LogoutCommand.class,
             ProjectTestCommand.class,
-            UnitTestCommand.class
+            UnitTestCommand.class,
+            DeployCommand.class
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,
