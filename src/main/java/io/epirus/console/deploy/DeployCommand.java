@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.diogonunes.jcdp.color.api.Ansi;
+import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.account.subcommands.LoginCommand;
@@ -40,11 +41,25 @@ import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
+@CommandLine.Command(
+        name = "deploy",
+        description = "Deploy your project to an Ethereum network",
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider.class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DeployCommand implements Runnable {
-    private final Path workingDirectory;
-    private final Network network;
+    private Path workingDirectory;
+    private Network network;
+    private AccountService accountService;
+
     private Credentials credentials;
-    private final AccountService accountService;
+
     private Web3j web3j;
 
     @CommandLine.Option(
@@ -79,13 +94,16 @@ public class DeployCommand implements Runnable {
         this.web3j = web3j;
     }
 
-    public DeployCommand(Network network, AccountService accountService, Web3j web3j) {
+    public DeployCommand(
+            Network network, AccountService accountService, Credentials credentials, Web3j web3j) {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
-        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
+        this.credentials = credentials;
         this.accountService = accountService;
         this.web3j = web3j;
     }
+
+    public DeployCommand() {}
 
     @Override
     public void run() {
@@ -113,6 +131,7 @@ public class DeployCommand implements Runnable {
             new DeployCommand(
                             Network.valueOf(deployNetwork.toUpperCase()),
                             new AccountService(),
+                            credentials,
                             web3j)
                     .deploy();
         } catch (Exception e) {
