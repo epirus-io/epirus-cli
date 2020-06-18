@@ -19,11 +19,9 @@ import java.util.Optional;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
-
-import static io.epirus.console.project.ImportProjectCommand.COMMAND_IMPORT;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "kotlin",
@@ -37,31 +35,38 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class KotlinProjectImporterCLIRunner extends KotlinProjectCLIRunner {
-    @CommandLine.Option(
-            names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder",
-            required = true)
-    String solidityImportPath;
+public class KotlinProjectImporterRunner extends KotlinProjectRunner {
 
-    @CommandLine.Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers",
-            required = false,
-            showDefaultValue = ALWAYS)
-    boolean generateTests = false;
+    private String walletPath;
+    private String walletPassword;
+    private String projectName;
+    private String packageName;
+    private String outputDir;
+    private String solidityImportPath;
+    private boolean shouldGenerateTests;
+
+    public KotlinProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
+        super(projectImporterConfig);
+        this.walletPath = projectImporterConfig.getWalletPath();
+        this.walletPassword = projectImporterConfig.getWalletPassword();
+        this.projectName = projectImporterConfig.getProjectName();
+        this.packageName = projectImporterConfig.getPackageName();
+        this.outputDir = projectImporterConfig.getOutputDir();
+        this.solidityImportPath = projectImporterConfig.getSolidityImportPath();
+        this.shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
+    }
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
         generateKotlin(
-                generateTests,
+                shouldGenerateTests,
                 Optional.of(new File(solidityImportPath)),
                 Optional.of(walletCredentials),
                 false,
                 false,
-                COMMAND_IMPORT);
+                "import");
     }
 
     @NotNull
@@ -79,6 +84,6 @@ public class KotlinProjectImporterCLIRunner extends KotlinProjectCLIRunner {
                 .getProjectDestination(projectName)
                 .ifPresent(projectDest -> outputDir = projectDest);
 
-        generateTests = interactiveOptions.userWantsTests();
+        shouldGenerateTests = interactiveOptions.userWantsTests();
     }
 }

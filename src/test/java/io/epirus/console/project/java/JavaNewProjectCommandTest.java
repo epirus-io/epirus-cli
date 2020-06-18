@@ -54,18 +54,17 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
-        final JavaProjectCreatorCLIRunner javaProjectCreatorCLIRunner =
-                new JavaProjectCreatorCLIRunner();
-        new CommandLine(javaProjectCreatorCLIRunner).parseArgs(args);
-        assert javaProjectCreatorCLIRunner.packageName.equals("org.com");
-        assert javaProjectCreatorCLIRunner.projectName.equals("Test");
-        assert javaProjectCreatorCLIRunner.outputDir.equals(tempDirPath);
+        final NewProjectCommand newProjectCommand = new NewProjectCommand();
+        new CommandLine(newProjectCommand).parseArgs(args);
+        assert newProjectCommand.packageName.equals("org.com");
+        assert newProjectCommand.projectName.equals("Test");
+        assert newProjectCommand.outputDir.equals(tempDirPath);
     }
 
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode = new CommandLine(NewProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
     }
@@ -92,7 +91,7 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"new", "java", "-n=", "-p="};
+        final String[] args = {"new", "--java", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
                         Epirus.class, Collections.emptyList(), Arrays.asList(args), false);

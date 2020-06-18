@@ -18,41 +18,18 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
-import picocli.CommandLine;
 
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 import static org.web3j.codegen.Console.exitError;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-public abstract class ProjectCLIRunner implements Runnable {
+public abstract class ProjectRunner implements Runnable {
 
-    @CommandLine.Option(
-            names = {"-n", "--project-name"},
-            description = "Project name.")
-    public String projectName;
+    private final String projectName;
+    private final String packageName;
 
-    @CommandLine.Option(
-            names = {"-p", "--package"},
-            description = "Base package name.")
-    public String packageName;
-
-    @CommandLine.Option(
-            names = {"-o", "--output-dir"},
-            description = "Destination base directory.",
-            showDefaultValue = ALWAYS)
-    public String outputDir = ".";
-
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file")
-    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
+    public ProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
+        this.projectName = projectCreatorConfig.getProjectName();
+        this.packageName = projectCreatorConfig.getPackageName();
+    }
 
     @Override
     public void run() {

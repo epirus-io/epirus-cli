@@ -12,6 +12,7 @@
  */
 package io.epirus.console.project.kotlin;
 
+import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,32 +30,29 @@ public class KotlinProjectImporterCLIRunnerTest {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final KotlinProjectImporterCLIRunner projectImporterCLIRunner =
-                new KotlinProjectImporterCLIRunner();
+        final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final CommandLine commandLine = new CommandLine(importProjectCommand);
         Assertions.assertThrows(
                 CommandLine.ParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenNoArgsArePassed() {
-        final KotlinProjectImporterCLIRunner projectImporterCLIRunner =
-                new KotlinProjectImporterCLIRunner();
+        final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         final String[] args = {};
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final CommandLine commandLine = new CommandLine(importProjectCommand);
         Assertions.assertThrows(
                 CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenDuplicateArgsArePassed() {
-        final KotlinProjectImporterCLIRunner projectImporterCLIRunner =
-                new KotlinProjectImporterCLIRunner();
+        final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         final String[] args = {
             "-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath, "-s=test"
         };
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final CommandLine commandLine = new CommandLine(importProjectCommand);
         Assertions.assertThrows(
                 CommandLine.OverwrittenOptionException.class, () -> commandLine.parseArgs(args));
     }

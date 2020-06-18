@@ -51,7 +51,7 @@ public class KotlinTestCreatorTest extends ClassExecutor {
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
             "import",
-            "kotlin",
+            "--kotlin",
             "-p=org.com",
             "-n=Testing",
             "-o=" + tempDirPath,

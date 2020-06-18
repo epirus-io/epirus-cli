@@ -19,11 +19,20 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.Project;
-import io.epirus.console.project.ProjectCLIRunner;
+import io.epirus.console.project.ProjectCreatorConfig;
+import io.epirus.console.project.ProjectRunner;
 
 import static org.web3j.codegen.Console.exitError;
 
-public abstract class JavaProjectCLIRunner extends ProjectCLIRunner {
+public abstract class JavaProjectRunner extends ProjectRunner {
+
+    private final ProjectCreatorConfig projectCreatorConfig;
+
+    public JavaProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
+        super(projectCreatorConfig);
+        this.projectCreatorConfig = projectCreatorConfig;
+    }
+
     public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
@@ -34,9 +43,9 @@ public abstract class JavaProjectCLIRunner extends ProjectCLIRunner {
         try {
             JavaBuilder javaBuilder =
                     new JavaBuilder()
-                            .withProjectName(this.projectName)
-                            .withRootDirectory(this.outputDir)
-                            .withPackageName(this.packageName)
+                            .withProjectName(projectCreatorConfig.getProjectName())
+                            .withRootDirectory(projectCreatorConfig.getOutputDir())
+                            .withPackageName(projectCreatorConfig.getPackageName())
                             .withTests(withTests)
                             .withCredentials(withCredentials)
                             .withCommand(command)

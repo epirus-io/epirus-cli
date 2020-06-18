@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import io.epirus.console.Epirus;
+import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,12 +47,11 @@ public class KotlinProjectImporterTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
-        final KotlinProjectImporterCLIRunner projectImporterCLIRunner =
-                new KotlinProjectImporterCLIRunner();
-        new CommandLine(projectImporterCLIRunner).parseArgs(args);
-        assertEquals(projectImporterCLIRunner.packageName, "org.com");
-        assertEquals(projectImporterCLIRunner.projectName, "Test");
-        assertEquals(projectImporterCLIRunner.solidityImportPath, tempDirPath);
+        final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
+        new CommandLine(importProjectCommand).parseArgs(args);
+        assertEquals(importProjectCommand.packageName, "org.com");
+        assertEquals(importProjectCommand.projectName, "Test");
+        assertEquals(importProjectCommand.solidityImportPath, tempDirPath);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class KotlinProjectImporterTest extends ClassExecutor {
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
             "import",
-            "kotlin",
+            "--kotlin",
             "-p=org.com",
             "-n=Test5",
             "-o=" + tempDirPath,
@@ -96,7 +96,7 @@ public class KotlinProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"import", "kotlin", "-p=", "-n=", "-s="};
+        final String[] args = {"import", "--kotlin", "-p=", "-n=", "-s="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
                         Epirus.class, Collections.emptyList(), Arrays.asList(args), false);

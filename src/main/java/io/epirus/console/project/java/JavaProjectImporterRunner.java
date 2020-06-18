@@ -17,52 +17,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
 
-import static io.epirus.console.project.ImportProjectCommand.COMMAND_IMPORT;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
+public class JavaProjectImporterRunner extends JavaProjectRunner {
 
-@CommandLine.Command(
-        name = "java",
-        description = "Import existing solidity contracts into a new Java Web3j Project",
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider.class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
-    @Option(
-            names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder",
-            required = true)
-    public String solidityImportPath;
+    private String outputDir;
+    private String walletPath;
+    private String walletPassword;
+    private String projectName;
+    private String packageName;
+    private String solidityImportPath;
+    private boolean shouldGenereteTests;
 
-    @Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers",
-            required = false,
-            showDefaultValue = ALWAYS)
-    boolean generateTests = false;
+    public JavaProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
+        super(projectImporterConfig);
+        this.walletPath = projectImporterConfig.getWalletPath();
+        this.walletPassword = projectImporterConfig.getWalletPassword();
+        this.projectName = projectImporterConfig.getProjectName();
+        this.packageName = projectImporterConfig.getPackageName();
+        this.outputDir = projectImporterConfig.getOutputDir();
+        this.solidityImportPath = projectImporterConfig.getSolidityImportPath();
+        this.shouldGenereteTests = projectImporterConfig.shouldGenerateTests();
+    }
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
         generateJava(
-                generateTests,
+                shouldGenereteTests,
                 Optional.of(new File(solidityImportPath)),
                 Optional.of(walletCredentials),
                 false,
                 false,
-                COMMAND_IMPORT);
+                "import");
     }
 
     @NotNull
@@ -80,6 +70,6 @@ public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
                 .getProjectDestination(projectName)
                 .ifPresent(projectDest -> outputDir = projectDest);
 
-        generateTests = interactiveOptions.userWantsTests();
+        shouldGenereteTests = interactiveOptions.userWantsTests();
     }
 }

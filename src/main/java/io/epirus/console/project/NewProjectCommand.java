@@ -12,10 +12,18 @@
  */
 package io.epirus.console.project;
 
+import java.io.File;
+
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.project.java.JavaProjectCreatorCLIRunner;
-import io.epirus.console.project.kotlin.KotlinProjectCreatorCLIRunner;
+import io.epirus.console.project.java.JavaProjectCreatorRunner;
+import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import picocli.CommandLine;
+
+import org.web3j.codegen.Console;
+
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
+import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "new",
@@ -23,7 +31,6 @@ import picocli.CommandLine;
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        subcommands = {JavaProjectCreatorCLIRunner.class, KotlinProjectCreatorCLIRunner.class},
         versionProvider = EpirusVersionProvider.class,
         synopsisHeading = "%n",
         descriptionHeading = "%nDescription:%n%n",
@@ -32,10 +39,57 @@ import picocli.CommandLine;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand implements Runnable {
 
-    public static final String COMMAND_NEW = "new";
+    @CommandLine.Option(
+            names = {"--java"},
+            description = "Whether java code should be generated.")
+    public boolean isJava;
+
+    @CommandLine.Option(
+            names = {"--kotlin"},
+            description = "Whether kotlin code should be generated.")
+    public boolean isKotlin = true;
+
+    @CommandLine.Option(
+            names = {"-n", "--project-name"},
+            description = "Project name.")
+    public String projectName;
+
+    @CommandLine.Option(
+            names = {"-p", "--package"},
+            description = "Base package name.")
+    public String packageName;
+
+    @CommandLine.Option(
+            names = {"-o", "--output-dir"},
+            description = "Destination base directory.",
+            showDefaultValue = ALWAYS)
+    public String outputDir = ".";
+
+    @CommandLine.Option(
+            names = {"-w", "--wallet-path"},
+            description = "Path to your wallet file")
+    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
+
+    @CommandLine.Option(
+            names = {"-k", "--wallet-password"},
+            description = "Wallet password",
+            showDefaultValue = ALWAYS)
+    public String walletPassword = "";
 
     @Override
     public void run() {
-        new CommandLine(new KotlinProjectCreatorCLIRunner()).execute();
+        if (isJava && isKotlin) {
+            Console.exitError("Must only use one of -java or -kotlin");
+        }
+        final ProjectCreatorConfig projectCreatorConfig =
+                new ProjectCreatorConfig(
+                        projectName, packageName, outputDir, walletPath, walletPassword);
+
+        if (isKotlin) {
+            new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+        } else {
+
+            new JavaProjectCreatorRunner(projectCreatorConfig).run();
+        }
     }
 }

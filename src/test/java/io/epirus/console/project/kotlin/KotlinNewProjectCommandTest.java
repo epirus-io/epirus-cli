@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.epirus.console.Epirus;
+import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,18 +54,19 @@ public class KotlinNewProjectCommandTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
-        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
-                new KotlinProjectCreatorCLIRunner();
-        new CommandLine(kotlinProjectCreatorCLIRunner).parseArgs(args);
-        assert kotlinProjectCreatorCLIRunner.packageName.equals("org.com");
-        assert kotlinProjectCreatorCLIRunner.projectName.equals("Test");
-        assert kotlinProjectCreatorCLIRunner.outputDir.equals(tempDirPath);
+        final NewProjectCommand newProjectCommand = new NewProjectCommand();
+        new CommandLine(newProjectCommand).parseArgs(args);
+        assert newProjectCommand.packageName.equals("org.com");
+        assert newProjectCommand.projectName.equals("Test");
+        assert newProjectCommand.outputDir.equals(tempDirPath);
     }
 
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"new", "kotlin", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {
+            "new", "--kotlin", "-p", "org.com", "-n", "Test", "-o" + tempDirPath
+        };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
@@ -96,7 +98,7 @@ public class KotlinNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
-        final String[] args = {"new", "kotlin", "-n=", "-p="};
+        final String[] args = {"new", "--kotlin", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
                         Epirus.class, Collections.emptyList(), Arrays.asList(args), false);
