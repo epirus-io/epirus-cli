@@ -47,7 +47,7 @@ public class NewProjectCommand implements Runnable {
     @CommandLine.Option(
             names = {"--kotlin"},
             description = "Whether kotlin code should be generated.")
-    public boolean isKotlin = true;
+    public boolean isKotlin;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -81,14 +81,14 @@ public class NewProjectCommand implements Runnable {
         if (isJava && isKotlin) {
             Console.exitError("Must only use one of -java or -kotlin");
         }
+
         final ProjectCreatorConfig projectCreatorConfig =
                 new ProjectCreatorConfig(
                         projectName, packageName, outputDir, walletPath, walletPassword);
 
-        if (isKotlin) {
+        if (!isJava) {
             new KotlinProjectCreatorRunner(projectCreatorConfig).run();
         } else {
-
             new JavaProjectCreatorRunner(projectCreatorConfig).run();
         }
     }

@@ -122,7 +122,7 @@ public class KotlinNewProjectCommandTest extends ClassExecutor {
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException, NoSuchAlgorithmException,
                     NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
-        final String[] args = {"new", "kotlin"};
+        final String[] args = {"new", "--kotlin"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 Epirus.class, Collections.emptyList(), Arrays.asList(args), true)

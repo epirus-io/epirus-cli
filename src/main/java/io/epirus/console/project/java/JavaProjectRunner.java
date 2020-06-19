@@ -26,11 +26,8 @@ import static org.web3j.codegen.Console.exitError;
 
 public abstract class JavaProjectRunner extends ProjectRunner {
 
-    private final ProjectCreatorConfig projectCreatorConfig;
-
     public JavaProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
         super(projectCreatorConfig);
-        this.projectCreatorConfig = projectCreatorConfig;
     }
 
     public void generateJava(
@@ -40,12 +37,13 @@ public abstract class JavaProjectRunner extends ProjectRunner {
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
+        System.out.println(outputDir);
         try {
             JavaBuilder javaBuilder =
                     new JavaBuilder()
-                            .withProjectName(projectCreatorConfig.getProjectName())
-                            .withRootDirectory(projectCreatorConfig.getOutputDir())
-                            .withPackageName(projectCreatorConfig.getPackageName())
+                            .withProjectName(projectName)
+                            .withRootDirectory(outputDir)
+                            .withPackageName(packageName)
                             .withTests(withTests)
                             .withCredentials(withCredentials)
                             .withCommand(command)

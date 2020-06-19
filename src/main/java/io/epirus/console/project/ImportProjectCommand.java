@@ -47,7 +47,7 @@ public class ImportProjectCommand implements Runnable {
     @CommandLine.Option(
             names = {"--kotlin"},
             description = "Whether kotlin code should be generated.")
-    public boolean isKotlin = true;
+    public boolean isKotlin;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -85,7 +85,6 @@ public class ImportProjectCommand implements Runnable {
     @CommandLine.Option(
             names = {"-t", "--generate-tests"},
             description = "Generate unit tests for the contract wrappers",
-            required = false,
             showDefaultValue = ALWAYS)
     boolean generateTests = false;
 
@@ -104,10 +103,9 @@ public class ImportProjectCommand implements Runnable {
                         solidityImportPath,
                         generateTests);
 
-        if (isKotlin) {
+        if (!isJava) {
             new KotlinProjectImporterRunner(projectImporterConfig).run();
         } else {
-
             new JavaProjectImporterRunner(projectImporterConfig).run();
         }
     }

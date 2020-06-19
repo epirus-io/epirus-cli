@@ -24,19 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class JavaProjectCreatorRunner extends JavaProjectRunner {
 
-    private String outputDir;
-    private String walletPath;
-    private String walletPassword;
-    private String projectName;
-    private String packageName;
-
     public JavaProjectCreatorRunner(final ProjectCreatorConfig projectCreatorConfig) {
         super(projectCreatorConfig);
-        this.walletPath = projectCreatorConfig.getWalletPath();
-        this.walletPassword = projectCreatorConfig.getWalletPassword();
-        this.projectName = projectCreatorConfig.getProjectName();
-        this.packageName = projectCreatorConfig.getPackageName();
-        this.outputDir = projectCreatorConfig.getOutputDir();
     }
 
     protected void createProject() {

@@ -115,7 +115,7 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException, NoSuchAlgorithmException,
                     NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
-        final String[] args = {"new", "java"};
+        final String[] args = {"new", "--java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 Epirus.class, Collections.emptyList(), Arrays.asList(args), false)

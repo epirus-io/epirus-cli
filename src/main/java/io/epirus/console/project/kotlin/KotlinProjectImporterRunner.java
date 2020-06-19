@@ -37,23 +37,13 @@ import picocli.CommandLine;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class KotlinProjectImporterRunner extends KotlinProjectRunner {
 
-    private String walletPath;
-    private String walletPassword;
-    private String projectName;
-    private String packageName;
-    private String outputDir;
-    private String solidityImportPath;
-    private boolean shouldGenerateTests;
+    public String solidityImportPath;
+    public boolean shouldGenerateTests;
 
     public KotlinProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
         super(projectImporterConfig);
-        this.walletPath = projectImporterConfig.getWalletPath();
-        this.walletPassword = projectImporterConfig.getWalletPassword();
-        this.projectName = projectImporterConfig.getProjectName();
-        this.packageName = projectImporterConfig.getPackageName();
-        this.outputDir = projectImporterConfig.getOutputDir();
-        this.solidityImportPath = projectImporterConfig.getSolidityImportPath();
-        this.shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
+        solidityImportPath = projectImporterConfig.getSolidityImportPath();
+        shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
     }
 
     protected void createProject() {

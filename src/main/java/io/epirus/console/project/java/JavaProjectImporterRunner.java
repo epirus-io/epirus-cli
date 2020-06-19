@@ -23,23 +23,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class JavaProjectImporterRunner extends JavaProjectRunner {
 
-    private String outputDir;
-    private String walletPath;
-    private String walletPassword;
-    private String projectName;
-    private String packageName;
-    private String solidityImportPath;
-    private boolean shouldGenereteTests;
+    public String solidityImportPath;
+    public boolean shouldGenerateTests;
 
     public JavaProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
         super(projectImporterConfig);
-        this.walletPath = projectImporterConfig.getWalletPath();
-        this.walletPassword = projectImporterConfig.getWalletPassword();
-        this.projectName = projectImporterConfig.getProjectName();
-        this.packageName = projectImporterConfig.getPackageName();
-        this.outputDir = projectImporterConfig.getOutputDir();
-        this.solidityImportPath = projectImporterConfig.getSolidityImportPath();
-        this.shouldGenereteTests = projectImporterConfig.shouldGenerateTests();
+        solidityImportPath = projectImporterConfig.getSolidityImportPath();
+        shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
     }
 
     protected void createProject() {
@@ -47,7 +37,7 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
         generateJava(
-                shouldGenereteTests,
+                shouldGenerateTests,
                 Optional.of(new File(solidityImportPath)),
                 Optional.of(walletCredentials),
                 false,
@@ -70,6 +60,6 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
                 .getProjectDestination(projectName)
                 .ifPresent(projectDest -> outputDir = projectDest);
 
-        shouldGenereteTests = interactiveOptions.userWantsTests();
+        shouldGenerateTests = interactiveOptions.userWantsTests();
     }
 }

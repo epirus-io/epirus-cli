@@ -44,7 +44,7 @@ public class ProjectTest extends ClassExecutor {
                         + WalletUtils.generateNewWalletFile("", testWalletDirectory);
         final String[] args = {
             "new",
-            "java",
+            "--java",
             "-p",
             "org.com",
             "-n",

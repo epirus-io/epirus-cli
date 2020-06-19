@@ -26,11 +26,8 @@ import static org.web3j.codegen.Console.exitError;
 
 public abstract class KotlinProjectRunner extends ProjectRunner {
 
-    private final ProjectCreatorConfig projectCreatorConfig;
-
     public KotlinProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
         super(projectCreatorConfig);
-        this.projectCreatorConfig = projectCreatorConfig;
     }
 
     public void generateKotlin(
@@ -43,9 +40,9 @@ public abstract class KotlinProjectRunner extends ProjectRunner {
         try {
             KotlinBuilder kotlinBuilder =
                     new KotlinBuilder()
-                            .withProjectName(projectCreatorConfig.getProjectName())
-                            .withRootDirectory(projectCreatorConfig.getOutputDir())
-                            .withPackageName(projectCreatorConfig.getPackageName())
+                            .withProjectName(projectName)
+                            .withRootDirectory(outputDir)
+                            .withPackageName(packageName)
                             .withTests(withTests)
                             .withCredentials(withCredentials)
                             .withCommand(command)

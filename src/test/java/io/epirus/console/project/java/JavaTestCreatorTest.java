@@ -57,6 +57,7 @@ public class JavaTestCreatorTest extends ClassExecutor {
             "-o=" + tempDirPath,
             "-s=" + formattedPath
         };
+        System.out.println(tempDirPath);
         final String pathToJavaWrappers =
                 new File(
                                 String.join(
