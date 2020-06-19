@@ -12,8 +12,6 @@
  */
 package io.epirus.console.project;
 
-import java.io.File;
-
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
@@ -21,8 +19,7 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
+import static io.epirus.console.config.ConfigManager.config;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
@@ -68,7 +65,7 @@ public class NewProjectCommand implements Runnable {
     @CommandLine.Option(
             names = {"-w", "--wallet-path"},
             description = "Path to your wallet file")
-    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
+    public String walletPath = "";
 
     @CommandLine.Option(
             names = {"-k", "--wallet-password"},
@@ -78,6 +75,9 @@ public class NewProjectCommand implements Runnable {
 
     @Override
     public void run() {
+        if (walletPath.isEmpty()) {
+            walletPath = config.getDefaultWalletPath();
+        }
         if (isJava && isKotlin) {
             Console.exitError("Must only use one of -java or -kotlin");
         }

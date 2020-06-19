@@ -17,24 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
 
-@CommandLine.Command(
-        name = "kotlin",
-        description = "Import existing solidity contracts into a new Kotlin Web3j Project",
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider.class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
+import static io.epirus.console.config.ConfigManager.config;
+
 public class KotlinProjectImporterRunner extends KotlinProjectRunner {
 
     public String solidityImportPath;
@@ -66,7 +54,8 @@ public class KotlinProjectImporterRunner extends KotlinProjectRunner {
         packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
 
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        final Map<String, String> walletCredentials =
+                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
         walletPath = walletCredentials.get("path");
         walletPassword = walletCredentials.get("password");
 

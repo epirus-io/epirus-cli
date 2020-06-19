@@ -21,6 +21,8 @@ import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
 
+import static io.epirus.console.config.ConfigManager.config;
+
 public class JavaProjectImporterRunner extends JavaProjectRunner {
 
     public String solidityImportPath;
@@ -52,7 +54,8 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
         packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
 
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        final Map<String, String> walletCredentials =
+                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
         walletPath = walletCredentials.get("path");
         walletPassword = walletCredentials.get("password");
 

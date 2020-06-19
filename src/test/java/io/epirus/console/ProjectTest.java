@@ -20,6 +20,7 @@ import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Collections;
 
+import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
@@ -35,6 +36,7 @@ public class ProjectTest extends ClassExecutor {
     public void createEpirusProject()
             throws IOException, InterruptedException, NoSuchAlgorithmException,
                     NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+        ConfigManager.setDevelopment();
         final File testWalletDirectory =
                 new File(workingDirectory.getPath() + File.separator + "keystore");
         testWalletDirectory.mkdirs();

@@ -14,7 +14,7 @@ package io.epirus.console;
 
 public class Epirus {
     public static void main(String[] args) {
-        final int result = new EpirusCommand(System.getenv()).parse(args);
+        final int result = new EpirusCommand(System.getenv(), args).parse();
         if (result != 0) {
             System.exit(result);
         }

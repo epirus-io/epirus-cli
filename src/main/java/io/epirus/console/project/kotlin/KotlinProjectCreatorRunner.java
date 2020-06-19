@@ -22,6 +22,8 @@ import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectCreatorConfig;
 import org.jetbrains.annotations.NotNull;
 
+import static io.epirus.console.config.ConfigManager.config;
+
 public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
 
     public KotlinProjectCreatorRunner(final ProjectCreatorConfig projectCreatorConfig) {
@@ -41,7 +43,8 @@ public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
         projectName = interactiveOptions.getProjectName();
         packageName = interactiveOptions.getPackageName();
 
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        final Map<String, String> walletCredentials =
+                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
         walletPath = walletCredentials.get("path");
         walletPassword = walletCredentials.get("password");
 

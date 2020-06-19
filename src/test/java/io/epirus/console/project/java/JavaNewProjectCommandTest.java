@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.epirus.console.Epirus;
+import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
@@ -63,7 +64,8 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     @Order(2)
-    public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
+    public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException {
+        ConfigManager.setDevelopment();
         final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode = new CommandLine(NewProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
@@ -91,6 +93,7 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
+        ConfigManager.setDevelopment();
         final String[] args = {"new", "--java", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(

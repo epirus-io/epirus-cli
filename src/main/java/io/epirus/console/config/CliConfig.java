@@ -24,6 +24,7 @@ public class CliConfig {
     private String latestVersion;
     private String updatePrompt;
     private String loginToken;
+    private String defaultWalletPath;
     private boolean telemetryDisabled;
 
     @Expose(serialize = false, deserialize = false)
@@ -34,11 +35,13 @@ public class CliConfig {
             String latestVersion,
             String updatePrompt,
             String loginToken,
+            String defaultWalletPath,
             boolean telemetryDisabled) {
         this.clientId = clientId;
         this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
         this.loginToken = loginToken;
+        this.defaultWalletPath = defaultWalletPath;
         this.telemetryDisabled = telemetryDisabled;
     }
 
@@ -58,6 +61,10 @@ public class CliConfig {
         return System.getenv().getOrDefault("EPIRUS_LOGIN_TOKEN", loginToken);
     }
 
+    public String getDefaultWalletPath() {
+        return defaultWalletPath;
+    }
+
     public boolean isTelemetryDisabled() {
         return telemetryDisabled;
     }
@@ -74,6 +81,11 @@ public class CliConfig {
 
     public void setLoginToken(String loginToken) {
         this.loginToken = loginToken;
+        save();
+    }
+
+    public void setDefaultWalletPath(final String defaultWalletPath) {
+        this.defaultWalletPath = defaultWalletPath;
         save();
     }
 
