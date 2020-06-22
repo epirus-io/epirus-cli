@@ -12,6 +12,7 @@
  */
 package io.epirus.console.project.kotlin;
 
+import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,20 +29,18 @@ public class KotlinNewProjectCommandCLIRunnerTest {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
-                new KotlinProjectCreatorCLIRunner();
+        final NewProjectCommand newProjectCommand = new NewProjectCommand();
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
+        final CommandLine commandLine = new CommandLine(newProjectCommand);
         Assertions.assertThrows(
                 CommandLine.UnmatchedArgumentException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenDuplicateArgsArePassed() {
-        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
-                new KotlinProjectCreatorCLIRunner();
+        final NewProjectCommand newProjectCommand = new NewProjectCommand();
         final String[] args = {"-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
+        final CommandLine commandLine = new CommandLine(newProjectCommand);
         Assertions.assertThrows(
                 CommandLine.OverwrittenOptionException.class, () -> commandLine.parseArgs(args));
     }

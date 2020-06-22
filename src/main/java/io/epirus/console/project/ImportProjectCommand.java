@@ -13,9 +13,14 @@
 package io.epirus.console.project;
 
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.project.java.JavaProjectImporterCLIRunner;
-import io.epirus.console.project.kotlin.KotlinProjectImporterCLIRunner;
+import io.epirus.console.project.java.JavaProjectImporterRunner;
+import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import picocli.CommandLine;
+
+import org.web3j.codegen.Console;
+
+import static io.epirus.console.config.ConfigManager.config;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "import",
@@ -23,13 +28,85 @@ import picocli.CommandLine;
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        subcommands = {JavaProjectImporterCLIRunner.class, KotlinProjectImporterCLIRunner.class},
         versionProvider = EpirusVersionProvider.class,
         synopsisHeading = "%n",
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class ImportProjectCommand {
-    public static final String COMMAND_IMPORT = "import";
+public class ImportProjectCommand implements Runnable {
+
+    @CommandLine.Option(
+            names = {"--java"},
+            description = "Whether java code should be generated.")
+    public boolean isJava;
+
+    @CommandLine.Option(
+            names = {"--kotlin"},
+            description = "Whether kotlin code should be generated.")
+    public boolean isKotlin;
+
+    @CommandLine.Option(
+            names = {"-n", "--project-name"},
+            description = "Project name.")
+    public String projectName;
+
+    @CommandLine.Option(
+            names = {"-p", "--package"},
+            description = "Base package name.")
+    public String packageName;
+
+    @CommandLine.Option(
+            names = {"-o", "--output-dir"},
+            description = "Destination base directory.",
+            showDefaultValue = ALWAYS)
+    public String outputDir = ".";
+
+    @CommandLine.Option(
+            names = {"-w", "--wallet-path"},
+            description = "Path to your wallet file")
+    public String walletPath = "config.getDefaultWalletPath()";
+
+    @CommandLine.Option(
+            names = {"-k", "--wallet-password"},
+            description = "Wallet password",
+            showDefaultValue = ALWAYS)
+    public String walletPassword = "";
+
+    @CommandLine.Option(
+            names = {"-s", "--solidity-path"},
+            description = "Path to solidity file/folder",
+            required = true)
+    public String solidityImportPath;
+
+    @CommandLine.Option(
+            names = {"-t", "--generate-tests"},
+            description = "Generate unit tests for the contract wrappers",
+            showDefaultValue = ALWAYS)
+    boolean generateTests = false;
+
+    @Override
+    public void run() {
+        if (walletPath.isEmpty()) {
+            walletPath = config.getDefaultWalletPath();
+        }
+        if (isJava && isKotlin) {
+            Console.exitError("Must only use one of -java or -kotlin");
+        }
+        final ProjectImporterConfig projectImporterConfig =
+                new ProjectImporterConfig(
+                        projectName,
+                        packageName,
+                        outputDir,
+                        walletPath,
+                        walletPassword,
+                        solidityImportPath,
+                        generateTests);
+
+        if (!isJava) {
+            new KotlinProjectImporterRunner(projectImporterConfig).run();
+        } else {
+            new JavaProjectImporterRunner(projectImporterConfig).run();
+        }
+    }
 }

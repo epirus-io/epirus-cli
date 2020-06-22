@@ -16,35 +16,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.project.ProjectCreatorConfig;
 import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
 
-import static io.epirus.console.project.NewProjectCommand.COMMAND_NEW;
+import static io.epirus.console.config.ConfigManager.config;
 
-@CommandLine.Command(
-        name = "kotlin",
-        description = "Create a new kotlin Web3j Project",
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider.class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class KotlinProjectCreatorCLIRunner extends KotlinProjectCLIRunner {
+public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
+
+    public KotlinProjectCreatorRunner(final ProjectCreatorConfig projectCreatorConfig) {
+        super(projectCreatorConfig);
+    }
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        generateKotlin(
-                true, Optional.empty(), Optional.of(walletCredentials), true, true, COMMAND_NEW);
+        generateKotlin(true, Optional.empty(), Optional.of(walletCredentials), true, true, "new");
     }
 
     @NotNull
@@ -53,7 +43,8 @@ public class KotlinProjectCreatorCLIRunner extends KotlinProjectCLIRunner {
         projectName = interactiveOptions.getProjectName();
         packageName = interactiveOptions.getPackageName();
 
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        final Map<String, String> walletCredentials =
+                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
         walletPath = walletCredentials.get("path");
         walletPassword = walletCredentials.get("password");
 

@@ -20,7 +20,6 @@ import java.security.NoSuchProviderException;
 
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.wallet.ProjectWallet;
-import io.epirus.console.project.wallet.ProjectWalletUtils;
 
 import org.web3j.codegen.Console;
 import org.web3j.crypto.CipherException;
@@ -42,35 +41,27 @@ public class AccountUtils {
         }
     }
 
-    public static void accountDefaultWalletInit() {
-        if (!ProjectWalletUtils.userHasGlobalWallet()) {
-            try {
-                ProjectWallet projectWallet =
-                        new ProjectWallet("", ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH);
-                boolean walletWasRenamed =
-                        new File(
-                                        projectWallet.getWalletPath()
-                                                + File.separator
-                                                + projectWallet.getWalletName())
-                                .renameTo(
-                                        new File(
-                                                ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH
-                                                        + File.separator
-                                                        + ProjectWalletUtils.DEFAULT_WALLET_NAME));
-                if (!walletWasRenamed) {
-                    Console.exitError("Could not rename default test wallet.");
-                }
-                System.out.println("Default wallet was created successfully.");
+    public static String accountDefaultWalletInit(
+            final String defaultWalletPath, final String walletPassword) {
+        try {
+            ProjectWallet projectWallet = new ProjectWallet(walletPassword, defaultWalletPath);
+            final File file =
+                    new File(
+                            projectWallet.getWalletPath()
+                                    + File.separator
+                                    + projectWallet.getWalletName());
 
-            } catch (NoSuchAlgorithmException
-                    | NoSuchProviderException
-                    | InvalidAlgorithmParameterException
-                    | CipherException
-                    | IOException e) {
-                Console.exitError("Could not create default wallet reason: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Account has default wallet.");
+            System.out.println("Default wallet was created successfully " + file.getAbsolutePath());
+
+            return file.getAbsolutePath();
+
+        } catch (NoSuchAlgorithmException
+                | NoSuchProviderException
+                | InvalidAlgorithmParameterException
+                | CipherException
+                | IOException e) {
+            Console.exitError("Could not create default wallet reason: " + e.getMessage());
         }
+        return "";
     }
 }

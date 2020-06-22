@@ -48,9 +48,16 @@ public class ConfigManager {
             String latestVersion,
             String updatePrompt,
             String loginToken,
+            String defaultWalletPath,
             boolean telemetryDisabled) {
         config =
-                new CliConfig(clientId, latestVersion, updatePrompt, loginToken, telemetryDisabled);
+                new CliConfig(
+                        clientId,
+                        latestVersion,
+                        updatePrompt,
+                        loginToken,
+                        defaultWalletPath,
+                        telemetryDisabled);
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
@@ -58,7 +65,7 @@ public class ConfigManager {
         if (!epirusHome.exists() && !epirusHome.mkdirs()) {
             throw new IOException("Failed to create Epirus home directory");
         }
-        return new CliConfig(UUID.randomUUID().toString(), null, null, null, false);
+        return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, false);
     }
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -10,59 +10,41 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.project.java;
+package io.epirus.console.project.kotlin;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
 
-import static io.epirus.console.project.ImportProjectCommand.COMMAND_IMPORT;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
+import static io.epirus.console.config.ConfigManager.config;
 
-@CommandLine.Command(
-        name = "java",
-        description = "Import existing solidity contracts into a new Java Web3j Project",
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider.class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
-    @Option(
-            names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder",
-            required = true)
+public class KotlinProjectImporterRunner extends KotlinProjectRunner {
+
     public String solidityImportPath;
+    public boolean shouldGenerateTests;
 
-    @Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers",
-            required = false,
-            showDefaultValue = ALWAYS)
-    boolean generateTests = false;
+    public KotlinProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
+        super(projectImporterConfig);
+        solidityImportPath = projectImporterConfig.getSolidityImportPath();
+        shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
+    }
 
     protected void createProject() {
         Map<String, String> walletCredentials = new HashMap<>();
         walletCredentials.put("path", walletPath);
         walletCredentials.put("password", walletPassword);
-        generateJava(
-                generateTests,
+        generateKotlin(
+                shouldGenerateTests,
                 Optional.of(new File(solidityImportPath)),
                 Optional.of(walletCredentials),
                 false,
                 false,
-                COMMAND_IMPORT);
+                "import");
     }
 
     @NotNull
@@ -72,7 +54,8 @@ public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
         packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
 
-        final Map<String, String> walletCredentials = interactiveOptions.getWalletLocation();
+        final Map<String, String> walletCredentials =
+                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
         walletPath = walletCredentials.get("path");
         walletPassword = walletCredentials.get("password");
 
@@ -80,6 +63,6 @@ public class JavaProjectImporterCLIRunner extends JavaProjectCLIRunner {
                 .getProjectDestination(projectName)
                 .ifPresent(projectDest -> outputDir = projectDest);
 
-        generateTests = interactiveOptions.userWantsTests();
+        shouldGenerateTests = interactiveOptions.userWantsTests();
     }
 }

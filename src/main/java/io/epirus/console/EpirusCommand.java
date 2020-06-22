@@ -23,6 +23,7 @@ import io.epirus.console.config.ConfigManager;
 import io.epirus.console.deploy.DeployCommand;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.project.ImportProjectCommand;
+import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.testing.ProjectTestCommand;
@@ -37,6 +38,7 @@ import picocli.CommandLine;
 import org.web3j.codegen.Console;
 
 import static io.epirus.console.config.ConfigManager.config;
+import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitSuccess;
 
 /** Main entry point for running command line utilities. */
@@ -70,8 +72,8 @@ import static org.web3j.codegen.Console.exitSuccess;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class EpirusCommand {
 
-    private static final String USAGE =
-            "Usage: epirus version|wallet|solidity|new|import|generate-tests|audit|account|docker ...";
+    public static final String DEFAULT_WALLET_FOLDER =
+            System.getProperty("user.home") + separator + ".epirus" + separator + "keystore";
 
     private static final String LOGO =
             "  ______       _                \n"
@@ -83,25 +85,24 @@ public class EpirusCommand {
                     + "        | |                     \n"
                     + "        |_|                     ";
 
+    private final CommandLine commandLine;
     private final Map<String, String> environmentVariables;
+    private final String[] args;
 
-    public EpirusCommand(final Map<String, String> environmentVariables) {
+    // Required but not used directly for now
+    @CommandLine.Option(
+            names = {"--telemetry"},
+            description = "Whether to perform analytics.",
+            defaultValue = "false")
+    public boolean telemetry;
+
+    public EpirusCommand(final Map<String, String> environmentVariables, String[] args) {
+        this.commandLine = new CommandLine(this);
         this.environmentVariables = environmentVariables;
+        this.args = args;
     }
 
-    // FIXME: not sure where this goes
-    private static void performStartupTasks(String[] args) throws IOException, URISyntaxException {
-        if (args[0].equals("--telemetry")) {
-            Telemetry.uploadTelemetry(args);
-            Updater.onlineUpdateCheck();
-            exitSuccess();
-        } else if (!config.isTelemetryDisabled()) {
-            Telemetry.invokeTelemetryUpload(args);
-        }
-    }
-
-    public int parse(final String[] args) {
-        final CommandLine commandLine = new CommandLine(this);
+    public int parse() {
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
 
         System.out.println(LOGO);
@@ -112,6 +113,31 @@ public class EpirusCommand {
             Console.exitError("Failed to initialise the CLI");
         }
 
+        performStartupTasks();
+        maybeCreateDefaultWallet();
+
         return commandLine.execute(args);
+    }
+
+    private void maybeCreateDefaultWallet() {
+        if (config.getDefaultWalletPath() == null || config.getDefaultWalletPath().isEmpty()) {
+            final String walletPath =
+                    new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, "");
+            config.setDefaultWalletPath(walletPath);
+        }
+    }
+
+    private void performStartupTasks() {
+        if (telemetry) {
+            Telemetry.uploadTelemetry(args);
+            Updater.onlineUpdateCheck();
+            exitSuccess();
+        } else if (!config.isTelemetryDisabled()) {
+            try {
+                Telemetry.invokeTelemetryUpload(args);
+            } catch (URISyntaxException | IOException e) {
+                Console.exitError("Failed to invoke telemetry upload");
+            }
+        }
     }
 }

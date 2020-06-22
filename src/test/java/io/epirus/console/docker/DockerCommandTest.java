@@ -14,6 +14,7 @@ package io.epirus.console.docker;
 
 import java.nio.file.Paths;
 
+import io.epirus.console.EpirusCommand;
 import io.epirus.console.ProjectTest;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.config.ConfigManager;
@@ -25,8 +26,9 @@ public class DockerCommandTest extends ProjectTest {
 
     @BeforeEach
     public void setupWallet() {
-        AccountUtils.accountDefaultWalletInit();
-        ConfigManager.setDevelopment("", "", "", "<login_token>", true);
+        final String walletPath =
+                AccountUtils.accountDefaultWalletInit(EpirusCommand.DEFAULT_WALLET_FOLDER, "");
+        ConfigManager.setDevelopment("", "", "", "<login_token>", walletPath, true);
     }
 
     @Disabled("must have a login token & docker installed")

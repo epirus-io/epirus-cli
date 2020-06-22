@@ -12,8 +12,9 @@
  */
 package io.epirus.console.account.subcommands;
 
+import io.epirus.console.EpirusCommand;
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.account.AccountUtils;
+import io.epirus.console.project.InteractiveOptions;
 import picocli.CommandLine;
 
 import static io.epirus.console.config.ConfigManager.config;
@@ -34,7 +35,9 @@ public class WalletCommand implements Runnable {
     @Override
     public void run() {
         if (config.getLoginToken() != null && config.getLoginToken().length() > 0) {
-            AccountUtils.accountDefaultWalletInit();
+            String walletPath =
+                    new InteractiveOptions().createWallet(EpirusCommand.DEFAULT_WALLET_FOLDER);
+            config.setDefaultWalletPath(walletPath);
         }
     }
 }
