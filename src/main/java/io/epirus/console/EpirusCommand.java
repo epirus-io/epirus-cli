@@ -121,7 +121,8 @@ public class EpirusCommand {
 
     private void maybeCreateDefaultWallet() {
         if (config.getDefaultWalletPath() == null || config.getDefaultWalletPath().isEmpty()) {
-            final String walletPath = new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, "");
+            final String walletPath =
+                    new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, "");
             config.setDefaultWalletPath(walletPath);
         }
     }

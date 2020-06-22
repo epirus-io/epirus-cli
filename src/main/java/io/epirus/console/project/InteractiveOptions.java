@@ -102,16 +102,12 @@ public class InteractiveOptions {
         Map<String, String> walletCredentials = new HashMap<>();
         if (userAnsweredYes("Would you like to use the default global wallet [Y/n] ?")) {
             if (!defaultWalletPath.isEmpty()) {
-//                print("Please enter your wallet password.");
-//                String walletPassword = getUserInput();
                 walletCredentials.put("path", defaultWalletPath);
                 walletCredentials.put("password", "");
                 return walletCredentials;
             } else {
                 if (userAnsweredYes(
                         "Looks like you don't have any global wallets. Would you like to generate one [Y/n] ?")) {
-//                    print("Please enter a wallet password.");
-//                    String walletPassword = getUserInput();
                     createWallet(defaultWalletPath, "");
                     walletCredentials.put("path", defaultWalletPath);
                     walletCredentials.put("password", "");
