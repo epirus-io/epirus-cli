@@ -70,7 +70,7 @@ import static org.web3j.codegen.Console.exitSuccess;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class EpirusCommand {
+public class EpirusCommand implements Runnable {
 
     public static final String DEFAULT_WALLET_FOLDER =
             System.getProperty("user.home") + separator + ".epirus" + separator + "keystore";
@@ -113,10 +113,13 @@ public class EpirusCommand {
             Console.exitError("Failed to initialise the CLI");
         }
 
-        performStartupTasks();
-        maybeCreateDefaultWallet();
-
         return commandLine.execute(args);
+    }
+
+    @Override
+    public void run() {
+        performTelemetryUpload();
+        maybeCreateDefaultWallet();
     }
 
     private void maybeCreateDefaultWallet() {
@@ -127,7 +130,7 @@ public class EpirusCommand {
         }
     }
 
-    private void performStartupTasks() {
+    private void performTelemetryUpload() {
         if (telemetry) {
             Telemetry.uploadTelemetry(args);
             Updater.onlineUpdateCheck();
