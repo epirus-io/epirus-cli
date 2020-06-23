@@ -35,8 +35,6 @@ import org.web3j.utils.Convert;
 
 import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
@@ -65,7 +63,7 @@ public class DeployCommand implements Runnable {
     @CommandLine.Option(
             names = {"-w", "--wallet-path"},
             description = "Path to your wallet file")
-    public String walletPath = DEFAULT_WALLET_LOOKUP_PATH + File.separator + DEFAULT_WALLET_NAME;
+    public String walletPath = "";
 
     @CommandLine.Option(
             names = {"-k", "--wallet-password"},
@@ -112,6 +110,10 @@ public class DeployCommand implements Runnable {
             System.out.println(
                     "You aren't currently logged in to the Epirus Platform. Please create an account if you don't have one (https://portal.epirus.io/account/signup). If you do have an account, you can log in below:");
             new LoginCommand().run();
+        }
+
+        if (walletPath.isEmpty()) {
+            walletPath = config.getDefaultWalletPath();
         }
 
         String walletJson = System.getenv("WALLET_JSON");
