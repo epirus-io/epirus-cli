@@ -108,6 +108,7 @@ public class EpirusCommand implements Runnable {
         System.out.println(LOGO);
         try {
             ConfigManager.setProduction();
+            maybeCreateDefaultWallet();
             Updater.promptIfUpdateAvailable();
         } catch (IOException e) {
             Console.exitError("Failed to initialise the CLI");
@@ -119,7 +120,6 @@ public class EpirusCommand implements Runnable {
     @Override
     public void run() {
         performTelemetryUpload();
-        maybeCreateDefaultWallet();
     }
 
     private void maybeCreateDefaultWallet() {

@@ -50,6 +50,9 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @CommandLine.Option(names = {"-d", "--directory"})
     Path directory = Paths.get(System.getProperty("user.dir"));
 
+    @CommandLine.Option(names = {"-p", "--print"})
+    boolean print;
+
     @Override
     public void run() {
         String walletJson = null;
@@ -78,6 +81,11 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         }
 
         args = ArrayUtils.addAll(args, "web3app");
+
+        if (print) {
+            System.out.println(String.join(" ", args));
+            return;
+        }
 
         try {
             executeDocker(args, directory);
