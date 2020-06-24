@@ -32,6 +32,7 @@ import picocli.CommandLine;
 
 import org.web3j.utils.Numeric;
 
+import static io.epirus.console.config.ConfigManager.config;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.crypto.Hash.sha256;
 
@@ -63,8 +64,8 @@ public class WalletFundCommand extends WalletManager implements Runnable {
             arity = "1")
     String destinationAddress;
 
-    @CommandLine.Parameters(index = "2", paramLabel = "token", description = "Faucet API token")
-    String token = null;
+    @CommandLine.Option(names = {"-t", "--token"})
+    String token;
 
     @Override
     public void run() {
@@ -79,6 +80,9 @@ public class WalletFundCommand extends WalletManager implements Runnable {
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
+            if (token == null) {
+                token = config.getLoginToken();
+            }
 
             String transactionHash = fundWallet(destinationAddress, selectedFaucet, token);
             System.out.println(
@@ -87,7 +91,6 @@ public class WalletFundCommand extends WalletManager implements Runnable {
                             selectedFaucet.name.toLowerCase(), transactionHash));
         } catch (Exception e) {
             System.err.println("The fund operation failed with the following exception:");
-            e.printStackTrace();
             System.exit(-1);
         }
     }
