@@ -16,21 +16,13 @@ public class ProjectCreatorConfig {
     private final String projectName;
     private final String packageName;
     private final String outputDir;
-    private final String walletPath;
-    private final String walletPassword;
 
     public ProjectCreatorConfig(
-            final String projectName,
-            final String packageName,
-            final String outputDir,
-            final String walletPath,
-            final String walletPassword) {
+            final String projectName, final String packageName, final String outputDir) {
 
         this.projectName = projectName;
         this.packageName = packageName;
         this.outputDir = outputDir;
-        this.walletPath = walletPath;
-        this.walletPassword = walletPassword;
     }
 
     public String getProjectName() {
@@ -43,13 +35,5 @@ public class ProjectCreatorConfig {
 
     public String getOutputDir() {
         return outputDir;
-    }
-
-    public String getWalletPath() {
-        return walletPath;
-    }
-
-    public String getWalletPassword() {
-        return walletPassword;
     }
 }

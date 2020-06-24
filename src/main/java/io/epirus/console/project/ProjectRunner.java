@@ -26,15 +26,11 @@ public abstract class ProjectRunner implements Runnable {
     public String projectName;
     public String packageName;
     public String outputDir;
-    public String walletPath;
-    public String walletPassword;
 
     public ProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
         this.projectName = projectCreatorConfig.getProjectName();
         this.packageName = projectCreatorConfig.getPackageName();
         this.outputDir = projectCreatorConfig.getOutputDir();
-        this.walletPassword = projectCreatorConfig.getWalletPassword();
-        this.walletPassword = projectCreatorConfig.getWalletPath();
     }
 
     @Override

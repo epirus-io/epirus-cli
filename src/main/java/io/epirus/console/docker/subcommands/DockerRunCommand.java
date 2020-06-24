@@ -54,10 +54,10 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @Override
     public void run() {
         String walletJson = null;
+        if (walletPath == null) {
+            walletPath = Paths.get(config.getDefaultWalletPath());
+        }
         try {
-            if (walletPath == null && config.getDefaultWalletPath() != null) {
-                walletPath = Paths.get(config.getDefaultWalletPath());
-            }
             walletJson = new String(Files.readAllBytes(walletPath));
         } catch (IOException e) {
             Console.exitError("Failed to read default wallet in home directory");

@@ -19,7 +19,6 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
-import static io.epirus.console.config.ConfigManager.config;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
@@ -63,17 +62,6 @@ public class ImportProjectCommand implements Runnable {
     public String outputDir = ".";
 
     @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file")
-    public String walletPath = "config.getDefaultWalletPath()";
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
-
-    @CommandLine.Option(
             names = {"-s", "--solidity-path"},
             description = "Path to solidity file/folder",
             required = true)
@@ -87,21 +75,12 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (walletPath.isEmpty()) {
-            walletPath = config.getDefaultWalletPath();
-        }
         if (isJava && isKotlin) {
             Console.exitError("Must only use one of -java or -kotlin");
         }
         final ProjectImporterConfig projectImporterConfig =
                 new ProjectImporterConfig(
-                        projectName,
-                        packageName,
-                        outputDir,
-                        walletPath,
-                        walletPassword,
-                        solidityImportPath,
-                        generateTests);
+                        projectName, packageName, outputDir, solidityImportPath, generateTests);
 
         if (!isJava) {
             new KotlinProjectImporterRunner(projectImporterConfig).run();

@@ -13,15 +13,11 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectImporterConfig;
 import org.jetbrains.annotations.NotNull;
-
-import static io.epirus.console.config.ConfigManager.config;
 
 public class JavaProjectImporterRunner extends JavaProjectRunner {
 
@@ -35,13 +31,9 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
     }
 
     protected void createProject() {
-        Map<String, String> walletCredentials = new HashMap<>();
-        walletCredentials.put("path", walletPath);
-        walletCredentials.put("password", walletPassword);
         generateJava(
                 shouldGenerateTests,
                 Optional.of(new File(solidityImportPath)),
-                Optional.of(walletCredentials),
                 false,
                 false,
                 "import");
@@ -53,11 +45,6 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
         projectName = interactiveOptions.getProjectName();
         packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
-
-        final Map<String, String> walletCredentials =
-                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
-        walletPath = walletCredentials.get("path");
-        walletPassword = walletCredentials.get("password");
 
         interactiveOptions
                 .getProjectDestination(projectName)

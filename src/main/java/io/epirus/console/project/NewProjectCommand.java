@@ -19,7 +19,6 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
-import static io.epirus.console.config.ConfigManager.config;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
@@ -62,29 +61,14 @@ public class NewProjectCommand implements Runnable {
             showDefaultValue = ALWAYS)
     public String outputDir = ".";
 
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file")
-    public String walletPath = "";
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
-
     @Override
     public void run() {
-        if (walletPath.isEmpty()) {
-            walletPath = config.getDefaultWalletPath();
-        }
         if (isJava && isKotlin) {
             Console.exitError("Must only use one of -java or -kotlin");
         }
 
         final ProjectCreatorConfig projectCreatorConfig =
-                new ProjectCreatorConfig(
-                        projectName, packageName, outputDir, walletPath, walletPassword);
+                new ProjectCreatorConfig(projectName, packageName, outputDir);
 
         if (!isJava) {
             new KotlinProjectCreatorRunner(projectCreatorConfig).run();

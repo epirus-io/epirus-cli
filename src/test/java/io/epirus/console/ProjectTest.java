@@ -45,15 +45,7 @@ public class ProjectTest extends ClassExecutor {
                         + File.separator
                         + WalletUtils.generateNewWalletFile("", testWalletDirectory);
         final String[] args = {
-            "new",
-            "--java",
-            "-p",
-            "org.com",
-            "-n",
-            "Test",
-            "-o" + workingDirectory,
-            "-w",
-            absoluteWalletPath
+            "new", "--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory
         };
         int result =
                 executeClassAsSubProcessAndReturnProcess(

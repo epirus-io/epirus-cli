@@ -30,7 +30,6 @@ public class KotlinBuilder extends AbstractProjectBuilder<KotlinBuilder> impleme
         return new KotlinProject(
                 withTests,
                 withFatJar,
-                withCredentials,
                 withSampleCode,
                 command,
                 solidityImportPath,

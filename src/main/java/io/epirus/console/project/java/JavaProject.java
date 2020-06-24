@@ -13,8 +13,6 @@
 package io.epirus.console.project.java;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
 
 import io.epirus.console.project.AbstractProject;
 import io.epirus.console.project.Project;
@@ -29,19 +27,11 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
     protected JavaProject(
             boolean withTests,
             boolean withFatJar,
-            Optional<Map> withCredentials,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
             ProjectStructure projectStructure) {
-        super(
-                withTests,
-                withFatJar,
-                withCredentials,
-                withSampleCode,
-                command,
-                solidityImportPath,
-                projectStructure);
+        super(withTests, withFatJar, withSampleCode, command, solidityImportPath, projectStructure);
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
@@ -67,10 +57,6 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                         .withWrapperGradleSettings("gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
-        if (withCredentials.isPresent()) {
-            templateBuilder.withWalletNameReplacement((String) withCredentials.get().get("path"));
-            templateBuilder.withPasswordFileName((String) withCredentials.get().get("password"));
-        }
         if (command.equals("new")) {
             templateBuilder
                     .withGradleBuild(

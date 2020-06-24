@@ -34,8 +34,6 @@ public class JavaTemplateProvider implements TemplateProvider {
     private final String gradlewJar;
     private final Optional<String> packageNameReplacement;
     private final Optional<String> projectNameReplacement;
-    private final Optional<String> passwordFileName;
-    private final Optional<String> walletNameReplacement;
 
     protected JavaTemplateProvider(
             final String mainJavaClass,
@@ -48,9 +46,7 @@ public class JavaTemplateProvider implements TemplateProvider {
             final String gradlewScript,
             final String gradlewJar,
             String packageNameReplacement,
-            String projectNameReplacement,
-            String passwordFileName,
-            String walletNameReplacement) {
+            String projectNameReplacement) {
         this.mainJavaClass = mainJavaClass;
         this.solidityContract = solidityContract;
         this.pathToSolidityFolder = pathToSolidityFolder;
@@ -62,8 +58,6 @@ public class JavaTemplateProvider implements TemplateProvider {
         this.gradlewJar = gradlewJar;
         this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
         this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
-        this.passwordFileName = Optional.ofNullable(passwordFileName);
-        this.walletNameReplacement = Optional.ofNullable(walletNameReplacement);
     }
 
     public String getSolidityContract() {
@@ -103,9 +97,7 @@ public class JavaTemplateProvider implements TemplateProvider {
                 .replaceAll(
                         "<project_name>",
                         InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
-                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
-                .replaceAll("<wallet_name>", walletNameReplacement.orElse(""))
-                .replaceAll("<password_file_name>", passwordFileName.orElse(""));
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""));
     }
 
     public String loadGradleBuild() throws IOException {

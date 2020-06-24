@@ -20,11 +20,9 @@ public class ProjectImporterConfig extends ProjectCreatorConfig {
             final String projectName,
             final String packageName,
             final String outputDir,
-            final String walletPath,
-            final String walletPassword,
             final String solidityImportPath,
             final boolean generateTests) {
-        super(projectName, packageName, outputDir, walletPath, walletPassword);
+        super(projectName, packageName, outputDir);
 
         this.solidityImportPath = solidityImportPath;
         this.generateTests = generateTests;

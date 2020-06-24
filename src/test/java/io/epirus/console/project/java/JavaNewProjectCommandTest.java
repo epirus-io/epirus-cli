@@ -18,9 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,9 +32,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
-
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.WalletUtils;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,8 +110,7 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            throws IOException, InterruptedException {
         final String[] args = {"new", "--java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
@@ -126,17 +119,9 @@ public class JavaNewProjectCommandTest extends ClassExecutor {
 
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        final String walletName = WalletUtils.generateNewWalletFile("", new File(tempDirPath));
-        final String walletPath = tempDirPath + separator + walletName;
         writer.write("Test1", 0, "Test1".length());
         writer.newLine();
         writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write("n", 0, "n".length());
-        writer.newLine();
-        writer.write(walletPath, 0, walletPath.length());
-        writer.newLine();
-        writer.write(" ", 0, " ".length());
         writer.newLine();
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();

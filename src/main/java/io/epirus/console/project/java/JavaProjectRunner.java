@@ -15,7 +15,6 @@ package io.epirus.console.project.java;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.Project;
@@ -33,7 +32,6 @@ public abstract class JavaProjectRunner extends ProjectRunner {
     public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
-            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -45,7 +43,6 @@ public abstract class JavaProjectRunner extends ProjectRunner {
                             .withRootDirectory(outputDir)
                             .withPackageName(packageName)
                             .withTests(withTests)
-                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);

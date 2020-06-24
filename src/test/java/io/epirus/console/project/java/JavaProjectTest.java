@@ -15,7 +15,6 @@ package io.epirus.console.project.java;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.utils.Folders;
@@ -47,7 +46,6 @@ public class JavaProjectTest {
                         .withProjectName(projectStructure.getProjectName())
                         .withPackageName(projectStructure.getPackageName())
                         .withRootDirectory(rootDirectory)
-                        .withCredentials(Optional.of(walletCredentials))
                         .build();
         javaProject.createProject();
     }
