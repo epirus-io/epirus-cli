@@ -90,7 +90,7 @@ public class WalletFundCommand extends WalletManager implements Runnable {
                             "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.epirus.io/transactions/%s",
                             selectedFaucet.name.toLowerCase(), transactionHash));
         } catch (Exception e) {
-            System.err.println("The fund operation failed with the following exception:");
+            System.err.println("The fund operation failed");
             System.exit(-1);
         }
     }
