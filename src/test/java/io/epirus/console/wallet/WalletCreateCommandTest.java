@@ -12,12 +12,12 @@
  */
 package io.epirus.console.wallet;
 
+import java.io.File;
+
 import io.epirus.console.utils.IODevice;
 import io.epirus.console.wallet.subcommands.WalletCreateCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
 
 import static io.epirus.console.wallet.WalletImportCommandTest.WALLET_PASSWORD;
 import static org.mockito.ArgumentMatchers.contains;
@@ -28,8 +28,7 @@ import static org.mockito.Mockito.when;
 
 public class WalletCreateCommandTest {
 
-    @TempDir
-    File tempFolder;
+    @TempDir File tempFolder;
 
     IODevice console = mock(IODevice.class);
 
