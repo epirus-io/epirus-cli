@@ -25,8 +25,6 @@ import picocli.CommandLine;
 import org.web3j.codegen.Console;
 
 import static io.epirus.console.config.ConfigManager.config;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_LOOKUP_PATH;
-import static io.epirus.console.project.wallet.ProjectWalletUtils.DEFAULT_WALLET_NAME;
 
 @CommandLine.Command(
         name = "run",
@@ -45,7 +43,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     boolean localMode;
 
     @CommandLine.Option(names = {"-w", "--wallet-path"})
-    Path walletPath = Paths.get(DEFAULT_WALLET_LOOKUP_PATH, DEFAULT_WALLET_NAME);
+    Path walletPath;
 
     @CommandLine.Option(names = {"-d", "--directory"})
     Path directory = Paths.get(System.getProperty("user.dir"));
@@ -57,6 +55,9 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     public void run() {
         String walletJson = null;
         try {
+            if (walletPath == null && config.getDefaultWalletPath() != null) {
+                walletPath = Paths.get(config.getDefaultWalletPath());
+            }
             walletJson = new String(Files.readAllBytes(walletPath));
         } catch (IOException e) {
             Console.exitError("Failed to read default wallet in home directory");
