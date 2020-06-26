@@ -16,8 +16,8 @@ import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.subcommands.CreateCommand;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
+import io.epirus.console.account.subcommands.ResetCommand;
 import io.epirus.console.account.subcommands.StatusCommand;
-import io.epirus.console.account.subcommands.WalletCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -31,7 +31,7 @@ import picocli.CommandLine;
             LoginCommand.class,
             LogoutCommand.class,
             StatusCommand.class,
-            WalletCommand.class
+            ResetCommand.class
         },
         versionProvider = EpirusVersionProvider.class,
         synopsisHeading = "%n",

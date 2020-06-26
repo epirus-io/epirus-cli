@@ -12,14 +12,20 @@
  */
 package io.epirus.console.project;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
+
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
+import io.epirus.console.project.utils.InputVerifier;
+import io.epirus.console.project.utils.ProjectUtils;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
@@ -62,34 +68,60 @@ public class NewProjectCommand implements Runnable {
             showDefaultValue = ALWAYS)
     public String outputDir = ".";
 
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file")
-    public String walletPath = "";
+    private final InteractiveOptions interactiveOptions;
+    private final InputVerifier inputVerifier;
 
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
+    public NewProjectCommand() {
+        this(System.in, System.out);
+    }
+
+    public NewProjectCommand(InputStream inputStream, PrintStream outputStream) {
+        this.interactiveOptions = new InteractiveOptions(inputStream, outputStream);
+        this.inputVerifier = new InputVerifier(outputStream);
+    }
 
     @Override
     public void run() {
-        if (walletPath.isEmpty()) {
-            walletPath = config.getDefaultWalletPath();
-        }
         if (isJava && isKotlin) {
-            Console.exitError("Must only use one of -java or -kotlin");
+            Console.exitError("Must only use one of --java or --kotlin");
         }
-
-        final ProjectCreatorConfig projectCreatorConfig =
-                new ProjectCreatorConfig(
-                        projectName, packageName, outputDir, walletPath, walletPassword);
-
-        if (!isJava) {
-            new KotlinProjectCreatorRunner(projectCreatorConfig).run();
-        } else {
-            new JavaProjectCreatorRunner(projectCreatorConfig).run();
+        if (projectName == null && packageName == null) {
+            buildInteractively();
         }
+        if (inputIsValid(projectName, packageName)) {
+            if (new File(projectName).exists()) {
+                if (interactiveOptions.overrideExistingProject()) {
+                    ProjectUtils.deleteFolder(new File(projectName).toPath());
+                } else {
+                    exitError("Project creation was canceled.");
+                }
+            }
+            final ProjectCreatorConfig projectCreatorConfig =
+                    new ProjectCreatorConfig(projectName, packageName, outputDir);
+
+            if (!isJava) {
+                new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+            } else {
+                new JavaProjectCreatorRunner(projectCreatorConfig).run();
+            }
+        }
+    }
+
+    private void buildInteractively() {
+        projectName = interactiveOptions.getProjectName();
+        packageName = interactiveOptions.getPackageName();
+
+        interactiveOptions
+                .getProjectDestination(projectName)
+                .ifPresent(projectDest -> outputDir = projectDest);
+
+        // FIXME - not sure what this is for
+        //        AccountUtils.accountInit(new AccountService());
+    }
+
+    private boolean inputIsValid(String... requiredArgs) {
+        return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
+                && inputVerifier.classNameIsValid(projectName)
+                && inputVerifier.packageNameIsValid(packageName);
     }
 }

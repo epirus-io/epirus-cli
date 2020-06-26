@@ -20,7 +20,7 @@ import picocli.CommandLine;
 import static io.epirus.console.config.ConfigManager.config;
 
 @CommandLine.Command(
-        name = "wallet",
+        name = "reset",
         description = "Initialise an Epirus account wallet",
         showDefaultValues = true,
         abbreviateSynopsis = true,
@@ -31,7 +31,7 @@ import static io.epirus.console.config.ConfigManager.config;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class WalletCommand implements Runnable {
+public class ResetCommand implements Runnable {
     @Override
     public void run() {
         if (config.getLoginToken() != null && config.getLoginToken().length() > 0) {

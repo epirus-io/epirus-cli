@@ -12,8 +12,6 @@
  */
 package io.epirus.console.docker.subcommands;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -54,13 +52,8 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @Override
     public void run() {
         String walletJson = null;
-        try {
-            if (walletPath == null && config.getDefaultWalletPath() != null) {
-                walletPath = Paths.get(config.getDefaultWalletPath());
-            }
-            walletJson = new String(Files.readAllBytes(walletPath));
-        } catch (IOException e) {
-            Console.exitError("Failed to read default wallet in home directory");
+        if (walletPath == null) {
+            walletPath = Paths.get(config.getDefaultWalletPath());
         }
         String[] args =
                 new String[] {
@@ -69,7 +62,10 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     "--env",
                     String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
                     "--env",
-                    String.format("EPIRUS_WALLET=%s", walletJson),
+                    String.format(
+                            "EPIRUS_WALLET=%s", "/root/key/" + walletPath.getFileName().toString()),
+                    "-v",
+                    walletPath.getParent().toAbsolutePath().toString() + ":/root/key"
                 };
 
         if (localMode) {

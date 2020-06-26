@@ -14,8 +14,6 @@ package io.epirus.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
 
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.utils.ProgressCounter;
@@ -28,7 +26,6 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
 
     protected final boolean withTests;
     protected final boolean withFatJar;
-    protected final Optional<Map> withCredentials;
     protected final boolean withSampleCode;
     protected final String command;
     protected final String solidityImportPath;
@@ -41,14 +38,12 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
     protected AbstractProject(
             boolean withTests,
             boolean withFatJar,
-            Optional<Map> withCredentials,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
             ProjectStructure projectStructure) {
         this.withTests = withTests;
         this.withFatJar = withFatJar;
-        this.withCredentials = withCredentials;
         this.withSampleCode = withSampleCode;
         this.command = command;
         this.solidityImportPath = solidityImportPath;

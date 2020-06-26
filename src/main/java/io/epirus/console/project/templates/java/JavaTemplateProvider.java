@@ -20,7 +20,7 @@ import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.ProjectWriter;
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.templates.TemplateReader;
-import io.epirus.console.project.utils.InputVerifier;
+import io.epirus.console.project.utils.ProjectUtils;
 
 public class JavaTemplateProvider implements TemplateProvider {
     private final String mainJavaClass;
@@ -34,8 +34,6 @@ public class JavaTemplateProvider implements TemplateProvider {
     private final String gradlewJar;
     private final Optional<String> packageNameReplacement;
     private final Optional<String> projectNameReplacement;
-    private final Optional<String> passwordFileName;
-    private final Optional<String> walletNameReplacement;
 
     protected JavaTemplateProvider(
             final String mainJavaClass,
@@ -48,9 +46,7 @@ public class JavaTemplateProvider implements TemplateProvider {
             final String gradlewScript,
             final String gradlewJar,
             String packageNameReplacement,
-            String projectNameReplacement,
-            String passwordFileName,
-            String walletNameReplacement) {
+            String projectNameReplacement) {
         this.mainJavaClass = mainJavaClass;
         this.solidityContract = solidityContract;
         this.pathToSolidityFolder = pathToSolidityFolder;
@@ -62,8 +58,6 @@ public class JavaTemplateProvider implements TemplateProvider {
         this.gradlewJar = gradlewJar;
         this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
         this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
-        this.passwordFileName = Optional.ofNullable(passwordFileName);
-        this.walletNameReplacement = Optional.ofNullable(walletNameReplacement);
     }
 
     public String getSolidityContract() {
@@ -102,10 +96,8 @@ public class JavaTemplateProvider implements TemplateProvider {
         return TemplateReader.readFile(mainJavaClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
-                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
-                .replaceAll("<wallet_name>", walletNameReplacement.orElse(""))
-                .replaceAll("<password_file_name>", passwordFileName.orElse(""));
+                        ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""));
     }
 
     public String loadGradleBuild() throws IOException {
@@ -141,7 +133,7 @@ public class JavaTemplateProvider implements TemplateProvider {
     public void generateFiles(ProjectStructure projectStructure) throws IOException {
         ProjectWriter.writeResourceFile(
                 loadMainJavaClass(),
-                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".java"),
+                ProjectUtils.capitalizeFirstLetter(projectStructure.getProjectName() + ".java"),
                 projectStructure.getMainPath());
         ProjectWriter.writeResourceFile(
                 loadGradleBuild(), "build.gradle", projectStructure.getProjectRoot());

@@ -12,17 +12,9 @@
  */
 package io.epirus.console.project.kotlin;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import io.epirus.console.account.AccountService;
-import io.epirus.console.account.AccountUtils;
-import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectCreatorConfig;
-import org.jetbrains.annotations.NotNull;
-
-import static io.epirus.console.config.ConfigManager.config;
 
 public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
 
@@ -31,27 +23,6 @@ public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
     }
 
     protected void createProject() {
-        Map<String, String> walletCredentials = new HashMap<>();
-        walletCredentials.put("path", walletPath);
-        walletCredentials.put("password", walletPassword);
-        generateKotlin(true, Optional.empty(), Optional.of(walletCredentials), true, true, "new");
-    }
-
-    @NotNull
-    public void buildInteractively() {
-        InteractiveOptions interactiveOptions = new InteractiveOptions();
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
-
-        final Map<String, String> walletCredentials =
-                interactiveOptions.getWalletLocation(config.getDefaultWalletPath());
-        walletPath = walletCredentials.get("path");
-        walletPassword = walletCredentials.get("password");
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
-        AccountUtils.accountInit(new AccountService());
+        generateKotlin(true, Optional.empty(), true, true, "new");
     }
 }

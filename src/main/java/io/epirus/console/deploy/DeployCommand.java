@@ -113,16 +113,11 @@ public class DeployCommand implements Runnable {
         }
 
         if (walletPath.isEmpty()) {
-            walletPath = config.getDefaultWalletPath();
+            walletPath =
+                    System.getenv().getOrDefault("EPIRUS_WALLET", config.getDefaultWalletPath());
         }
 
-        String walletJson = System.getenv("EPIRUS_WALLET");
-        if (walletJson == null || walletJson.isEmpty()) {
-            this.credentials =
-                    ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
-        } else {
-            this.credentials = ProjectUtils.createCredentials(walletJson, walletPassword);
-        }
+        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
 
         try {
             web3j = Epirus.buildWeb3j(Network.valueOf(deployNetwork.toUpperCase()));

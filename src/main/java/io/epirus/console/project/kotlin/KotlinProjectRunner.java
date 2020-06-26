@@ -15,7 +15,6 @@ package io.epirus.console.project.kotlin;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 import java.util.Optional;
 
 import io.epirus.console.project.Project;
@@ -33,7 +32,6 @@ public abstract class KotlinProjectRunner extends ProjectRunner {
     public void generateKotlin(
             boolean withTests,
             Optional<File> solidityFile,
-            Optional<Map> withCredentials,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
@@ -44,7 +42,6 @@ public abstract class KotlinProjectRunner extends ProjectRunner {
                             .withRootDirectory(outputDir)
                             .withPackageName(packageName)
                             .withTests(withTests)
-                            .withCredentials(withCredentials)
                             .withCommand(command)
                             .withSampleCode(withSampleCode)
                             .withFatJar(withFatJar);

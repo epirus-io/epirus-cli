@@ -17,25 +17,23 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.Arrays;
-import java.util.Collections;
 
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
 
 public class ProjectTest extends ClassExecutor {
-    @TempDir protected static File workingDirectory;
+    protected static File workingDirectory = Folders.tempBuildFolder();
     protected String absoluteWalletPath;
 
     @BeforeEach
     public void createEpirusProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException,
+                    InvalidAlgorithmParameterException, CipherException {
         ConfigManager.setDevelopment();
         final File testWalletDirectory =
                 new File(workingDirectory.getPath() + File.separator + "keystore");
@@ -45,21 +43,9 @@ public class ProjectTest extends ClassExecutor {
                         + File.separator
                         + WalletUtils.generateNewWalletFile("", testWalletDirectory);
         final String[] args = {
-            "new",
-            "--java",
-            "-p",
-            "org.com",
-            "-n",
-            "Test",
-            "-o" + workingDirectory,
-            "-w",
-            absoluteWalletPath
+            "new", "--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory
         };
-        int result =
-                executeClassAsSubProcessAndReturnProcess(
-                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
-                        .start()
-                        .waitFor();
+        int result = new EpirusCommand(System.getenv(), args).parse();
         if (result != 0) {
             throw new RuntimeException("Failed to generate test project");
         }

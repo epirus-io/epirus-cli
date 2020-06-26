@@ -32,17 +32,23 @@ import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 
 public class InteractiveOptions {
-    private Scanner scanner;
-    private PrintStream writer;
+
+    private final InputVerifier inputVerifier;
+    private final Scanner scanner;
+    private final PrintStream outputStream;
 
     public InteractiveOptions() {
-        scanner = new Scanner(System.in);
-        writer = System.out;
+        this(System.out);
     }
 
-    public InteractiveOptions(InputStream inputStream, PrintStream printStream) {
-        scanner = new Scanner(inputStream);
-        writer = printStream;
+    public InteractiveOptions(PrintStream printStream) {
+        this(System.in, printStream);
+    }
+
+    public InteractiveOptions(InputStream inputStream, PrintStream outputStream) {
+        this.scanner = new Scanner(inputStream);
+        this.outputStream = outputStream;
+        this.inputVerifier = new InputVerifier(outputStream);
     }
 
     public String getProjectName() {
@@ -51,7 +57,7 @@ public class InteractiveOptions {
         if (projectName.trim().isEmpty()) {
             return "Web3App";
         }
-        while (!InputVerifier.classNameIsValid(projectName)) {
+        while (!inputVerifier.classNameIsValid(projectName)) {
             projectName = getUserInput();
         }
         return projectName;
@@ -63,7 +69,7 @@ public class InteractiveOptions {
         if (packageName.trim().isEmpty()) {
             return "io.epirus";
         }
-        while (!InputVerifier.packageNameIsValid(packageName)) {
+        while (!inputVerifier.packageNameIsValid(packageName)) {
             packageName = getUserInput();
         }
         return packageName;
@@ -234,6 +240,6 @@ public class InteractiveOptions {
     }
 
     private void print(final String text) {
-        System.out.println(text);
+        outputStream.println(text);
     }
 }

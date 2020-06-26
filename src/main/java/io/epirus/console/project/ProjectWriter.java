@@ -17,13 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Objects;
-
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.WalletUtils;
 
 public class ProjectWriter {
 
@@ -61,11 +55,5 @@ public class ProjectWriter {
                         new ProjectVisitor(solidityImportPath.getAbsolutePath(), destination));
             }
         }
-    }
-
-    static final String createWallet(String walletPassword, String walletPath)
-            throws NoSuchAlgorithmException, NoSuchProviderException,
-                    InvalidAlgorithmParameterException, CipherException, IOException {
-        return WalletUtils.generateNewWalletFile(walletPassword, new File(walletPath));
     }
 }
