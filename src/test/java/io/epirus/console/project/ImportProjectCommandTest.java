@@ -12,18 +12,21 @@
  */
 package io.epirus.console.project;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -96,7 +99,6 @@ public class ImportProjectCommandTest extends ClassExecutor {
         assertTrue(new File(pathToTests).exists());
     }
 
-    @Disabled
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         ConfigManager.setDevelopment();
@@ -116,24 +118,23 @@ public class ImportProjectCommandTest extends ClassExecutor {
                         .contains("Please make sure the required parameters are not empty."));
     }
 
-    //    @Test
-    //    public void testWhenInteractiveAndArgumentsAreCorrect() throws IOException {
-    //        final String[] args = {"--java"};
-    //        final String input =
-    //                "Test1" + "\n" + "org.com" + "\n" + tempDirPath + "\n" + tempDirPath + "\n" +
-    // "n";
-    //        final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
-    //        final PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
-    //        int exitCode =
-    //                new CommandLine(
-    //                                ImportProjectCommand.class,
-    //                                FactoryHarness.getFactory(inputStream, printStream))
-    //                        .execute(args);
-    //        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-    //            List<String> stringList = reader.lines().collect(Collectors.toList());
-    //            stringList.forEach(string -> System.out.println(string + "\n"));
-    //        }
-    //
-    //        assertEquals(0, exitCode);
-    //    }
+    @Test
+    public void testWhenInteractiveAndArgumentsAreCorrect() throws IOException {
+        final String[] args = {"--java"};
+        final String input =
+                "Test1" + "\n" + "org.com" + "\n" + tempDirPath + "\n" + tempDirPath + "\n" + "n";
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        final PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
+        int exitCode =
+                new CommandLine(
+                                ImportProjectCommand.class,
+                                FactoryHarness.getFactory(inputStream, printStream))
+                        .execute(args);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(string -> System.out.println(string + "\n"));
+        }
+
+        assertEquals(0, exitCode);
+    }
 }

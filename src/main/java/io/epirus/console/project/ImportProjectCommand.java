@@ -86,8 +86,13 @@ public class ImportProjectCommand implements Runnable {
     }
 
     public ImportProjectCommand(InputStream inputStream, PrintStream outputStream) {
-        this.interactiveOptions = new InteractiveOptions(inputStream, outputStream);
-        this.inputVerifier = new InputVerifier(outputStream);
+        this(new InteractiveOptions(inputStream, outputStream), new InputVerifier(outputStream));
+    }
+
+    public ImportProjectCommand(
+            InteractiveOptions interactiveOptions, InputVerifier inputVerifier) {
+        this.interactiveOptions = interactiveOptions;
+        this.inputVerifier = inputVerifier;
     }
 
     @Override

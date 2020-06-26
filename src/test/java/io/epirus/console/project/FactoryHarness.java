@@ -13,6 +13,7 @@
 package io.epirus.console.project;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 
@@ -29,7 +30,11 @@ public class FactoryHarness {
                 try {
                     final Constructor<?>[] constructors = clazz.getConstructors();
                     for (int i = 0; i < constructors.length; ++i) {
-                        if (constructors[i].getParameterCount() == 2) {
+                        if (constructors[i].getParameterCount() == 2
+                                && InputStream.class.isAssignableFrom(
+                                        constructors[i].getParameterTypes()[0])
+                                && PrintStream.class.isAssignableFrom(
+                                        constructors[i].getParameterTypes()[1])) {
                             return (K) constructors[i].newInstance(inputStream, printStream);
                         }
                     }
