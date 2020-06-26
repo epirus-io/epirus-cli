@@ -20,7 +20,7 @@ import picocli.CommandLine;
 import static io.epirus.console.config.ConfigManager.config;
 
 @CommandLine.Command(
-        name = "rest",
+        name = "reset",
         description = "Initialise an Epirus account wallet",
         showDefaultValues = true,
         abbreviateSynopsis = true,
