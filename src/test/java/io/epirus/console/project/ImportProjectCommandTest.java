@@ -27,6 +27,7 @@ import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -99,6 +100,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
         assertTrue(new File(pathToTests).exists());
     }
 
+    @Disabled
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         ConfigManager.setDevelopment();
