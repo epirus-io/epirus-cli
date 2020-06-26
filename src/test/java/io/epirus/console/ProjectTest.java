@@ -20,14 +20,14 @@ import java.security.NoSuchProviderException;
 
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
+import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
 
 public class ProjectTest extends ClassExecutor {
-    @TempDir protected static File workingDirectory;
+    protected static File workingDirectory = Folders.tempBuildFolder();
     protected String absoluteWalletPath;
 
     @BeforeEach
