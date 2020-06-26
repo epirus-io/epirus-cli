@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImportProjectCommandTest extends ClassExecutor {
     static String tempDirPath;
-    private String formattedPath =
+    private String solidityTestDir =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
 
@@ -47,12 +47,15 @@ public class ImportProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
-        final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
+        final String[] args = {
+            "-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + solidityTestDir
+        };
         final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         new CommandLine(importProjectCommand).parseArgs(args);
         assertEquals("Test", importProjectCommand.projectName);
         assertEquals("org.com", importProjectCommand.packageName);
-        assertEquals(tempDirPath, importProjectCommand.solidityImportPath);
+        assertEquals(tempDirPath, importProjectCommand.outputDir);
+        assertEquals(solidityTestDir, importProjectCommand.solidityImportPath);
     }
 
     @Test
@@ -78,7 +81,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() {
         final String[] args = {
-            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir, "-t"
         };
         int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
@@ -122,7 +125,15 @@ public class ImportProjectCommandTest extends ClassExecutor {
     public void testWhenInteractiveAndArgumentsAreCorrect() throws IOException {
         final String[] args = {"--java"};
         final String input =
-                "Test1" + "\n" + "org.com" + "\n" + tempDirPath + "\n" + tempDirPath + "\n" + "n";
+                "Test1"
+                        + "\n"
+                        + "org.com"
+                        + "\n"
+                        + solidityTestDir
+                        + "\n"
+                        + tempDirPath
+                        + "\n"
+                        + "n";
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
         final PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
         int exitCode =
