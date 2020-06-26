@@ -113,7 +113,8 @@ public class DeployCommand implements Runnable {
         }
 
         if (walletPath.isEmpty()) {
-            walletPath = config.getDefaultWalletPath();
+            walletPath =
+                    System.getenv().getOrDefault("EPIRUS_WALLET", config.getDefaultWalletPath());
         }
 
         this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);

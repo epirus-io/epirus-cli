@@ -24,7 +24,6 @@ public class InputVerifier {
     }
 
     public InputVerifier(final PrintStream outputStream) {
-
         this.outputStream = outputStream;
     }
 
