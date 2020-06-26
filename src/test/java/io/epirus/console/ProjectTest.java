@@ -32,8 +32,8 @@ public class ProjectTest extends ClassExecutor {
 
     @BeforeEach
     public void createEpirusProject()
-            throws IOException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException,
+                    InvalidAlgorithmParameterException, CipherException {
         ConfigManager.setDevelopment();
         final File testWalletDirectory =
                 new File(workingDirectory.getPath() + File.separator + "keystore");
@@ -45,11 +45,6 @@ public class ProjectTest extends ClassExecutor {
         final String[] args = {
             "new", "--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory
         };
-//        int result =
-//                executeClassAsSubProcessAndReturnProcess(
-//                                Epirus.class, Collections.emptyList(), Arrays.asList(args), true)
-//                        .start()
-//                        .waitFor();
         int result = new EpirusCommand(System.getenv(), args).parse();
         if (result != 0) {
             throw new RuntimeException("Failed to generate test project");
