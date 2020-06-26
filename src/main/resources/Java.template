@@ -32,7 +32,7 @@ public class <project_name> {
             ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
             String walletJson = System.getenv("EPIRUS_WALLET");
             String walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "");
-            Credentials credentials = WalletUtils.loadJsonCredentials(walletPassword, walletJson);
+            Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletJson).toFile());
             Web3j web3j = getDeployWeb3j();
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new StaticGasProvider(DefaultGasProvider.GAS_LIMIT, BigInteger.valueOf(7500000L)));
             callGreetMethod(helloWorld);

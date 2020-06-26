@@ -39,8 +39,8 @@ class <project_name> {
         log as ch.qos.logback.classic.Logger
         log.level = Level.ERROR
         val walletJson = System.getenv("EPIRUS_WALLET")
-        val walletPassword = System.getenv("EPIRUS_WALLET_PASSWORD")
-        val credentials: Credentials? = WalletUtils.loadJsonCredentials(walletPassword, walletJson)
+        val walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "")
+        val credentials: Credentials? = WalletUtils.loadCredentials(walletPassword, Paths.get(walletJson).toFile())
         val web3j: Web3j? = getDeployWeb3j()
         val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(7500000L)))
         callGreetMethod(helloWorld)
