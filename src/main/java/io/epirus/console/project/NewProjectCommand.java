@@ -83,7 +83,7 @@ public class NewProjectCommand implements Runnable {
     @Override
     public void run() {
         if (isJava && isKotlin) {
-            Console.exitError("Must only use one of -java or -kotlin");
+            Console.exitError("Must only use one of --java or --kotlin");
         }
         if (projectName == null && packageName == null) {
             buildInteractively();

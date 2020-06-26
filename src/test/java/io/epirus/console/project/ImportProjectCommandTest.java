@@ -65,15 +65,6 @@ public class ImportProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testWhenNoArgsArePassed() {
-        final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
-        final String[] args = {};
-        final CommandLine commandLine = new CommandLine(importProjectCommand);
-        Assertions.assertThrows(
-                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
-    }
-
-    @Test
     public void testWhenDuplicateArgsArePassed() {
         final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         final String[] args = {
