@@ -42,6 +42,13 @@ import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithS
 
 public class ProjectUtils {
 
+    public static String capitalizeFirstLetter(String input) {
+        if (Character.isUpperCase(input.charAt(0))) {
+            return input;
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
     public static void deleteFolder(Path directoryToDeleted) {
         try {
             Files.walk(directoryToDeleted)

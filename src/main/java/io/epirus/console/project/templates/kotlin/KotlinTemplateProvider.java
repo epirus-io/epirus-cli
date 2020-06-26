@@ -20,7 +20,7 @@ import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.ProjectWriter;
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.templates.TemplateReader;
-import io.epirus.console.project.utils.InputVerifier;
+import io.epirus.console.project.utils.ProjectUtils;
 
 public class KotlinTemplateProvider implements TemplateProvider {
     private final String mainKotlinClass;
@@ -96,7 +96,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
         return TemplateReader.readFile(mainKotlinClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                        ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
                 .replaceAll("<package_name>", packageNameReplacement.orElse(""));
     }
 
@@ -133,7 +133,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
     public void generateFiles(ProjectStructure projectStructure) throws IOException {
         ProjectWriter.writeResourceFile(
                 loadMainKotlinClass(),
-                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".kt"),
+                ProjectUtils.capitalizeFirstLetter(projectStructure.getProjectName() + ".kt"),
                 projectStructure.getMainPath());
         ProjectWriter.writeResourceFile(
                 loadGradleBuild(), "build.gradle", projectStructure.getProjectRoot());

@@ -20,7 +20,7 @@ import io.epirus.console.project.ProjectStructure;
 import io.epirus.console.project.ProjectWriter;
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.templates.TemplateReader;
-import io.epirus.console.project.utils.InputVerifier;
+import io.epirus.console.project.utils.ProjectUtils;
 
 public class JavaTemplateProvider implements TemplateProvider {
     private final String mainJavaClass;
@@ -96,7 +96,7 @@ public class JavaTemplateProvider implements TemplateProvider {
         return TemplateReader.readFile(mainJavaClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                        ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
                 .replaceAll("<package_name>", packageNameReplacement.orElse(""));
     }
 
@@ -133,7 +133,7 @@ public class JavaTemplateProvider implements TemplateProvider {
     public void generateFiles(ProjectStructure projectStructure) throws IOException {
         ProjectWriter.writeResourceFile(
                 loadMainJavaClass(),
-                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".java"),
+                ProjectUtils.capitalizeFirstLetter(projectStructure.getProjectName() + ".java"),
                 projectStructure.getMainPath());
         ProjectWriter.writeResourceFile(
                 loadGradleBuild(), "build.gradle", projectStructure.getProjectRoot());

@@ -12,13 +12,20 @@
  */
 package io.epirus.console.project;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
+
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
+import io.epirus.console.project.utils.InputVerifier;
+import io.epirus.console.project.utils.ProjectUtils;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
+import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
@@ -34,7 +41,6 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
-
     @CommandLine.Option(
             names = {"--java"},
             description = "Whether java code should be generated.")
@@ -63,8 +69,7 @@ public class ImportProjectCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder",
-            required = true)
+            description = "Path to solidity file/folder")
     public String solidityImportPath;
 
     @CommandLine.Option(
@@ -73,19 +78,61 @@ public class ImportProjectCommand implements Runnable {
             showDefaultValue = ALWAYS)
     boolean generateTests = false;
 
+    private final InteractiveOptions interactiveOptions;
+    private final InputVerifier inputVerifier;
+
+    public ImportProjectCommand() {
+        this(System.in, System.out);
+    }
+
+    public ImportProjectCommand(InputStream inputStream, PrintStream outputStream) {
+        this.interactiveOptions = new InteractiveOptions(inputStream, outputStream);
+        this.inputVerifier = new InputVerifier(outputStream);
+    }
+
     @Override
     public void run() {
         if (isJava && isKotlin) {
-            Console.exitError("Must only use one of -java or -kotlin");
+            Console.exitError("Must only use one of --java or --kotlin");
         }
-        final ProjectImporterConfig projectImporterConfig =
-                new ProjectImporterConfig(
-                        projectName, packageName, outputDir, solidityImportPath, generateTests);
+        if (projectName == null && packageName == null) {
+            buildInteractively();
+        }
+        if (inputIsValid(projectName, packageName)) {
+            if (new File(projectName).exists()) {
+                if (interactiveOptions.overrideExistingProject()) {
+                    ProjectUtils.deleteFolder(new File(projectName).toPath());
+                } else {
+                    exitError("Project creation was canceled.");
+                }
+            }
+            final ProjectImporterConfig projectImporterConfig =
+                    new ProjectImporterConfig(
+                            projectName, packageName, outputDir, solidityImportPath, generateTests);
 
-        if (!isJava) {
-            new KotlinProjectImporterRunner(projectImporterConfig).run();
-        } else {
-            new JavaProjectImporterRunner(projectImporterConfig).run();
+            if (!isJava) {
+                new KotlinProjectImporterRunner(projectImporterConfig).run();
+            } else {
+                new JavaProjectImporterRunner(projectImporterConfig).run();
+            }
         }
+    }
+
+    private void buildInteractively() {
+        projectName = interactiveOptions.getProjectName();
+        packageName = interactiveOptions.getPackageName();
+        solidityImportPath = interactiveOptions.getSolidityProjectPath();
+
+        interactiveOptions
+                .getProjectDestination(projectName)
+                .ifPresent(projectDest -> outputDir = projectDest);
+
+        generateTests = interactiveOptions.userWantsTests();
+    }
+
+    private boolean inputIsValid(String... requiredArgs) {
+        return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
+                && inputVerifier.classNameIsValid(projectName)
+                && inputVerifier.packageNameIsValid(packageName);
     }
 }

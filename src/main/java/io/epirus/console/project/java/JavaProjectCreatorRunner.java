@@ -14,11 +14,7 @@ package io.epirus.console.project.java;
 
 import java.util.Optional;
 
-import io.epirus.console.account.AccountService;
-import io.epirus.console.account.AccountUtils;
-import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectCreatorConfig;
-import org.jetbrains.annotations.NotNull;
 
 public class JavaProjectCreatorRunner extends JavaProjectRunner {
 
@@ -28,18 +24,5 @@ public class JavaProjectCreatorRunner extends JavaProjectRunner {
 
     protected void createProject() {
         generateJava(true, Optional.empty(), true, true, "new");
-    }
-
-    @NotNull
-    protected void buildInteractively() {
-        InteractiveOptions interactiveOptions = new InteractiveOptions();
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
-        AccountUtils.accountInit(new AccountService());
     }
 }

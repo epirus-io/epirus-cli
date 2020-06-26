@@ -15,9 +15,7 @@ package io.epirus.console.project.java;
 import java.io.File;
 import java.util.Optional;
 
-import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.ProjectImporterConfig;
-import org.jetbrains.annotations.NotNull;
 
 public class JavaProjectImporterRunner extends JavaProjectRunner {
 
@@ -37,19 +35,5 @@ public class JavaProjectImporterRunner extends JavaProjectRunner {
                 false,
                 false,
                 "import");
-    }
-
-    @NotNull
-    protected void buildInteractively() {
-        InteractiveOptions interactiveOptions = new InteractiveOptions();
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
-        solidityImportPath = interactiveOptions.getSolidityProjectPath();
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
-        shouldGenerateTests = interactiveOptions.userWantsTests();
     }
 }

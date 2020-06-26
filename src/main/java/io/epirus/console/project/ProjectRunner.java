@@ -12,14 +12,8 @@
  */
 package io.epirus.console.project;
 
-import java.io.File;
-
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
-import io.epirus.console.project.utils.InputVerifier;
-import io.epirus.console.project.utils.ProjectUtils;
-
-import static org.web3j.codegen.Console.exitError;
 
 public abstract class ProjectRunner implements Runnable {
 
@@ -35,27 +29,10 @@ public abstract class ProjectRunner implements Runnable {
 
     @Override
     public void run() {
-        if (projectName == null && packageName == null) {
-            buildInteractively();
-        }
-        if (!inputIsValid(projectName, packageName)) {
-            exitError("Input is not valid.");
-        }
-        if (InputVerifier.projectExists(new File(projectName))) {
-            if (new InteractiveOptions().overrideExistingProject()) {
-                ProjectUtils.deleteFolder(new File(projectName).toPath());
-                createProject();
-            } else {
-                exitError("Project creation was canceled.");
-            }
-        } else {
-            createProject();
-        }
+        createProject();
     }
 
     protected abstract void createProject();
-
-    protected abstract void buildInteractively();
 
     protected void onSuccess(Project project, String projectType) {
         String gradleCommand =
@@ -102,11 +79,5 @@ public abstract class ProjectRunner implements Runnable {
         commandPrinter.println("Test your application");
         instructionPrinter.print(String.format("%-40s", "epirus deploy rinkeby|ropsten"));
         commandPrinter.println("Deploys your application");
-    }
-
-    private boolean inputIsValid(String... requiredArgs) {
-        return InputVerifier.requiredArgsAreNotEmpty(requiredArgs)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName);
     }
 }
