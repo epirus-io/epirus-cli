@@ -35,7 +35,6 @@ public abstract class JavaProjectRunner extends ProjectRunner {
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
-        System.out.println(outputDir);
         try {
             JavaBuilder javaBuilder =
                     new JavaBuilder()

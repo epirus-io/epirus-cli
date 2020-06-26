@@ -89,7 +89,6 @@ public class EpirusCommand implements Runnable {
     private final Map<String, String> environmentVariables;
     private final String[] args;
 
-    // Required but not used directly for now
     @CommandLine.Option(
             names = {"--telemetry"},
             description = "Whether to perform analytics.",
