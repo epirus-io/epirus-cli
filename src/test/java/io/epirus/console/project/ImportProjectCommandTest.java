@@ -30,7 +30,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-import static io.epirus.console.project.FactoryHarness.getFactory;
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -118,7 +117,8 @@ public class ImportProjectCommandTest extends ClassExecutor {
 
         new CommandLine(
                         ImportProjectCommand.class,
-                        getFactory(new ByteArrayInputStream("".getBytes()), printStream))
+                        FactoryHarness.getFactory(
+                                new ByteArrayInputStream("".getBytes()), printStream))
                 .execute(args);
 
         assertTrue(
@@ -135,7 +135,9 @@ public class ImportProjectCommandTest extends ClassExecutor {
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
         final PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
         int exitCode =
-                new CommandLine(ImportProjectCommand.class, getFactory(inputStream, printStream))
+                new CommandLine(
+                                ImportProjectCommand.class,
+                                FactoryHarness.getFactory(inputStream, printStream))
                         .execute(args);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             List<String> stringList = reader.lines().collect(Collectors.toList());
