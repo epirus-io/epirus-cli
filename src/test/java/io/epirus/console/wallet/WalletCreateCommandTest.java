@@ -12,12 +12,10 @@
  */
 package io.epirus.console.wallet;
 
-import java.io.File;
-
+import io.epirus.console.project.utils.Folders;
 import io.epirus.console.utils.IODevice;
 import io.epirus.console.wallet.subcommands.WalletCreateCommand;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static io.epirus.console.wallet.WalletImportCommandTest.WALLET_PASSWORD;
 import static org.mockito.ArgumentMatchers.contains;
@@ -28,8 +26,6 @@ import static org.mockito.Mockito.when;
 
 public class WalletCreateCommandTest {
 
-    @TempDir File tempFolder;
-
     IODevice console = mock(IODevice.class);
 
     @Test
@@ -37,7 +33,7 @@ public class WalletCreateCommandTest {
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(startsWith("Please enter a destination directory ")))
-                .thenReturn(tempFolder.getAbsolutePath());
+                .thenReturn(Folders.tempBuildFolder().getAbsolutePath());
 
         new WalletCreateCommand(console).run();
 
