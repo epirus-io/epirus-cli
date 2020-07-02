@@ -211,6 +211,12 @@ public class DeployCommand implements Runnable {
     private void executeProcess(File workingDir, String[] command) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.environment().put("DEPLOY_NETWORK", network.getNetworkName());
+        processBuilder
+                .environment()
+                .putIfAbsent(
+                        "EPIRUS_WALLET",
+                        walletPath.isEmpty() ? config.getDefaultWalletPath() : walletPath);
+
         int exitCode =
                 processBuilder
                         .directory(workingDir)
