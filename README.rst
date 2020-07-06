@@ -20,7 +20,7 @@ epirus-cli: Epirus Command Line Tools
 
 About
 =====
-The Epirus command line tools enable developers to interact with blockchains more easily. The Epirus command line tools allow allow you to use some of the key functionality of Epirus from your terminal, including:
+The Epirus command line tools enable developers to interact with blockchains more easily. The Epirus command line tools allow allow you to use some of the key functionality of Epirus using Web3j from your terminal, including:
 
 * New project creation
 * Project creation from existing Solidity code
@@ -50,7 +50,7 @@ On Windows, in PowerShell, run the following command:
 Docs
 =====
 
-https://docs.web3j.io/command_line_tools/
+https://docs.epirus.io/sdk/cli/
 
 
 Credits
