@@ -3,6 +3,8 @@ package <package_name>;
 import ch.qos.logback.classic.Level;
 import <package_name>.generated.contracts.HelloWorld;
 import io.epirus.web3j.Epirus;
+import io.epirus.web3j.gas.EpirusGasProvider;
+import io.epirus.web3j.gas.GasPrice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.CipherException;
@@ -26,6 +28,7 @@ public class <project_name> {
 
     private static final Logger log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService");
     private static final String NODE_URL = "NODE_URL";
+    private static final Network deployNetwork = Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase());
 
     public static void main(String[] args) throws Exception {
         try {
@@ -34,7 +37,7 @@ public class <project_name> {
             String walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "");
             Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
             Web3j web3j = getDeployWeb3j();
-            HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new StaticGasProvider(DefaultGasProvider.GAS_LIMIT, BigInteger.valueOf(7500000L)));
+            HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new EpirusGasProvider(deployNetwork, GasPrice.High));
             callGreetMethod(helloWorld);
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -44,7 +47,7 @@ public class <project_name> {
     private static Web3j getDeployWeb3j() throws Exception {
         String nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL));
         if (nodeUrl == null || nodeUrl.isEmpty()) {
-            return Epirus.buildWeb3j(Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase()));
+            return Epirus.buildWeb3j(deployNetwork);
         } else {
             log.info("Connecting to $nodeUrl");
             return Web3j.build(new HttpService(nodeUrl));

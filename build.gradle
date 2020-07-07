@@ -22,7 +22,7 @@ ext {
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
-    web3jEpirusVersion = '0.0.3'
+    web3jEpirusVersion = '0.0.4'
 }
 
 
