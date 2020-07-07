@@ -23,7 +23,7 @@ web3j {
 ext {
     web3jVersion = '4.5.18'
     logbackVersion = '1.2.3'
-    web3jEpirusVersion = '0.0.3'
+    web3jEpirusVersion = '0.0.4'
 }
 
 dependencies {

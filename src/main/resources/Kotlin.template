@@ -3,6 +3,8 @@ package <package_name>;
 import ch.qos.logback.classic.Level
 import <package_name>.generated.contracts.HelloWorld
 import io.epirus.web3j.Epirus
+import io.epirus.web3j.gas.EpirusGasProvider
+import io.epirus.web3j.gas.GasPrice
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.web3j.crypto.CipherException
@@ -27,6 +29,8 @@ class <project_name> {
 
     private val log: Logger = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService")
     private val NODE_URL = "NODE_URL"
+    private val deployNetwork = Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase())
+
 
     companion object {
         @JvmStatic
@@ -42,7 +46,7 @@ class <project_name> {
         val walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "")
         val credentials: Credentials? = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile())
         val web3j: Web3j? = getDeployWeb3j()
-        val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, StaticGasProvider(DefaultGasProvider.GAS_PRICE, BigInteger.valueOf(7500000L)))
+        val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, EpirusGasProvider(deployNetwork, GasPrice.High))
         callGreetMethod(helloWorld)
     }
 
@@ -50,7 +54,7 @@ class <project_name> {
     private fun getDeployWeb3j(): Web3j {
         val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))
         return if (nodeUrl == null || nodeUrl.isEmpty()) {
-            Epirus.buildWeb3j(Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase()))
+            Epirus.buildWeb3j(deployNetwork)
         } else {
             log.info("Connecting to $nodeUrl")
             Web3j.build(HttpService(nodeUrl))
