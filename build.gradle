@@ -23,7 +23,7 @@ ext {
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
-    web3jOpenApiVersion = '0.1.0'
+    web3jOpenApiVersion = '0.1.0-SNAPSHOT'
     gradleVersion = "6.2"
     kotlinLoggin = "1.7.9"
     web3jEpirusVersion = '0.0.4'
@@ -79,7 +79,7 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j.openapi:web3j-openapi-codegen:$web3jOpenApiVersion-SNAPSHOT",
+            "org.web3j.openapi:web3j-openapi-codegen:$web3jOpenApiVersion",
             "org.web3j:hosted-providers:$web3jVersion",
             "io.epirus:epirus-web3j:$web3jEpirusVersion",
             "info.picocli:picocli:$picocli",
@@ -171,7 +171,7 @@ task generateVersionProperties {
     doLast {
         new File(generatedResources).mkdirs()
         def generated = new File(generatedResources, "version.properties")
-        generated.write("version=$rootProject.version\n")
+        generated.write("version=$web3jOpenApiVersion\n")
         generated.append("timestamp=${System.currentTimeMillis()}\n")
     }
 }
