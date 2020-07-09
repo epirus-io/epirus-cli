@@ -15,7 +15,18 @@ package io.epirus.console.token.subcommand.erc777
 import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
 
-@CommandLine.Command(name = "erc777", description = ["Create a new ERC777 token contract"], showDefaultValues = true, abbreviateSynopsis = true, mixinStandardHelpOptions = true, versionProvider = EpirusVersionProvider::class, synopsisHeading = "%n", descriptionHeading = "%nDescription:%n%n", optionListHeading = "%nOptions:%n", footerHeading = "%n", footer = ["Epirus CLI is licensed under the Apache License 2.0"])
+@CommandLine.Command(
+        name = "erc777",
+        description = ["Create a new ERC777 token contract"],
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider::class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class ERC777TokenCommand : Runnable {
     @CommandLine.Option(names = ["--name"], description = ["Name of the token."], required = true)
     var name: String? = null

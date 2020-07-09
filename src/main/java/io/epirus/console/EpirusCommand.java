@@ -134,6 +134,9 @@ public class EpirusCommand implements Runnable {
     }
 
     private void performTelemetryUpload() {
+        if (args.length == 0) {
+            commandLine.usage(System.out);
+        }
         if (telemetry) {
             Telemetry.uploadTelemetry(args);
             Updater.onlineUpdateCheck();
