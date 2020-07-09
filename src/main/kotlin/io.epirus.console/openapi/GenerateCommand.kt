@@ -12,26 +12,34 @@
  */
 package io.epirus.console.openapi
 
+import io.epirus.console.EpirusVersionProvider
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import org.web3j.openapi.console.options.ProjectOptions
 import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
+import picocli.CommandLine
 import picocli.CommandLine.Command
-import picocli.CommandLine.ExitCode
+import picocli.CommandLine.Spec
+import picocli.CommandLine.Option
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Model.CommandSpec
-import picocli.CommandLine.Option
-import picocli.CommandLine.Spec
 import java.io.File
-import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @Command(
-    name = "generate",
-    showDefaultValues = true,
-    description = ["Generates a Web3j OpenAPI project."]
-)
+        name = "generate",
+        description = ["Create a new openapi project"],
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider::class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class GenerateCommand : Callable<Int> {
 
     @Spec
@@ -95,7 +103,7 @@ class GenerateCommand : Callable<Int> {
     private var addressLength: Int = 20
 
     override fun call(): Int {
-        val projectFolder = Path.of(
+        val projectFolder = Paths.get(
             outputDirectory.canonicalPath,
             projectOptions.projectName
         ).toFile().apply {
@@ -105,11 +113,11 @@ class GenerateCommand : Callable<Int> {
 
         return try {
             generate(projectFolder)
-            ExitCode.OK
+            CommandLine.ExitCode.OK
         } catch (e: Exception) {
             if (!dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
             e.printStackTrace()
-            ExitCode.SOFTWARE
+            CommandLine.ExitCode.SOFTWARE
         }
     }
 
