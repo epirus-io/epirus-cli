@@ -13,9 +13,9 @@
 package io.epirus.console.token.subcommand.erc777
 
 class ERC777Config(
-        val tokenName: String,
-        val symbol: String,
-        val defaultOperators: List<String>,
-        val outputDir: String,
-        val initialSupply: String
+    val tokenName: String,
+    val symbol: String,
+    val defaultOperators: List<String>,
+    val outputDir: String,
+    val initialSupply: String
 )
