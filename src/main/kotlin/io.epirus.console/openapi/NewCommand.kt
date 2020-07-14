@@ -15,34 +15,33 @@ package io.epirus.console.openapi
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
+import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
 import picocli.CommandLine.Command
 import java.io.File
 import java.util.concurrent.Callable
 
 @Command(
-    name = "generate",
-    showDefaultValues = true,
-    description = ["Generates the Web3j OpenAPI Kotlin code."]
+        name = "new",
+        showDefaultValues = true,
+        description = ["Generates a whole Web3j OpenAPI project."]
 )
-class GenerateCommand : AbstractCommand(), Callable<Int> {
+class NewCommand : AbstractCommand(), Callable<Int> {
 
     override fun generate(projectFolder: File) {
 
         val generatorConfiguration = GeneratorConfiguration(
-            projectName = projectOptions.projectName,
-            packageName = packageName,
-            outputDir = projectFolder.path,
-            contracts = loadContractConfigurations(abis, bins),
-            addressLength = addressLength,
-            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-            version = OpenApiCommand.VersionProvider.versionName
+                projectName = projectOptions.projectName,
+                packageName = packageName,
+                outputDir = projectFolder.path,
+                contracts = loadContractConfigurations(abis, bins),
+                addressLength = addressLength,
+                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
+                version = OpenApiCommand.VersionProvider.versionName
         )
 
-        GenerateOpenApi(generatorConfiguration).apply {
-            generateCore()
-            generateServer()
-            generateWrappers()
-        }
+        GenerateOpenApi(generatorConfiguration).generateAll()
+        runGradleTask(projectFolder, "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+
         println("Done.")
     }
 }
