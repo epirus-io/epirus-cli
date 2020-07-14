@@ -18,19 +18,19 @@ import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import org.web3j.openapi.console.options.ProjectOptions
 import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
-import picocli.CommandLine
 import picocli.CommandLine.Command
-import picocli.CommandLine.Spec
-import picocli.CommandLine.Option
+import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Model.CommandSpec
+import picocli.CommandLine.Option
+import picocli.CommandLine.Spec
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @Command(
         name = "generate",
-        description = ["Generate a new OpenAPI project"],
+        description = ["Generate a new OpenAPI Kotlin code"],
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -45,83 +45,7 @@ class GenerateCommand : Callable<Int> {
     @Spec
     private lateinit var spec: CommandSpec
 
-    // TODO: Add logs level specification
-//    @Option(
-//        names = ["-l", "--logging"],
-//        converter = [LogTypeConverter::class],
-//        paramLabel = "<LOG VERBOSITY LEVEL>",
-//        description = ["Logging verbosity levels: OFF, FATAL, WARN, INFO, DEBUG, TRACE, ALL (default: INFO)."],
-//        arity = "1"
-//    )
-//    private var logLevel: Level? = null
-
-    @Option(
-        names = ["-o", "--output"],
-        description = ["project output directory."],
-        defaultValue = "."
-    )
-    private lateinit var outputDirectory: File
-
-    @Option(
-        names = ["-a", "--abi"],
-        description = ["input ABI files and folders."],
-        arity = "1..*",
-        required = true
-    )
-    private lateinit var abis: List<File>
-
-    @Option(
-        names = ["-b", "--bin"],
-        description = ["input BIN files and folders."],
-        arity = "1..*",
-        required = true
-    )
-    private lateinit var bins: List<File>
-
-    @Mixin
-    private val projectOptions = ProjectOptions()
-
-    @Option(
-        names = ["-p", "--package-name"],
-        description = ["generated package name."],
-        required = true
-    )
-    private lateinit var packageName: String
-
-    @Option(
-        names = ["--dev"],
-        description = ["not delete the failed build files."],
-        defaultValue = "false"
-    )
-    private var dev: Boolean = false
-
-    @Option(
-        names = ["--address-length"],
-        description = ["specify the address length."],
-        defaultValue = "20"
-    )
-    private var addressLength: Int = 20
-
-    override fun call(): Int {
-        val projectFolder = Paths.get(
-            outputDirectory.canonicalPath,
-            projectOptions.projectName
-        ).toFile().apply {
-            deleteRecursively()
-            mkdirs()
-        }
-
-        return try {
-            generate(projectFolder)
-            CommandLine.ExitCode.OK
-        } catch (e: Exception) {
-            if (!dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
-            e.printStackTrace()
-            CommandLine.ExitCode.SOFTWARE
-        }
-    }
-
-    private fun generate(projectFolder: File) {
+    override fun generate(projectFolder: File) {
 
         val generatorConfiguration = GeneratorConfiguration(
             projectName = projectOptions.projectName,
@@ -133,9 +57,11 @@ class GenerateCommand : Callable<Int> {
             version = OpenApiCommand.VersionProvider.versionName
         )
 
-        GenerateOpenApi(generatorConfiguration).generateAll()
-        runGradleTask(projectFolder, "completeSwaggerUiGeneration", "Generating SwaggerUI...")
-
+        GenerateOpenApi(generatorConfiguration).apply {
+            generateCore()
+            generateServer()
+            generateWrappers()
+        }
         println("Done.")
     }
 }

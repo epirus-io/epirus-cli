@@ -29,7 +29,7 @@ import java.util.concurrent.Callable
     name = "openapi",
     description = ["Generate an OpenAPI project"],
     versionProvider = OpenApiCommand.VersionProvider::class,
-    subcommands = [GenerateCommand::class],
+    subcommands = [GenerateCommand::class, NewCommand::class],
     mixinStandardHelpOptions = true
 )
 class OpenApiCommand : Callable<Int> {
