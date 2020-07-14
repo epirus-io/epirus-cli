@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Web3 Labs Ltd.
+ * Copyright 2019 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -10,27 +10,23 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.docker;
+package io.epirus.console.token
 
-import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.docker.subcommands.DockerBuildCommand;
-import io.epirus.console.docker.subcommands.DockerRunCommand;
-import picocli.CommandLine;
+import io.epirus.console.EpirusVersionProvider
+import io.epirus.console.token.subcommand.erc777.ERC777TokenCommand
+import picocli.CommandLine
 
 @CommandLine.Command(
-        name = "docker",
-        description = "Run generated projects in Docker",
+        name = "token",
+        description = ["Create a new token contract"],
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        subcommands = {
-            DockerRunCommand.class,
-            DockerBuildCommand.class,
-        },
-        versionProvider = EpirusVersionProvider.class,
+        subcommands = [ERC777TokenCommand::class],
+        versionProvider = EpirusVersionProvider::class,
         synopsisHeading = "%n",
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class DockerCommand {}
+        footer = ["Epirus CLI is licensed under the Apache License 2.0"])
+class TokenCommand

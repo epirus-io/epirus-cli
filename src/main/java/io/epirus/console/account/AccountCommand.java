@@ -22,7 +22,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "account",
-        description = "Epirus account utilities",
+        description = "Manage your epirus account",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

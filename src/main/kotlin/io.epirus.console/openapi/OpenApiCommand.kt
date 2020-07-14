@@ -27,7 +27,7 @@ import java.util.concurrent.Callable
 
 @Command(
     name = "openapi",
-    description = ["web3j-openapi cli"],
+    description = ["Generate an OpenAPI project"],
     versionProvider = OpenApiCommand.VersionProvider::class,
     subcommands = [GenerateCommand::class],
     mixinStandardHelpOptions = true
