@@ -14,6 +14,8 @@ package io.epirus.console.token.subcommand.erc777
 
 import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
+import java.math.BigInteger
+import kotlin.math.pow
 
 @CommandLine.Command(
         name = "erc777",
@@ -36,12 +38,14 @@ class ERC777TokenCommand : Runnable {
     var defaultOperators = emptyList<String>()
     @CommandLine.Option(names = ["-o", "--output-dir"], description = ["Destination base directory."])
     var outputDir = "."
+    @CommandLine.Option(names = ["--s, --initial-supply"], description = ["Initial supply."])
+    var initialSupply: BigInteger = BigInteger.valueOf(10000 * 10F.pow(10).toLong())
 
     override fun run() {
         if (name == null || symbol == null) {
             println("Name and Symbol options must be set.")
         } else {
-            val erc777Config = ERC777Config(name!!, symbol!!, defaultOperators, outputDir)
+            val erc777Config = ERC777Config(name!!, symbol!!, defaultOperators, outputDir, initialSupply.toString())
             ERC777GeneratorService(erc777Config).generate()
         }
     }

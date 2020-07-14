@@ -15,6 +15,6 @@ contract <TOKEN_NAME> is ERC777 {
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
     constructor () public ERC777("<TOKEN_NAME>", "<TOKEN_SYMBOL>", new address[](0)) {
-        _mint(msg.sender, msg.sender, 10000 * 10 ** 18, "", "");
+        _mint(msg.sender, <INITIAL_SUPPLY>, "", "");
     }
 }

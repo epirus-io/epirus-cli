@@ -18,7 +18,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "truffle",
-        description = "Solidity related utility",
+        description = "Generate wrappers from truffle json",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

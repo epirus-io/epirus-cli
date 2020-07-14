@@ -19,7 +19,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "docker",
-        description = "Docker utility commands for Web3j projects",
+        description = "Run generated projects in Docker",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

@@ -30,7 +30,7 @@ import java.util.concurrent.Callable
 
 @Command(
         name = "generate",
-        description = ["Create a new openapi project"],
+        description = ["Generate a new OpenAPI project"],
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

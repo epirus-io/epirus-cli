@@ -52,14 +52,12 @@ public class SolidityGenerateCommand implements Runnable {
             names = {"-b", "--binFile"},
             description =
                     "bin file with contract compiled code "
-                            + "in order to generate deploy methods.",
-            required = false)
+                            + "in order to generate deploy methods.")
     private File binFile;
 
     @CommandLine.Option(
             names = {"-c", "--contractName"},
-            description = "contract name (defaults to ABI file name).",
-            required = false)
+            description = "contract name (defaults to ABI file name).")
     private String contractName;
 
     @CommandLine.Option(
@@ -76,27 +74,23 @@ public class SolidityGenerateCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-al", "--addressLength"},
-            description = "address length in bytes (defaults to 20).",
-            required = false)
+            description = "address length in bytes (defaults to 20).")
     private int addressLength = Address.DEFAULT_LENGTH / Byte.SIZE;
 
     @CommandLine.Option(
             names = {"-jt", JAVA_TYPES_ARG},
             description = "use native Java types.",
-            required = false,
             showDefaultValue = ALWAYS)
     private boolean javaTypes = true;
 
     @CommandLine.Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use solidity types.",
-            required = false)
+            description = "use solidity types.")
     private boolean solidityTypes;
 
     @CommandLine.Option(
             names = {"-pt", PRIMITIVE_TYPES_ARG},
-            description = "use Java primitive types.",
-            required = false)
+            description = "use Java primitive types.")
     private boolean primitiveTypes = false;
 
     @Override

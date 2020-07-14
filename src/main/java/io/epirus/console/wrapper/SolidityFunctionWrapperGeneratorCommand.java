@@ -18,7 +18,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "solidity",
-        description = "Solidity related utility",
+        description = "Generate wrappers from solidity",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -31,4 +31,10 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class SolidityFunctionWrapperGeneratorCommand {}
+public class SolidityFunctionWrapperGeneratorCommand implements Runnable {
+
+    @Override
+    public void run() {
+        CommandLine.usage(this, System.out);
+    }
+}
