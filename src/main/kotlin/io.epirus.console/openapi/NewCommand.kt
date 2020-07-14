@@ -12,10 +12,12 @@
  */
 package io.epirus.console.openapi
 
+import io.epirus.console.EpirusVersionProvider
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
+import picocli.CommandLine
 import picocli.CommandLine.Command
 import java.io.File
 import java.util.concurrent.Callable
@@ -23,9 +25,20 @@ import java.util.concurrent.Callable
 @Command(
         name = "new",
         showDefaultValues = true,
-        description = ["Generates a whole Web3j OpenAPI project."]
+        description = ["Generates a whole OpenAPI project."],
+        abbreviateSynopsis = true,
+        mixinStandardHelpOptions = true,
+        versionProvider = EpirusVersionProvider::class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
 class NewCommand : AbstractCommand(), Callable<Int> {
+
+    @CommandLine.Spec
+    lateinit var spec: CommandLine.Model.CommandSpec
 
     override fun generate(projectFolder: File) {
 
