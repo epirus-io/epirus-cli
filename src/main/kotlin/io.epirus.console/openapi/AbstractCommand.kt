@@ -19,6 +19,9 @@ import java.nio.file.Path
 
 abstract class AbstractCommand {
 
+    @CommandLine.Spec
+    protected lateinit var spec: CommandLine.Model.CommandSpec
+
     @CommandLine.Option(
             names = ["-o", "--output"],
             description = ["project output directory."],

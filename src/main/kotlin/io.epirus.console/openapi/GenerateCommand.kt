@@ -12,32 +12,19 @@
  */
 package io.epirus.console.openapi
 
-import io.epirus.console.EpirusVersionProvider
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import picocli.CommandLine.Command
-import picocli.CommandLine.Model.CommandSpec
-import picocli.CommandLine.Spec
 import java.io.File
 import java.util.concurrent.Callable
 
 @Command(
-        name = "generate",
-        description = ["Generate a new OpenAPI Kotlin code"],
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider::class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class GenerateCommand : Callable<Int>, AbstractCommand() {
-
-    @Spec
-    lateinit var spec: CommandSpec
+    name = "generate",
+    showDefaultValues = true,
+    description = ["Generates the Web3j OpenAPI Kotlin code."]
+)
+class GenerateCommand : AbstractCommand(), Callable<Int> {
 
     override fun generate(projectFolder: File) {
 
