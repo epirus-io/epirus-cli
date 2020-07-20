@@ -148,7 +148,6 @@ public class DeployCommand implements Runnable {
             printErrorAndExit(
                     "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
         }
-        fundWallet();
         uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());
         coloredPrinter.println("Deploying your Web3App");

@@ -27,7 +27,7 @@ ext {
     web3jSoktVersion = "0.2.0"
     gradleVersion = "6.2"
     kotlinLoggin = "1.7.9"
-    web3jEpirusVersion = '0.0.4'
+    web3jEpirusVersion = '0.0.7'
 }
 
 

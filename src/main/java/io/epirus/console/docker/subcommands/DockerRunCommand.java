@@ -51,7 +51,6 @@ public class DockerRunCommand implements DockerOperations, Runnable {
 
     @Override
     public void run() {
-        String walletJson = null;
         if (walletPath == null) {
             walletPath = Paths.get(config.getDefaultWalletPath());
         }
