@@ -15,15 +15,9 @@ package io.epirus.console.openapi
 import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
 import picocli.CommandLine.Command
-import picocli.CommandLine.IVersionProvider
 import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ParameterException
 import picocli.CommandLine.Spec
-import java.time.Instant
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Properties
 import java.util.concurrent.Callable
 
 @Command(

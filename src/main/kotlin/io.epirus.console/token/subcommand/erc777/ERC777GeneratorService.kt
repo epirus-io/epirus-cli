@@ -12,7 +12,6 @@
  */
 package io.epirus.console.token.subcommand.erc777
 
-import io.epirus.console.openapi.OpenApiCommand
 import io.epirus.console.project.templates.TemplateReader
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
