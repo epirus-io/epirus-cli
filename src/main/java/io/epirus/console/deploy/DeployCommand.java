@@ -28,6 +28,7 @@ import io.epirus.console.wallet.subcommands.WalletFundCommand;
 import io.epirus.web3j.Epirus;
 import picocli.CommandLine;
 
+import org.web3j.codegen.Console;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
@@ -205,6 +206,7 @@ public class DeployCommand implements Runnable {
                     new File(File.separator, runLocation.toString()),
                     new String[] {"bash", "-c", "./gradlew run -q"});
         }
+        Console.exitSuccess();
     }
 
     private void executeProcess(File workingDir, String[] command) throws Exception {

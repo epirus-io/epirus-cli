@@ -137,7 +137,7 @@ public class InteractiveOptions {
         return walletCredentials;
     }
 
-    private boolean userAnsweredYes(String message) {
+    public boolean userAnsweredYes(String message) {
         print(message);
         String answer = getUserInput();
         return answer.trim().isEmpty()

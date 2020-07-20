@@ -15,8 +15,13 @@ package io.epirus.console.docker.subcommands;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.ListContainersCmd;
+import com.github.dockerjava.core.DockerClientBuilder;
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.docker.DockerOperations;
+import io.epirus.console.project.InteractiveOptions;
 import org.apache.commons.lang3.ArrayUtils;
 import picocli.CommandLine;
 
@@ -51,6 +56,24 @@ public class DockerRunCommand implements DockerOperations, Runnable {
 
     @Override
     public void run() {
+
+        DockerClient dockerClient = DockerClientBuilder.getInstance().build();
+        ListContainersCmd listContainersCmd = dockerClient.listContainersCmd().withShowAll(true);
+
+        if (listContainersCmd.exec().stream().noneMatch(i -> i.getImage().equals("web3app"))) {
+            if (new InteractiveOptions()
+                    .userAnsweredYes(
+                            "It seems that no Docker container has yet been built. Would you like to build a Dockerized version of your app now?")) {
+                new CommandLine(new DockerCommand())
+                        .execute(
+                                "build",
+                                "-d",
+                                Paths.get(System.getProperty("user.dir"))
+                                        .toAbsolutePath()
+                                        .toString());
+            }
+        }
+
         if (walletPath == null) {
             walletPath = Paths.get(config.getDefaultWalletPath());
         }
