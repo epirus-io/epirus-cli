@@ -12,6 +12,7 @@
  */
 package io.epirus.console.openapi
 
+import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.IVersionProvider
@@ -28,7 +29,7 @@ import java.util.concurrent.Callable
 @Command(
     name = "openapi",
     description = ["Generate an OpenAPI project"],
-    versionProvider = OpenApiCommand.VersionProvider::class,
+    versionProvider = EpirusVersionProvider::class,
     subcommands = [GenerateCommand::class, NewCommand::class],
     mixinStandardHelpOptions = true
 )
@@ -39,33 +40,6 @@ class OpenApiCommand : Callable<Int> {
 
     override fun call(): Int {
         throw ParameterException(spec.commandLine(), "Missing required sub-command (see below)")
-    }
-
-    object VersionProvider : IVersionProvider {
-
-        val versionName: String
-        val buildTimestamp: OffsetDateTime
-
-        private val timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS O")
-
-        init {
-            val url = javaClass.classLoader.getResource("version.properties")
-                ?: throw IllegalStateException("No version.properties file found in the classpath.")
-
-            val properties = Properties().apply { load(url.openStream()) }
-
-            versionName = properties.getProperty("version")
-            buildTimestamp = properties.getProperty("timestamp").toLong().let {
-                Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
-            }
-        }
-
-        override fun getVersion(): Array<String> {
-            return arrayOf(
-                "Version: $versionName",
-                "Build timestamp: ${buildTimestamp.let { timeFormatter.format(it) }}"
-            )
-        }
     }
 
     companion object {

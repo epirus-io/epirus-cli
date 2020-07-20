@@ -174,7 +174,7 @@ task generateVersionProperties {
     doLast {
         new File(generatedResources).mkdirs()
         def generated = new File(generatedResources, "version.properties")
-        generated.write("version=$web3jOpenApiVersion\n")
+        generated.write("version=$rootProject.version\n")
         generated.append("timestamp=${System.currentTimeMillis()}\n")
     }
 }

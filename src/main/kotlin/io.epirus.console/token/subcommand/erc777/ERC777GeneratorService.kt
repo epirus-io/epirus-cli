@@ -81,8 +81,7 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
                             listOf(
                                     File(erc777Config.outputDir + File.separator + "build" + File.separator + erc777Config.tokenName + ".bin"))),
                     addressLength = 20,
-                    contextPath = erc777Config.tokenName,
-                    version = OpenApiCommand.VersionProvider.versionName
+                    contextPath = erc777Config.tokenName
             )
 
             File(erc777Config.outputDir +

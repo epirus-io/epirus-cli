@@ -35,8 +35,7 @@ class NewCommand : AbstractCommand(), Callable<Int> {
                 outputDir = projectFolder.path,
                 contracts = loadContractConfigurations(abis, bins),
                 addressLength = addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                version = OpenApiCommand.VersionProvider.versionName
+                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
         )
 
         GenerateOpenApi(generatorConfiguration).generateAll()
