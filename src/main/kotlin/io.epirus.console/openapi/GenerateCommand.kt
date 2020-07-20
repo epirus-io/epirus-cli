@@ -34,10 +34,7 @@ import java.util.concurrent.Callable
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class GenerateCommand : Callable<Int> {
-
-    @Spec
-    private lateinit var spec: CommandSpec
+class GenerateCommand : Callable<Int>, AbstractCommand() {
 
     override fun generate(projectFolder: File) {
 
