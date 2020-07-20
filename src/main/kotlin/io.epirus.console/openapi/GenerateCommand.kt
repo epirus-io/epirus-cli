@@ -17,8 +17,6 @@ import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import picocli.CommandLine.Command
-import picocli.CommandLine.Model.CommandSpec
-import picocli.CommandLine.Spec
 import java.io.File
 import java.util.concurrent.Callable
 
