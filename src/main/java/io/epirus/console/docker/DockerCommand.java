@@ -15,6 +15,7 @@ package io.epirus.console.docker;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.subcommands.DockerBuildCommand;
 import io.epirus.console.docker.subcommands.DockerRunCommand;
+import io.epirus.console.wallet.SubCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -33,4 +34,4 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class DockerCommand {}
+public class DockerCommand extends SubCommand {}

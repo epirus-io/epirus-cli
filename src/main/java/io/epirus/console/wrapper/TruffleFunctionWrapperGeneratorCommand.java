@@ -13,6 +13,7 @@
 package io.epirus.console.wrapper;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.wallet.SubCommand;
 import io.epirus.console.wrapper.subcommand.TruffleGenerateCommand;
 import picocli.CommandLine;
 
@@ -31,4 +32,4 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class TruffleFunctionWrapperGeneratorCommand {}
+public class TruffleFunctionWrapperGeneratorCommand  extends SubCommand {}

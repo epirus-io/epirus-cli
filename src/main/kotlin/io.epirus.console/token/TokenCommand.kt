@@ -14,6 +14,7 @@ package io.epirus.console.token
 
 import io.epirus.console.EpirusVersionProvider
 import io.epirus.console.token.subcommand.erc777.ERC777TokenCommand
+import io.epirus.console.wallet.SubCommand
 import picocli.CommandLine
 
 @CommandLine.Command(
@@ -29,4 +30,4 @@ import picocli.CommandLine
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class TokenCommand
+class TokenCommand: SubCommand()
