@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ConsenSys AG.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -10,12 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
 package io.epirus.console;
-
-import picocli.CommandLine.IDefaultValueProvider;
-import picocli.CommandLine.Model.ArgSpec;
-import picocli.CommandLine.Model.OptionSpec;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -23,35 +18,41 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import picocli.CommandLine.IDefaultValueProvider;
+import picocli.CommandLine.Model.ArgSpec;
+import picocli.CommandLine.Model.OptionSpec;
+
 public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider {
-  private static final String ENV_VAR_PREFIX = "EPIRUS_";
+    private static final String ENV_VAR_PREFIX = "EPIRUS_";
 
-  private final Map<String, String> environment;
+    private final Map<String, String> environment;
 
-  public EnvironmentVariableDefaultProvider(final Map<String, String> environment) {
-    this.environment = environment;
-  }
-
-  @Override
-  public String defaultValue(final ArgSpec argSpec) {
-    if (!argSpec.isOption()) {
-      return null;
+    public EnvironmentVariableDefaultProvider(final Map<String, String> environment) {
+        this.environment = environment;
     }
-    return envVarNames((OptionSpec) argSpec)
-        .map(environment::get)
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(null);
-  }
 
-  private Stream<String> envVarNames(final OptionSpec spec) {
-    return Arrays.stream(spec.names())
-        .filter(name -> name.startsWith("--")) // Only long options are allowed
-        .flatMap(
-            name -> Stream.of(ENV_VAR_PREFIX).map(prefix -> prefix + nameToEnvVarSuffix(name)));
-  }
+    @Override
+    public String defaultValue(final ArgSpec argSpec) {
+        if (!argSpec.isOption()) {
+            return null;
+        }
+        return envVarNames((OptionSpec) argSpec)
+                .map(environment::get)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
 
-  private String nameToEnvVarSuffix(final String name) {
-    return name.substring("--".length()).replace('-', '_').toUpperCase(Locale.US);
-  }
+    private Stream<String> envVarNames(final OptionSpec spec) {
+        return Arrays.stream(spec.names())
+                .filter(name -> name.startsWith("--")) // Only long options are allowed
+                .flatMap(
+                        name ->
+                                Stream.of(ENV_VAR_PREFIX)
+                                        .map(prefix -> prefix + nameToEnvVarSuffix(name)));
+    }
+
+    private String nameToEnvVarSuffix(final String name) {
+        return name.substring("--".length()).replace('-', '_').toUpperCase(Locale.US);
+    }
 }

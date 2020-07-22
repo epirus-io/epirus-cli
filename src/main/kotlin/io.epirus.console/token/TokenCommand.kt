@@ -30,4 +30,4 @@ import picocli.CommandLine
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class TokenCommand: SubCommand()
+class TokenCommand : SubCommand()

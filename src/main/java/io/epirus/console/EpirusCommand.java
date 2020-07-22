@@ -110,7 +110,6 @@ public class EpirusCommand implements Runnable {
         commandLine.setParameterExceptionHandler(this::handleParseException);
         commandLine.setDefaultValueProvider(new EnvironmentVariableDefaultProvider(environment));
 
-
         System.out.println(LOGO);
         try {
             ConfigManager.setProduction();
