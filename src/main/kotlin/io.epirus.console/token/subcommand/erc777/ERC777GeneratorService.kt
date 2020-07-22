@@ -63,7 +63,7 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
 
             File(erc777Config.outputDir + File.separator + "build").mkdirs()
 
-            val result = compilerInstance.execute(
+            compilerInstance.execute(
                     SolcArguments.OUTPUT_DIR.param { erc777Config.outputDir + File.separator + "build" },
                     SolcArguments.ABI,
                     SolcArguments.BIN,
