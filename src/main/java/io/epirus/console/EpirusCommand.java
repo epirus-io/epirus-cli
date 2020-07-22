@@ -90,7 +90,7 @@ public class EpirusCommand implements Runnable {
                     + "        |_|                     ";
 
     private final CommandLine commandLine;
-    private final Map<String, String> environmentVariables;
+    private final Map<String, String> environment;
     private final String[] args;
 
     @CommandLine.Option(
@@ -99,14 +99,17 @@ public class EpirusCommand implements Runnable {
             defaultValue = "false")
     public boolean telemetry;
 
-    public EpirusCommand(final Map<String, String> environmentVariables, String[] args) {
+    public EpirusCommand(final Map<String, String> environment, String[] args) {
         this.commandLine = new CommandLine(this);
-        this.environmentVariables = environmentVariables;
+        this.environment = environment;
         this.args = args;
     }
 
     public int parse() {
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
+        commandLine.setParameterExceptionHandler(this::handleParseException);
+        commandLine.setDefaultValueProvider(new EnvironmentVariableDefaultProvider(environment));
+
 
         System.out.println(LOGO);
         try {
@@ -118,6 +121,15 @@ public class EpirusCommand implements Runnable {
         }
 
         return commandLine.execute(args);
+    }
+
+    private int handleParseException(final CommandLine.ParameterException ex, final String[] args) {
+        commandLine.getErr().println(ex.getMessage());
+
+        CommandLine.UnmatchedArgumentException.printSuggestions(ex, commandLine.getOut());
+        commandLine.usage(commandLine.getOut());
+
+        return ex.getCommandLine().getCommandSpec().exitCodeOnInvalidInput();
     }
 
     @Override
@@ -135,7 +147,7 @@ public class EpirusCommand implements Runnable {
 
     private void performTelemetryUpload() {
         if (args.length == 0) {
-            commandLine.usage(System.out);
+            commandLine.usage(commandLine.getOut());
         }
         if (telemetry) {
             Telemetry.uploadTelemetry(args);
