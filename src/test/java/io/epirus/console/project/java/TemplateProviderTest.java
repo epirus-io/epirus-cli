@@ -26,12 +26,12 @@ public class TemplateProviderTest {
     public void init() {
         templateProvider =
                 new JavaTemplateBuilder()
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template")
-                        .withMainJavaClass("Java.template")
-                        .withGradleBuild("build.gradle.template")
-                        .withGradleSettings("settings.gradle.template")
-                        .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                        .withGradleBatScript("project/gradlew.bat.template")
+                        .withGradleScript("project/gradlew.template")
+                        .withMainJavaClass("project/Java.template")
+                        .withGradleBuild("project/build.gradle.template")
+                        .withGradleSettings("project/settings.gradle.template")
+                        .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar")
                         .withPackageNameReplacement("test")
                         .withProjectNameReplacement("test")

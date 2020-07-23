@@ -22,12 +22,14 @@ import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.docker.DockerOperations;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.wrapper.CredentialsOptions;
 import org.apache.commons.lang3.ArrayUtils;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
 import static io.epirus.console.config.ConfigManager.config;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "run",
@@ -45,10 +47,12 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @CommandLine.Option(names = {"-l", "--local"})
     boolean localMode;
 
-    @CommandLine.Option(names = {"-w", "--wallet-path"})
-    Path walletPath;
+    @CommandLine.Mixin CredentialsOptions credentialsOptions;
 
-    @CommandLine.Option(names = {"-d", "--directory"})
+    @CommandLine.Option(
+            names = {"-d", "--directory"},
+            description = "Directory to run docker in.",
+            showDefaultValue = ALWAYS)
     Path directory = Paths.get(System.getProperty("user.dir"));
 
     @CommandLine.Option(names = {"-p", "--print"})
@@ -74,20 +78,26 @@ public class DockerRunCommand implements DockerOperations, Runnable {
             }
         }
 
-        if (walletPath == null) {
-            walletPath = Paths.get(config.getDefaultWalletPath());
-        }
+        //        if (credentialsOptions.getWalletPath() == null) {
+        //            walletPath = Paths.get(config.getDefaultWalletPath());
+        //        }
         String[] args =
                 new String[] {
                     "docker",
                     "run",
                     "--env",
                     String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
-                    "--env",
-                    String.format(
-                            "EPIRUS_WALLET=%s", "/root/key/" + walletPath.getFileName().toString()),
-                    "-v",
-                    walletPath.getParent().toAbsolutePath().toString() + ":/root/key"
+                    //                    "--env",
+                    //                    String.format(
+                    //                            "EPIRUS_WALLET=%s", "/root/key/" +
+                    // walletPath.getFileName().toString()),
+
+                    //                        "--env",
+                    //                        String.format(
+                    //                                "EPIRUS_WALLET_PASSWORD=%s", walletPassword),
+                    //                    "-v",
+                    //                    walletPath.getParent().toAbsolutePath().toString() +
+                    // ":/root/key"
                 };
 
         if (localMode) {
