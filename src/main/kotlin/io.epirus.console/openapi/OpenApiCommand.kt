@@ -12,7 +12,6 @@
  */
 package io.epirus.console.openapi
 
-import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Model.CommandSpec
