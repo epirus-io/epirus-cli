@@ -23,7 +23,6 @@ import java.util.concurrent.Callable
 @Command(
     name = "openapi",
     description = ["Generate an OpenAPI project"],
-    versionProvider = EpirusVersionProvider::class,
     subcommands = [GenerateCommand::class, NewCommand::class],
     mixinStandardHelpOptions = true
 )
