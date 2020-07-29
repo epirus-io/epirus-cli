@@ -141,9 +141,7 @@ public class JavaTemplateProvider implements TemplateProvider {
                 loadGradleSettings(), "settings.gradle", projectStructure.getProjectRoot());
         if (solidityContract != null)
             ProjectWriter.writeResourceFile(
-                    loadSolidityContract(),
-                    "project/HelloWorld.sol",
-                    projectStructure.getSolidityPath());
+                    loadSolidityContract(), "HelloWorld.sol", projectStructure.getSolidityPath());
         if (pathToSolidityFolder != null) {
             ProjectWriter.importSolidityProject(
                     new File(pathToSolidityFolder), projectStructure.getSolidityPath());

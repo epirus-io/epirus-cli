@@ -24,6 +24,7 @@ import io.epirus.console.docker.DockerOperations;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.wrapper.CredentialsOptions;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
@@ -78,26 +79,13 @@ public class DockerRunCommand implements DockerOperations, Runnable {
             }
         }
 
-        //        if (credentialsOptions.getWalletPath() == null) {
-        //            walletPath = Paths.get(config.getDefaultWalletPath());
-        //        }
         String[] args =
                 new String[] {
                     "docker",
                     "run",
                     "--env",
                     String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
-                    //                    "--env",
-                    //                    String.format(
-                    //                            "EPIRUS_WALLET=%s", "/root/key/" +
-                    // walletPath.getFileName().toString()),
-
-                    //                        "--env",
-                    //                        String.format(
-                    //                                "EPIRUS_WALLET_PASSWORD=%s", walletPassword),
-                    //                    "-v",
-                    //                    walletPath.getParent().toAbsolutePath().toString() +
-                    // ":/root/key"
+                    setCredentials()
                 };
 
         if (localMode) {
@@ -121,5 +109,37 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         } catch (Exception e) {
             Console.exitError(e);
         }
+    }
+
+    private String setCredentials() {
+        if (credentialsOptions.getWalletPath() != null) {
+            return getWalletEnvironment(credentialsOptions.getWalletPath());
+        } else if (credentialsOptions.getRawKey() != null) {
+            return "--env "
+                    + String.format("EPIRUS_PRIVATE_KEY=%s", credentialsOptions.getRawKey());
+        } else if (credentialsOptions.getJson() != null) {
+            return "--env " + String.format("EPIRUS_WALLET_JSON=%s", credentialsOptions.getJson());
+        }
+        return getWalletEnvironment(Paths.get(config.getDefaultWalletPath()));
+    }
+
+    @NotNull
+    private String getWalletEnvironment(final Path path) {
+        String walletEnvironment =
+                "--env "
+                        + String.format(
+                                "EPIRUS_WALLET_PATH=%s",
+                                "/root/key/" + path.getFileName().toString())
+                        + " -v "
+                        + path.getParent().toAbsolutePath().toString()
+                        + ":/root/key";
+        if (credentialsOptions.getWalletPassword() != null) {
+            walletEnvironment +=
+                    " --env "
+                            + String.format(
+                                    "EPIRUS_WALLET_PASSWORD=%s",
+                                    credentialsOptions.getWalletPassword());
+        }
+        return walletEnvironment;
     }
 }
