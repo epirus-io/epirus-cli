@@ -12,7 +12,6 @@
  */
 package io.epirus.console.token.subcommand.erc777
 
-import io.epirus.console.openapi.OpenApiCommand
 import io.epirus.console.project.templates.TemplateReader
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
@@ -81,8 +80,7 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
                             listOf(
                                     File(erc777Config.outputDir + File.separator + "build" + File.separator + erc777Config.tokenName + ".bin"))),
                     addressLength = 20,
-                    contextPath = erc777Config.tokenName,
-                    version = OpenApiCommand.VersionProvider.versionName
+                    contextPath = erc777Config.tokenName
             )
 
             File(erc777Config.outputDir +

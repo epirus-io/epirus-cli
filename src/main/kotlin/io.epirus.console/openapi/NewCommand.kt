@@ -16,14 +16,15 @@ import io.epirus.console.EpirusVersionProvider
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
+import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
 import picocli.CommandLine.Command
 import java.io.File
 import java.util.concurrent.Callable
 
 @Command(
-        name = "generate",
-        description = ["Generate a new OpenAPI Kotlin code"],
+        name = "new",
         showDefaultValues = true,
+        description = ["Generates a whole OpenAPI project."],
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
         versionProvider = EpirusVersionProvider::class,
@@ -31,25 +32,24 @@ import java.util.concurrent.Callable
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class GenerateCommand : Callable<Int>, AbstractCommand() {
+        footer = ["Epirus CLI is licensed under the Apache License 2.0"]
+)
+class NewCommand : AbstractCommand(), Callable<Int> {
 
     override fun generate(projectFolder: File) {
 
         val generatorConfiguration = GeneratorConfiguration(
-            projectName = projectOptions.projectName,
-            packageName = packageName,
-            outputDir = projectFolder.path,
-            contracts = loadContractConfigurations(abis, bins),
-            addressLength = addressLength,
-            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
+                projectName = projectOptions.projectName,
+                packageName = packageName,
+                outputDir = projectFolder.path,
+                contracts = loadContractConfigurations(abis, bins),
+                addressLength = addressLength,
+                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
         )
 
-        GenerateOpenApi(generatorConfiguration).apply {
-            generateCore()
-            generateServer()
-            generateWrappers()
-        }
+        GenerateOpenApi(generatorConfiguration).generateAll()
+        runGradleTask(projectFolder, "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+
         println("Done.")
     }
 }

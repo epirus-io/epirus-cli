@@ -14,22 +14,15 @@ package io.epirus.console.openapi
 
 import picocli.CommandLine
 import picocli.CommandLine.Command
-import picocli.CommandLine.IVersionProvider
 import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ParameterException
 import picocli.CommandLine.Spec
-import java.time.Instant
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Properties
 import java.util.concurrent.Callable
 
 @Command(
     name = "openapi",
     description = ["Generate an OpenAPI project"],
-    versionProvider = OpenApiCommand.VersionProvider::class,
-    subcommands = [GenerateCommand::class],
+    subcommands = [GenerateCommand::class, NewCommand::class],
     mixinStandardHelpOptions = true
 )
 class OpenApiCommand : Callable<Int> {
@@ -39,33 +32,6 @@ class OpenApiCommand : Callable<Int> {
 
     override fun call(): Int {
         throw ParameterException(spec.commandLine(), "Missing required sub-command (see below)")
-    }
-
-    object VersionProvider : IVersionProvider {
-
-        val versionName: String
-        val buildTimestamp: OffsetDateTime
-
-        private val timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS O")
-
-        init {
-            val url = javaClass.classLoader.getResource("version.properties")
-                ?: throw IllegalStateException("No version.properties file found in the classpath.")
-
-            val properties = Properties().apply { load(url.openStream()) }
-
-            versionName = properties.getProperty("version")
-            buildTimestamp = properties.getProperty("timestamp").toLong().let {
-                Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
-            }
-        }
-
-        override fun getVersion(): Array<String> {
-            return arrayOf(
-                "Version: $versionName",
-                "Build timestamp: ${buildTimestamp.let { timeFormatter.format(it) }}"
-            )
-        }
     }
 
     companion object {
