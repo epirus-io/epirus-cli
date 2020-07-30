@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DeployCommandTest extends ProjectTest {
+public class RunCommandTest extends ProjectTest {
 
     @Test
     public void testAccountDeployment() throws Exception {
@@ -43,16 +43,16 @@ public class DeployCommandTest extends ProjectTest {
                         any(int.class)))
                 .thenReturn(BigInteger.TEN);
         when(accountService.checkIfAccountIsConfirmed(20)).thenReturn(true);
-        DeployCommand deployCommand =
+        RunCommand runCommand =
                 spy(
-                        new DeployCommand(
+                        new RunCommand(
                                 Network.RINKEBY,
                                 accountService,
                                 web3j,
                                 Paths.get(workingDirectory + File.separator + "Test"),
                                 absoluteWalletPath));
-        doNothing().when(deployCommand).deploy();
-        deployCommand.deploy();
-        verify(deployCommand, times(1)).deploy();
+        doNothing().when(runCommand).deploy();
+        runCommand.deploy();
+        verify(runCommand, times(1)).deploy();
     }
 }

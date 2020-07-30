@@ -20,7 +20,7 @@ import io.epirus.console.account.AccountCommand;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
 import io.epirus.console.config.ConfigManager;
-import io.epirus.console.deploy.DeployCommand;
+import io.epirus.console.deploy.RunCommand;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.openapi.OpenApiCommand;
 import io.epirus.console.project.ImportProjectCommand;
@@ -60,7 +60,7 @@ import static org.web3j.codegen.Console.exitSuccess;
             LogoutCommand.class,
             ProjectTestCommand.class,
             UnitTestCommand.class,
-            DeployCommand.class,
+            RunCommand.class,
             OpenApiCommand.class,
             TokenCommand.class,
         },

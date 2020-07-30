@@ -41,8 +41,8 @@ import static org.web3j.utils.Convert.Unit.ETHER;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
-        name = "deploy",
-        description = "Deploy your project to an Ethereum network",
+        name = "run",
+        description = "Run your project using a live Ethereum network",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -52,7 +52,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class DeployCommand implements Runnable {
+public class RunCommand implements Runnable {
     private Path workingDirectory;
     private Network network;
     private AccountService accountService;
@@ -79,7 +79,7 @@ public class DeployCommand implements Runnable {
             arity = "1")
     String deployNetwork;
 
-    public DeployCommand(
+    public RunCommand(
             Network network,
             AccountService accountService,
             Web3j web3j,
@@ -93,7 +93,7 @@ public class DeployCommand implements Runnable {
         this.web3j = web3j;
     }
 
-    public DeployCommand(
+    public RunCommand(
             Network network, AccountService accountService, Credentials credentials, Web3j web3j) {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
@@ -102,7 +102,7 @@ public class DeployCommand implements Runnable {
         this.web3j = web3j;
     }
 
-    public DeployCommand() {}
+    public RunCommand() {}
 
     @Override
     public void run() {
@@ -126,7 +126,7 @@ public class DeployCommand implements Runnable {
             printErrorAndExit(e.getMessage());
         }
         try {
-            new DeployCommand(
+            new RunCommand(
                             Network.valueOf(deployNetwork.toUpperCase()),
                             new AccountService(),
                             credentials,
