@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.deploy;
+package io.epirus.console.run;
 
 import java.io.File;
 import java.math.BigInteger;

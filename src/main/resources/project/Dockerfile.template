@@ -5,4 +5,4 @@ RUN mkdir /opt/app
 COPY . /opt/app
 WORKDIR /opt/app
 RUN curl -L get.epirus.io | sh
-ENTRYPOINT ["/root/.epirus/epirus", "deploy", "rinkeby"]
+ENTRYPOINT ["/root/.epirus/epirus", "run", "rinkeby"]

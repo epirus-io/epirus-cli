@@ -14,8 +14,6 @@ package io.epirus.console.token.subcommand.erc777
 
 import io.epirus.console.EpirusVersionProvider
 import picocli.CommandLine
-import java.math.BigInteger
-import kotlin.math.pow
 
 @CommandLine.Command(
         name = "erc777",
@@ -30,23 +28,17 @@ import kotlin.math.pow
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class ERC777TokenCommand : Runnable {
-    @CommandLine.Option(names = ["--name"], description = ["Name of the token."], required = true)
-    var name: String? = null
-    @CommandLine.Option(names = ["--symbol"], description = ["The symbol for this token."], required = true)
-    var symbol: String? = null
-    @CommandLine.Option(names = ["--default-operators"], description = ["Operators for all token holders."])
-    var defaultOperators = emptyList<String>()
-    @CommandLine.Option(names = ["-o", "--output-dir"], description = ["Destination base directory."])
+    @CommandLine.Option(names = ["--o, --output"], description = ["Output Directory."])
     var outputDir = "."
-    @CommandLine.Option(names = ["--s, --initial-supply"], description = ["Initial supply."])
-    var initialSupply: BigInteger = BigInteger.valueOf(10000 * 10F.pow(10).toLong())
+
+    @CommandLine.Option(
+            names = ["-n", "--name"],
+            description = ["specify the project name."],
+            defaultValue = "ERC777Token"
+    )
+    var projectName: String = "ERC777Token"
 
     override fun run() {
-        if (name == null || symbol == null) {
-            println("Name and Symbol options must be set.")
-        } else {
-            val erc777Config = ERC777Config(name!!, symbol!!, defaultOperators, outputDir, initialSupply.toString())
-            ERC777GeneratorService(erc777Config).generate()
-        }
+        ERC777GeneratorService(projectName, outputDir).generate()
     }
 }

@@ -25,22 +25,19 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class ERC777GeneratorService(private val erc777Config: ERC777Config) {
+class ERC777GeneratorService(private val projectName: String, private val outputDir: String) {
     fun generate() {
         try {
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
-                    .replace("<TOKEN_NAME>".toRegex(), erc777Config.tokenName)
-                    .replace("<TOKEN_SYMBOL>".toRegex(), erc777Config.symbol)
-                    .replace("<INITIAL_SUPPLY>".toRegex(), erc777Config.initialSupply)
-            val contractPath = (erc777Config.outputDir +
+            val contractPath = (outputDir +
                     File.separator +
-                    erc777Config.tokenName +
+                    projectName +
                     ".sol")
             Files.write(
                     Paths.get(
                             contractPath),
                     erc777Template.toByteArray())
-            val dependencyFilesPath = erc777Config.outputDir +
+            val dependencyFilesPath = outputDir +
                     File.separator +
                     "erc777"
             val dependencyDir = File(dependencyFilesPath)
@@ -59,11 +56,11 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
 
             val fileName = contractPath.substringAfterLast("/")
             val solidityFile = SolidityFile(contractPath)
-            val compilerInstance = solidityFile.getCompilerInstance()
+            val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
             println("Using solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
 
-            val buildPath = erc777Config.outputDir + File.separator + "build"
+            val buildPath = outputDir + File.separator + "build"
             File(buildPath).mkdirs()
 
             compilerInstance.execute(
@@ -77,24 +74,24 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
             FileUtils.deleteDirectory(File(dependencyFilesPath))
 
             val generatorConfiguration = GeneratorConfiguration(
-                    projectName = erc777Config.tokenName,
+                    projectName = projectName,
                     packageName = "io.epirus",
-                    outputDir = erc777Config.outputDir + File.separator + erc777Config.tokenName,
+                    outputDir = outputDir + File.separator + projectName,
                     contracts = GeneratorUtils.loadContractConfigurations(
                             listOf(
-                                    File(buildPath + File.separator + erc777Config.tokenName + ".abi")),
+                                    File(buildPath + File.separator + "ERC777Implementation.abi")),
                             listOf(
-                                    File(buildPath + File.separator + erc777Config.tokenName + ".bin"))),
+                                    File(buildPath + File.separator + "ERC777Implementation.bin"))),
                     addressLength = 20,
-                    contextPath = erc777Config.tokenName
+                    contextPath = projectName
             )
 
-            File(erc777Config.outputDir +
+            File(outputDir +
                     File.separator +
-                    erc777Config.tokenName).mkdirs()
+                    projectName).mkdirs()
 
             GenerateOpenApi(generatorConfiguration).generateAll()
-            runGradleTask(File(erc777Config.outputDir + File.separator + erc777Config.tokenName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+            runGradleTask(File(outputDir + File.separator + projectName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
 
             FileUtils.deleteDirectory(File(buildPath))
 
@@ -109,7 +106,7 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
         val erc777Dependencies = TemplateReader.readFile(inputFolder)
         Files.write(
                 Paths.get(
-                        erc777Config.outputDir +
+                        outputDir +
                                 File.separator +
                                 outputFolder),
                 erc777Dependencies.toByteArray())

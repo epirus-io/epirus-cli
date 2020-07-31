@@ -42,7 +42,7 @@ class <project_name> {
     fun start(args: Array<String>) {
         log as ch.qos.logback.classic.Logger
         log.level = Level.ERROR
-        val walletPath = System.getenv("EPIRUS_WALLET")
+        val walletPath = System.getenv("EPIRUS_WALLET_PATH")
         val walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "")
         val credentials: Credentials? = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile())
         val web3j: Web3j? = getDeployWeb3j()
