@@ -23,25 +23,38 @@ public class CredentialsOptions {
             names = {"-w", "--wallet-path"},
             description = "Wallet file path.",
             showDefaultValue = ALWAYS)
-    private Path walletPath;
+    Path walletPath;
 
     @CommandLine.Option(
             names = {"-k", "--wallet-password"},
             description = "Wallet password.",
             showDefaultValue = ALWAYS)
-    private String walletPassword = "";
+    String walletPassword = "";
 
     @CommandLine.Option(
             names = {"-r", "--private-key"},
             description = "Raw hex private key.",
             showDefaultValue = ALWAYS)
-    private String rawKey = "";
+    String rawKey = "";
 
     @CommandLine.Option(
             names = {"-j", "--wallet-json"},
             description = "JSON wallet.",
             showDefaultValue = ALWAYS)
-    private String json = "";
+    String json = "";
+
+    public CredentialsOptions() {}
+
+    public CredentialsOptions(
+            final Path walletPath,
+            final String walletPassword,
+            final String rawKey,
+            final String json) {
+        this.walletPath = walletPath;
+        this.walletPassword = walletPassword;
+        this.rawKey = rawKey;
+        this.json = json;
+    }
 
     public Path getWalletPath() {
         return walletPath;

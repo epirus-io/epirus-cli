@@ -114,9 +114,6 @@ public class NewProjectCommand implements Runnable {
         interactiveOptions
                 .getProjectDestination(projectName)
                 .ifPresent(projectDest -> outputDir = projectDest);
-
-        // FIXME - not sure what this is for
-        //        AccountUtils.accountInit(new AccountService());
     }
 
     private boolean inputIsValid(String... requiredArgs) {

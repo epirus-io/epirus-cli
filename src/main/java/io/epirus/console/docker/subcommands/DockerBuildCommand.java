@@ -41,8 +41,7 @@ public class DockerBuildCommand implements DockerOperations, Runnable {
     @CommandLine.Option(
             names = {"-t", "--tag"},
             description = {"specify the tag for the docker image."},
-            defaultValue = "web3app"
-    )
+            defaultValue = "web3app")
     String tag = "web3app";
 
     public void run() {

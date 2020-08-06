@@ -46,9 +46,6 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
 
-    @CommandLine.Option(names = {"-o", "--openapi"})
-    boolean isOpenAPI = false;
-
     @CommandLine.Option(names = {"-t", "--tag"})
     String tag = "web3app";
 
@@ -128,47 +125,51 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     }
 
     private String[] setOpenAPIEnvironment(final String[] args) {
-        if (isOpenAPI) {
-            return ArrayUtils.addAll(
-                    args,
-                    "--env",
-                    String.format("WEB3J_OPENAPI_HOST=%s", "0.0.0.0"),
-                    "--env",
-                    String.format("WEB3J_OPENAPI_ENDPOINT=%s", openApiEndpoint),
-                    "--env",
-                    String.format("WEB3J_OPENAPI_PORT=%d", openApiPort),
-                    "-p",
-                    openApiPort + ":" + openApiPort);
-        } else return args;
+        return ArrayUtils.addAll(
+                args,
+                "--env",
+                String.format("WEB3J_OPENAPI_HOST=%s", "0.0.0.0"),
+                "--env",
+                String.format("WEB3J_OPENAPI_ENDPOINT=%s", openApiEndpoint),
+                "--env",
+                String.format("WEB3J_OPENAPI_PORT=%d", openApiPort),
+                "-p",
+                openApiPort + ":" + openApiPort);
     }
 
     private String[] setCredentials(final String[] args) {
-        final String prefix = isOpenAPI ? "WEB3J_OPENAPI_" : "EPIRUS_";
         if (credentialsOptions.getWalletPath() != null) {
-            return getWalletEnvironment(args, credentialsOptions.getWalletPath(), prefix);
-        } else if (credentialsOptions.getRawKey() != null) {
+            return getWalletEnvironment(args, credentialsOptions.getWalletPath());
+        } else if (!credentialsOptions.getRawKey().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(prefix + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
-        } else if (credentialsOptions.getJson() != null) {
+                    String.format("WEB3J_OPENAPI_PRIVATE_KEY=%s", credentialsOptions.getRawKey()),
+                    "--env",
+                    String.format("EPIRUS_PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
+        } else if (!credentialsOptions.getJson().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(prefix + "WALLET_JSON=%s", credentialsOptions.getJson()));
+                    String.format("WEB3J_OPENAPI_WALLET_JSON=%s", credentialsOptions.getJson()),
+                    "--env",
+                    String.format("EPIRUS_WALLET_JSON=%s", credentialsOptions.getJson()));
         }
-        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()), prefix);
+        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()));
     }
 
-    private String[] getWalletEnvironment(
-            final String[] args, final Path walletPath, final String prefix) {
+    private String[] getWalletEnvironment(final String[] args, final Path walletPath) {
         final List<String> strings = Arrays.asList(args);
         final String[] walletArgs =
                 ArrayUtils.addAll(
                         args,
                         "--env",
                         String.format(
-                                prefix + "WALLET_PATH=%s",
+                                "WEB3J_OPENAPI_WALLET_PATH=%s",
+                                "/root/key/" + walletPath.getFileName().toString()),
+                        "--env",
+                        String.format(
+                                "EPIRUS_WALLET_PATH=%s",
                                 "/root/key/" + walletPath.getFileName().toString()),
                         "-v",
                         walletPath.getParent().toAbsolutePath().toString() + ":/root/key");
@@ -178,7 +179,11 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     walletArgs,
                     "--env",
                     String.format(
-                            prefix + "WALLET_PASSWORD=%s", credentialsOptions.getWalletPassword()));
+                            "WEB3J_OPENAPI_WALLET_PASSWORD=%s",
+                            credentialsOptions.getWalletPassword()),
+                    "--env",
+                    String.format(
+                            "EPIRUS_WALLET_PASSWORD=%s", credentialsOptions.getWalletPassword()));
         }
         return strings.toArray(new String[] {});
     }
