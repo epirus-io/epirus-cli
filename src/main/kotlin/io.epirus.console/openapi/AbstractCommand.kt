@@ -12,7 +12,7 @@
  */
 package io.epirus.console.openapi
 
-import org.web3j.openapi.console.options.ProjectOptions
+import io.epirus.console.openapi.options.ProjectOptions
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Path

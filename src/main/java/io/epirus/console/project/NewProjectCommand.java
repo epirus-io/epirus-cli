@@ -15,15 +15,16 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.openapi.OpenApiGeneratorService;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import org.apache.commons.lang.StringUtils;
 import picocli.CommandLine;
-
-import org.web3j.codegen.Console;
 
 import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
@@ -42,15 +43,8 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand implements Runnable {
 
-    @CommandLine.Option(
-            names = {"--java"},
-            description = "Whether java code should be generated.")
-    public boolean isJava;
-
-    @CommandLine.Option(
-            names = {"--kotlin"},
-            description = "Whether kotlin code should be generated.")
-    public boolean isKotlin;
+    @CommandLine.ArgGroup(multiplicity = "1")
+    ProjectType projectType;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -68,6 +62,31 @@ public class NewProjectCommand implements Runnable {
             showDefaultValue = ALWAYS)
     public String outputDir = ".";
 
+    @CommandLine.Option(
+            names = {"--address-length"},
+            description = {"specify the address length."},
+            defaultValue = "20")
+    public int addressLength = 20;
+
+    @CommandLine.Option(
+            names = {"--context-path"},
+            description = {"set the API context path (default: the project name)"})
+    public String contextPath;
+
+    @CommandLine.Option(
+            names = {"-a", "--abi"},
+            description = {"input ABI files and folders."},
+            arity = "1..*",
+            required = true)
+    public List<File> abis;
+
+    @CommandLine.Option(
+            names = {"-b", "--bin"},
+            description = {"input BIN files and folders."},
+            arity = "1..*",
+            required = true)
+    public List<File> bins;
+
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
 
@@ -82,9 +101,6 @@ public class NewProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (isJava && isKotlin) {
-            Console.exitError("Must only use one of --java or --kotlin");
-        }
         if (projectName == null && packageName == null) {
             buildInteractively();
         }
@@ -99,10 +115,22 @@ public class NewProjectCommand implements Runnable {
             final ProjectCreatorConfig projectCreatorConfig =
                     new ProjectCreatorConfig(projectName, packageName, outputDir);
 
-            if (!isJava) {
+            if (projectType.isKotlin) {
                 new KotlinProjectCreatorRunner(projectCreatorConfig).run();
-            } else {
+            } else if (projectType.isJava) {
                 new JavaProjectCreatorRunner(projectCreatorConfig).run();
+            } else {
+                new OpenApiGeneratorService(
+                                projectName,
+                                packageName,
+                                outputDir,
+                                abis,
+                                bins,
+                                addressLength,
+                                contextPath != null
+                                        ? StringUtils.removeEnd(contextPath, "/")
+                                        : projectName)
+                        .generate();
             }
         }
     }
