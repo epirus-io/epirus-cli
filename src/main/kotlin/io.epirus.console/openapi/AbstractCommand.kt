@@ -15,7 +15,7 @@ package io.epirus.console.openapi
 import io.epirus.console.openapi.options.ProjectOptions
 import picocli.CommandLine
 import java.io.File
-import java.nio.file.Path
+import java.nio.file.Paths
 
 abstract class AbstractCommand {
 
@@ -70,7 +70,7 @@ abstract class AbstractCommand {
     protected var addressLength: Int = 20
 
     fun call(): Int {
-        val projectFolder = Path.of(
+        val projectFolder = Paths.get(
                 outputDirectory.canonicalPath,
                 projectOptions.projectName
         ).toFile().apply {
