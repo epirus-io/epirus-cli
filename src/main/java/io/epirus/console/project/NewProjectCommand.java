@@ -101,6 +101,10 @@ public class NewProjectCommand implements Runnable {
         if (projectName == null && packageName == null) {
             buildInteractively();
         }
+        if (projectType == null) {
+            projectType = new ProjectType();
+            projectType.isJava = true;
+        }
         if (inputIsValid(projectName, packageName)) {
             if (new File(projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
