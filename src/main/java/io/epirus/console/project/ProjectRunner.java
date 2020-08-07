@@ -77,7 +77,7 @@ public abstract class ProjectRunner implements Runnable {
         commandPrinter.println("Runs your application");
         instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
         commandPrinter.println("Test your application");
-        instructionPrinter.print(String.format("%-40s", "epirus deploy rinkeby|ropsten"));
-        commandPrinter.println("Deploys your application");
+        instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"));
+        commandPrinter.println("Runs your application");
     }
 }
