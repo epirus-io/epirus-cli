@@ -43,8 +43,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
 
-    @CommandLine.ArgGroup(multiplicity = "1")
-    ProjectType projectType;
+    @CommandLine.ArgGroup() ProjectType projectType;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -87,15 +86,13 @@ public class ImportProjectCommand implements Runnable {
     @CommandLine.Option(
             names = {"-a", "--abi"},
             description = {"input ABI files and folders."},
-            arity = "1..*",
-            required = true)
+            arity = "1..*")
     public List<File> abis;
 
     @CommandLine.Option(
             names = {"-b", "--bin"},
             description = {"input BIN files and folders."},
-            arity = "1..*",
-            required = true)
+            arity = "1..*")
     public List<File> bins;
 
     private final InteractiveOptions interactiveOptions;
@@ -132,11 +129,7 @@ public class ImportProjectCommand implements Runnable {
                     new ProjectImporterConfig(
                             projectName, packageName, outputDir, solidityImportPath, generateTests);
 
-            if (projectType.isKotlin) {
-                new KotlinProjectImporterRunner(projectImporterConfig).run();
-            } else if (projectType.isJava) {
-                new JavaProjectImporterRunner(projectImporterConfig).run();
-            } else {
+            if (projectType.isOpenApi) {
                 new OpenApiGeneratorService(
                                 projectName,
                                 packageName,
@@ -148,6 +141,10 @@ public class ImportProjectCommand implements Runnable {
                                         ? StringUtils.removeEnd(contextPath, "/")
                                         : projectName)
                         .generate();
+            } else if (projectType.isJava) {
+                new JavaProjectImporterRunner(projectImporterConfig).run();
+            } else {
+                new KotlinProjectImporterRunner(projectImporterConfig).run();
             }
         }
     }

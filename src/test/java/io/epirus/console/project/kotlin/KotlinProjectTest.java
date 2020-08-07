@@ -65,10 +65,7 @@ public class KotlinProjectTest {
         final boolean mainKotlinClass =
                 new File(projectStructure.getMainPath() + File.separator + "Test.kt").exists();
         final boolean greeterContract =
-                new File(
-                                projectStructure.getSolidityPath()
-                                        + File.separator
-                                        + "project/HelloWorld.sol")
+                new File(projectStructure.getSolidityPath() + File.separator + "HelloWorld.sol")
                         .exists();
         final boolean gradleBuild =
                 new File(projectStructure.getProjectRoot() + File.separator + "build.gradle")

@@ -37,9 +37,8 @@ public class JavaProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        ProjectWriter.writeResourceFile(
-                "project/HelloWorld.sol", "project/HelloWorld.sol", tempDirPath);
-        assertTrue(new File(tempDirPath + File.separator + "project/HelloWorld.sol").exists());
+        ProjectWriter.writeResourceFile("project/HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
     @Test
@@ -56,7 +55,7 @@ public class JavaProjectWriterTest {
         file.mkdirs();
         ProjectWriter.writeResourceFile(
                 "project/HelloWorld.sol",
-                "project/HelloWorld.sol",
+                "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(
                 new File(tempDirPath + File.separator + "tempSolidityDir"),
@@ -67,7 +66,7 @@ public class JavaProjectWriterTest {
                                         + File.separator
                                         + "tempSolidityDestination"
                                         + File.separator
-                                        + "project/HelloWorld.sol")
+                                        + "HelloWorld.sol")
                         .exists());
     }
 
@@ -80,7 +79,7 @@ public class JavaProjectWriterTest {
         destination.mkdirs();
         ProjectWriter.writeResourceFile(
                 "project/HelloWorld.sol",
-                "project/HelloWorld.sol",
+                "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(
                 new File(
@@ -88,7 +87,7 @@ public class JavaProjectWriterTest {
                                 + File.separator
                                 + "tempSolidityDir"
                                 + File.separator
-                                + "project/HelloWorld.sol"),
+                                + "HelloWorld.sol"),
                 destination.getAbsolutePath());
         assertTrue(
                 new File(
@@ -96,7 +95,7 @@ public class JavaProjectWriterTest {
                                         + File.separator
                                         + "tempSoliditySingleImport"
                                         + File.separator
-                                        + "project/HelloWorld.sol")
+                                        + "HelloWorld.sol")
                         .exists());
     }
 }
