@@ -38,9 +38,15 @@ public class DockerBuildCommand implements DockerOperations, Runnable {
     @CommandLine.Option(names = {"-d", "--directory"})
     Path directory = Paths.get(System.getProperty("user.dir"));
 
+    @CommandLine.Option(
+            names = {"-t", "--tag"},
+            description = {"specify the tag for the docker image."},
+            defaultValue = "web3app")
+    String tag = "web3app";
+
     public void run() {
         try {
-            executeDocker(new String[] {"docker", "build", "-t", "web3app", "."}, directory);
+            executeDocker(new String[] {"docker", "build", "-t", tag, "."}, directory);
         } catch (Exception e) {
             Console.exitError(e);
         }

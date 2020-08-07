@@ -15,6 +15,7 @@ package io.epirus.console.project;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaTestCLIRunner;
 import io.epirus.console.project.kotlin.KotlinTestCLIRunner;
+import io.epirus.console.wallet.SubCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -30,4 +31,4 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class UnitTestCommand {}
+public class UnitTestCommand extends SubCommand {}

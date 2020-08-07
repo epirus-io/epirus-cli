@@ -20,7 +20,6 @@ import io.epirus.console.account.AccountCommand;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
 import io.epirus.console.config.ConfigManager;
-import io.epirus.console.deploy.DeployCommand;
 import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.openapi.OpenApiCommand;
 import io.epirus.console.project.ImportProjectCommand;
@@ -28,6 +27,7 @@ import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.NewProjectCommand;
 import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.testing.ProjectTestCommand;
+import io.epirus.console.run.RunCommand;
 import io.epirus.console.security.ContractAuditCommand;
 import io.epirus.console.token.TokenCommand;
 import io.epirus.console.wallet.WalletCommand;
@@ -60,7 +60,7 @@ import static org.web3j.codegen.Console.exitSuccess;
             LogoutCommand.class,
             ProjectTestCommand.class,
             UnitTestCommand.class,
-            DeployCommand.class,
+            RunCommand.class,
             OpenApiCommand.class,
             TokenCommand.class,
         },
@@ -90,7 +90,7 @@ public class EpirusCommand implements Runnable {
                     + "        |_|                     ";
 
     private final CommandLine commandLine;
-    private final Map<String, String> environmentVariables;
+    private final Map<String, String> environment;
     private final String[] args;
 
     @CommandLine.Option(
@@ -99,14 +99,16 @@ public class EpirusCommand implements Runnable {
             defaultValue = "false")
     public boolean telemetry;
 
-    public EpirusCommand(final Map<String, String> environmentVariables, String[] args) {
+    public EpirusCommand(final Map<String, String> environment, String[] args) {
         this.commandLine = new CommandLine(this);
-        this.environmentVariables = environmentVariables;
+        this.environment = environment;
         this.args = args;
     }
 
     public int parse() {
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
+        commandLine.setParameterExceptionHandler(this::handleParseException);
+        commandLine.setDefaultValueProvider(new EnvironmentVariableDefaultProvider(environment));
 
         System.out.println(LOGO);
         try {
@@ -118,6 +120,15 @@ public class EpirusCommand implements Runnable {
         }
 
         return commandLine.execute(args);
+    }
+
+    private int handleParseException(final CommandLine.ParameterException ex, final String[] args) {
+        commandLine.getErr().println(ex.getMessage());
+
+        CommandLine.UnmatchedArgumentException.printSuggestions(ex, commandLine.getOut());
+        commandLine.usage(commandLine.getOut());
+
+        return ex.getCommandLine().getCommandSpec().exitCodeOnInvalidInput();
     }
 
     @Override
@@ -135,7 +146,7 @@ public class EpirusCommand implements Runnable {
 
     private void performTelemetryUpload() {
         if (args.length == 0) {
-            commandLine.usage(System.out);
+            commandLine.usage(commandLine.getOut());
         }
         if (telemetry) {
             Telemetry.uploadTelemetry(args);

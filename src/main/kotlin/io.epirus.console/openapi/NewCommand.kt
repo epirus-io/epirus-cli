@@ -13,10 +13,10 @@
 package io.epirus.console.openapi
 
 import io.epirus.console.EpirusVersionProvider
+import io.epirus.console.openapi.utils.GradleUtils.runGradleTask
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
-import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
 import picocli.CommandLine.Command
 import java.io.File
 import java.util.concurrent.Callable

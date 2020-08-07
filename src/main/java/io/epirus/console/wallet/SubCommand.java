@@ -10,23 +10,19 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.openapi.options
+package io.epirus.console.wallet;
 
-import picocli.CommandLine.Option
+import picocli.CommandLine;
 
-class ProjectOptions {
+public abstract class SubCommand implements Runnable {
+    @Override
+    public void run() {
+        if (isHelpRequired()) {
+            CommandLine.usage(this, System.out);
+        }
+    }
 
-    @Option(
-        names = ["-n", "--name"],
-        description = ["specify the project name."],
-        defaultValue = "Web3j-OpenAPI",
-        required = true
-    )
-    lateinit var projectName: String
-
-    @Option(
-        names = ["--context-path"],
-        description = ["set the API context path (default: the project name)"]
-    )
-    var contextPath: String? = null
+    public boolean isHelpRequired() {
+        return true;
+    }
 }

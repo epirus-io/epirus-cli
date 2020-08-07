@@ -13,10 +13,11 @@
 package io.epirus.console.token.subcommand.erc777
 
 import io.epirus.console.project.templates.TemplateReader
+import org.apache.commons.io.FileUtils
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils
-import org.web3j.openapi.console.utils.GradleUtils.runGradleTask
+import io.epirus.console.openapi.utils.GradleUtils.runGradleTask
 import org.web3j.sokt.SolcArguments
 import org.web3j.sokt.SolidityFile
 import java.io.File
@@ -24,24 +25,22 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class ERC777GeneratorService(private val erc777Config: ERC777Config) {
+class ERC777GeneratorService(private val projectName: String, private val outputDir: String) {
     fun generate() {
         try {
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
-                    .replace("<TOKEN_NAME>".toRegex(), erc777Config.tokenName)
-                    .replace("<TOKEN_SYMBOL>".toRegex(), erc777Config.symbol)
-                    .replace("<INITIAL_SUPPLY>".toRegex(), erc777Config.initialSupply)
-            val contractPath = (erc777Config.outputDir +
+            val contractPath = (outputDir +
                     File.separator +
-                    erc777Config.tokenName +
+                    projectName +
                     ".sol")
             Files.write(
                     Paths.get(
                             contractPath),
                     erc777Template.toByteArray())
-            val dependencyDir = File(erc777Config.outputDir +
+            val dependencyFilesPath = outputDir +
                     File.separator +
-                    "erc777")
+                    "erc777"
+            val dependencyDir = File(dependencyFilesPath)
             dependencyDir.mkdirs()
             val erc777ResourcePath = "tokens" + File.separator + "erc777" + File.separator
             val erc777OutputPath = "erc777" + File.separator
@@ -57,38 +56,44 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
 
             val fileName = contractPath.substringAfterLast("/")
             val solidityFile = SolidityFile(contractPath)
-            val compilerInstance = solidityFile.getCompilerInstance()
+            val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
             println("Using solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
 
-            File(erc777Config.outputDir + File.separator + "build").mkdirs()
+            val buildPath = outputDir + File.separator + "build"
+            File(buildPath).mkdirs()
 
-            val result = compilerInstance.execute(
-                    SolcArguments.OUTPUT_DIR.param { erc777Config.outputDir + File.separator + "build" },
+            compilerInstance.execute(
+                    SolcArguments.OUTPUT_DIR.param { buildPath },
                     SolcArguments.ABI,
                     SolcArguments.BIN,
                     SolcArguments.OVERWRITE
             )
 
+            Files.delete(Paths.get(contractPath))
+            FileUtils.deleteDirectory(File(dependencyFilesPath))
+
             val generatorConfiguration = GeneratorConfiguration(
-                    projectName = erc777Config.tokenName,
+                    projectName = projectName,
                     packageName = "io.epirus",
-                    outputDir = erc777Config.outputDir + File.separator + erc777Config.tokenName,
+                    outputDir = outputDir + File.separator + projectName,
                     contracts = GeneratorUtils.loadContractConfigurations(
                             listOf(
-                                    File(erc777Config.outputDir + File.separator + "build" + File.separator + erc777Config.tokenName + ".abi")),
+                                    File(buildPath + File.separator + "ERC777Implementation.abi")),
                             listOf(
-                                    File(erc777Config.outputDir + File.separator + "build" + File.separator + erc777Config.tokenName + ".bin"))),
+                                    File(buildPath + File.separator + "ERC777Implementation.bin"))),
                     addressLength = 20,
-                    contextPath = erc777Config.tokenName
+                    contextPath = projectName
             )
 
-            File(erc777Config.outputDir +
+            File(outputDir +
                     File.separator +
-                    erc777Config.tokenName).mkdirs()
+                    projectName).mkdirs()
 
             GenerateOpenApi(generatorConfiguration).generateAll()
-            runGradleTask(File(erc777Config.outputDir + File.separator + erc777Config.tokenName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+            runGradleTask(File(outputDir + File.separator + projectName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+
+            FileUtils.deleteDirectory(File(buildPath))
 
             println("Done.")
         } catch (e: IOException) {
@@ -101,7 +106,7 @@ class ERC777GeneratorService(private val erc777Config: ERC777Config) {
         val erc777Dependencies = TemplateReader.readFile(inputFolder)
         Files.write(
                 Paths.get(
-                        erc777Config.outputDir +
+                        outputDir +
                                 File.separator +
                                 outputFolder),
                 erc777Dependencies.toByteArray())

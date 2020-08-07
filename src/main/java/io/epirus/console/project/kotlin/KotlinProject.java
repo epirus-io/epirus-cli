@@ -52,33 +52,33 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                 new KotlinTemplateBuilder()
                         .withProjectNameReplacement(projectStructure.projectName)
                         .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template")
-                        .withGradleSettings("settings.gradle.template")
-                        .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                        .withGradleBatScript("project/gradlew.bat.template")
+                        .withGradleScript("project/gradlew.template")
+                        .withGradleSettings("project/settings.gradle.template")
+                        .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
         if (command.equals("new")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradle.template"
-                                    : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
+                                    ? "project/build.gradle.template"
+                                    : "project/build.gradleJava11.template")
+                    .withSolidityProject("project/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradleImport.template"
-                                    : "build.gradleImportJava11.template")
+                                    ? "project/build.gradleImport.template"
+                                    : "project/build.gradleImportJava11.template")
                     .withPathToSolidityFolder(solidityImportPath);
         }
 
         if (withSampleCode) {
-            templateBuilder.withMainKotlinClass("Kotlin.template");
+            templateBuilder.withMainKotlinClass("project/Kotlin.template");
         } else {
-            templateBuilder.withMainKotlinClass("EmptyKotlin.template");
+            templateBuilder.withMainKotlinClass("project/EmptyKotlin.template");
         }
 
         return templateBuilder.build();

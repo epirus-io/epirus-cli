@@ -14,20 +14,23 @@ package io.epirus.console.docker.subcommands;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.ListContainersCmd;
+import com.github.dockerjava.api.command.ListImagesCmd;
 import com.github.dockerjava.core.DockerClientBuilder;
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.docker.DockerCommand;
 import io.epirus.console.docker.DockerOperations;
 import io.epirus.console.project.InteractiveOptions;
+import io.epirus.console.wrapper.CredentialsOptions;
 import org.apache.commons.lang3.ArrayUtils;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
 import static io.epirus.console.config.ConfigManager.config;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "run",
@@ -42,13 +45,25 @@ import static io.epirus.console.config.ConfigManager.config;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
+
+    @CommandLine.Option(names = {"-t", "--tag"})
+    String tag = "web3app";
+
+    @CommandLine.Option(names = {"--openApiEndpoint"})
+    String openApiEndpoint = "";
+
+    @CommandLine.Option(names = {"--openApiPort"})
+    int openApiPort = 9090;
+
     @CommandLine.Option(names = {"-l", "--local"})
     boolean localMode;
 
-    @CommandLine.Option(names = {"-w", "--wallet-path"})
-    Path walletPath;
+    @CommandLine.Mixin CredentialsOptions credentialsOptions;
 
-    @CommandLine.Option(names = {"-d", "--directory"})
+    @CommandLine.Option(
+            names = {"-d", "--directory"},
+            description = "Directory to run docker in.",
+            showDefaultValue = ALWAYS)
     Path directory = Paths.get(System.getProperty("user.dir"));
 
     @CommandLine.Option(names = {"-p", "--print"})
@@ -58,37 +73,33 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     public void run() {
 
         DockerClient dockerClient = DockerClientBuilder.getInstance().build();
-        ListContainersCmd listContainersCmd = dockerClient.listContainersCmd().withShowAll(true);
+        ListImagesCmd listImagesCmd = dockerClient.listImagesCmd().withShowAll(true);
 
-        if (listContainersCmd.exec().stream().noneMatch(i -> i.getImage().equals("web3app"))) {
+        if (listImagesCmd.exec().stream()
+                .noneMatch(i -> Arrays.stream(i.getRepoTags()).noneMatch(j -> j.startsWith(tag)))) {
             if (new InteractiveOptions()
                     .userAnsweredYes(
                             "It seems that no Docker container has yet been built. Would you like to build a Dockerized version of your app now?")) {
-                new CommandLine(new DockerCommand())
-                        .execute(
-                                "build",
-                                "-d",
-                                Paths.get(System.getProperty("user.dir"))
-                                        .toAbsolutePath()
-                                        .toString());
+                try {
+                    executeDocker(
+                            new String[] {"docker", "build", "-t", "web3app", "."},
+                            Paths.get(System.getProperty("user.dir")).toAbsolutePath());
+                } catch (Exception e) {
+                    Console.exitError(e);
+                }
             }
         }
 
-        if (walletPath == null) {
-            walletPath = Paths.get(config.getDefaultWalletPath());
-        }
         String[] args =
                 new String[] {
                     "docker",
                     "run",
                     "--env",
-                    String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken()),
-                    "--env",
-                    String.format(
-                            "EPIRUS_WALLET=%s", "/root/key/" + walletPath.getFileName().toString()),
-                    "-v",
-                    walletPath.getParent().toAbsolutePath().toString() + ":/root/key"
+                    String.format("EPIRUS_LOGIN_TOKEN=%s", config.getLoginToken())
                 };
+
+        args = setCredentials(args);
+        args = setOpenAPIEnvironment(args);
 
         if (localMode) {
             args =
@@ -99,7 +110,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                                     "%s/.epirus:/root/.epirus", System.getProperty("user.home")));
         }
 
-        args = ArrayUtils.addAll(args, "web3app");
+        args = ArrayUtils.addAll(args, tag);
 
         if (print) {
             System.out.println(String.join(" ", args));
@@ -111,5 +122,69 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         } catch (Exception e) {
             Console.exitError(e);
         }
+    }
+
+    private String[] setOpenAPIEnvironment(final String[] args) {
+        return ArrayUtils.addAll(
+                args,
+                "--env",
+                String.format("WEB3J_OPENAPI_HOST=%s", "0.0.0.0"),
+                "--env",
+                String.format("WEB3J_OPENAPI_ENDPOINT=%s", openApiEndpoint),
+                "--env",
+                String.format("WEB3J_OPENAPI_PORT=%d", openApiPort),
+                "-p",
+                openApiPort + ":" + openApiPort);
+    }
+
+    private String[] setCredentials(final String[] args) {
+        if (credentialsOptions.getWalletPath() != null) {
+            return getWalletEnvironment(args, credentialsOptions.getWalletPath());
+        } else if (!credentialsOptions.getRawKey().isEmpty()) {
+            return ArrayUtils.addAll(
+                    args,
+                    "--env",
+                    String.format("WEB3J_OPENAPI_PRIVATE_KEY=%s", credentialsOptions.getRawKey()),
+                    "--env",
+                    String.format("EPIRUS_PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
+        } else if (!credentialsOptions.getJson().isEmpty()) {
+            return ArrayUtils.addAll(
+                    args,
+                    "--env",
+                    String.format("WEB3J_OPENAPI_WALLET_JSON=%s", credentialsOptions.getJson()),
+                    "--env",
+                    String.format("EPIRUS_WALLET_JSON=%s", credentialsOptions.getJson()));
+        }
+        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()));
+    }
+
+    private String[] getWalletEnvironment(final String[] args, final Path walletPath) {
+        final List<String> strings = Arrays.asList(args);
+        final String[] walletArgs =
+                ArrayUtils.addAll(
+                        args,
+                        "--env",
+                        String.format(
+                                "WEB3J_OPENAPI_WALLET_PATH=%s",
+                                "/root/key/" + walletPath.getFileName().toString()),
+                        "--env",
+                        String.format(
+                                "EPIRUS_WALLET_PATH=%s",
+                                "/root/key/" + walletPath.getFileName().toString()),
+                        "-v",
+                        walletPath.getParent().toAbsolutePath().toString() + ":/root/key");
+
+        if (credentialsOptions.getWalletPassword() != null) {
+            return ArrayUtils.addAll(
+                    walletArgs,
+                    "--env",
+                    String.format(
+                            "WEB3J_OPENAPI_WALLET_PASSWORD=%s",
+                            credentialsOptions.getWalletPassword()),
+                    "--env",
+                    String.format(
+                            "EPIRUS_WALLET_PASSWORD=%s", credentialsOptions.getWalletPassword()));
+        }
+        return strings.toArray(new String[] {});
     }
 }

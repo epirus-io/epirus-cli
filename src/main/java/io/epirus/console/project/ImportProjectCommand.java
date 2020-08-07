@@ -15,15 +15,16 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.openapi.OpenApiGeneratorService;
 import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import org.apache.commons.lang.StringUtils;
 import picocli.CommandLine;
-
-import org.web3j.codegen.Console;
 
 import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
@@ -41,15 +42,8 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
-    @CommandLine.Option(
-            names = {"--java"},
-            description = "Whether java code should be generated.")
-    public boolean isJava;
 
-    @CommandLine.Option(
-            names = {"--kotlin"},
-            description = "Whether kotlin code should be generated.")
-    public boolean isKotlin;
+    @CommandLine.ArgGroup() ProjectType projectType;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -78,6 +72,29 @@ public class ImportProjectCommand implements Runnable {
             showDefaultValue = ALWAYS)
     boolean generateTests = false;
 
+    @CommandLine.Option(
+            names = {"--address-length"},
+            description = {"specify the address length."},
+            defaultValue = "20")
+    public int addressLength = 20;
+
+    @CommandLine.Option(
+            names = {"--context-path"},
+            description = {"set the API context path (default: the project name)"})
+    public String contextPath;
+
+    @CommandLine.Option(
+            names = {"-a", "--abi"},
+            description = {"input ABI files and folders."},
+            arity = "1..*")
+    public List<File> abis;
+
+    @CommandLine.Option(
+            names = {"-b", "--bin"},
+            description = {"input BIN files and folders."},
+            arity = "1..*")
+    public List<File> bins;
+
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
 
@@ -97,9 +114,6 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (isJava && isKotlin) {
-            Console.exitError("Must only use one of --java or --kotlin");
-        }
         if (projectName == null && packageName == null) {
             buildInteractively();
         }
@@ -115,10 +129,22 @@ public class ImportProjectCommand implements Runnable {
                     new ProjectImporterConfig(
                             projectName, packageName, outputDir, solidityImportPath, generateTests);
 
-            if (!isJava) {
-                new KotlinProjectImporterRunner(projectImporterConfig).run();
-            } else {
+            if (projectType.isOpenApi) {
+                new OpenApiGeneratorService(
+                                projectName,
+                                packageName,
+                                outputDir,
+                                abis,
+                                bins,
+                                addressLength,
+                                contextPath != null
+                                        ? StringUtils.removeEnd(contextPath, "/")
+                                        : projectName)
+                        .generate();
+            } else if (projectType.isJava) {
                 new JavaProjectImporterRunner(projectImporterConfig).run();
+            } else {
+                new KotlinProjectImporterRunner(projectImporterConfig).run();
             }
         }
     }

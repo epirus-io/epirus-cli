@@ -18,6 +18,7 @@ import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
 import io.epirus.console.account.subcommands.ResetCommand;
 import io.epirus.console.account.subcommands.StatusCommand;
+import io.epirus.console.wallet.SubCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -39,4 +40,4 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class AccountCommand {}
+public class AccountCommand extends SubCommand {}

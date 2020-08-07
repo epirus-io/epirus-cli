@@ -147,7 +147,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
                     new File(pathToSolidityFolder), projectStructure.getSolidityPath());
         }
         ProjectWriter.writeResourceFile(
-                TemplateReader.readFile("Dockerfile.template"),
+                TemplateReader.readFile("project/Dockerfile.template"),
                 "Dockerfile",
                 projectStructure.getProjectRoot());
         ProjectWriter.writeResourceFile(

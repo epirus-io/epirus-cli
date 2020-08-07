@@ -13,6 +13,7 @@
 package io.epirus.console.wrapper;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.wallet.SubCommand;
 import io.epirus.console.wrapper.subcommand.SolidityGenerateCommand;
 import picocli.CommandLine;
 
@@ -31,10 +32,4 @@ import picocli.CommandLine;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class SolidityFunctionWrapperGeneratorCommand implements Runnable {
-
-    @Override
-    public void run() {
-        CommandLine.usage(this, System.out);
-    }
-}
+public class SolidityFunctionWrapperGeneratorCommand extends SubCommand {}

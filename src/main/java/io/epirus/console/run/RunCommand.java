@@ -10,14 +10,16 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.deploy;
+package io.epirus.console.run;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.diogonunes.jcdp.color.api.Ansi;
+import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
@@ -25,24 +27,25 @@ import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.subcommands.WalletFundCommand;
+import io.epirus.console.wrapper.CredentialsOptions;
 import io.epirus.web3j.Epirus;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
 import static io.epirus.console.config.ConfigManager.config;
-import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
-        name = "deploy",
-        description = "Deploy your project to an Ethereum network",
+        name = "run",
+        description = "Run your project using a live Ethereum network",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -52,25 +55,14 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class DeployCommand implements Runnable {
+public class RunCommand implements Runnable {
     private Path workingDirectory;
     private Network network;
     private AccountService accountService;
-
     private Credentials credentials;
-
     private Web3j web3j;
 
-    @CommandLine.Option(
-            names = {"-w", "--wallet-path"},
-            description = "Path to your wallet file")
-    public String walletPath = "";
-
-    @CommandLine.Option(
-            names = {"-k", "--wallet-password"},
-            description = "Wallet password",
-            showDefaultValue = ALWAYS)
-    public String walletPassword = "";
+    @CommandLine.Mixin CredentialsOptions credentialsOptions;
 
     @CommandLine.Parameters(
             index = "0",
@@ -79,7 +71,14 @@ public class DeployCommand implements Runnable {
             arity = "1")
     String deployNetwork;
 
-    public DeployCommand(
+    @CommandLine.Option(names = {"--openApiEndpoint"})
+    String openApiEndpoint = "";
+
+    @CommandLine.Option(names = {"--openApiPort"})
+    int openApiPort = 9090;
+
+    @VisibleForTesting
+    public RunCommand(
             Network network,
             AccountService accountService,
             Web3j web3j,
@@ -87,22 +86,31 @@ public class DeployCommand implements Runnable {
             String walletPath) {
         this.workingDirectory = workingDirectory;
         this.network = network;
-        this.walletPath = walletPath;
-        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
+        this.credentialsOptions = new CredentialsOptions(Paths.get(walletPath), "", null, null);
+        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), "");
         this.accountService = accountService;
         this.web3j = web3j;
     }
 
-    public DeployCommand(
-            Network network, AccountService accountService, Credentials credentials, Web3j web3j) {
+    private RunCommand(
+            Network network,
+            AccountService accountService,
+            Credentials credentials,
+            Web3j web3j,
+            CredentialsOptions credentialsOptions,
+            String openApiEndpoint,
+            int openApiPort) {
+        this.openApiEndpoint = openApiEndpoint;
+        this.openApiPort = openApiPort;
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
         this.credentials = credentials;
         this.accountService = accountService;
         this.web3j = web3j;
+        this.credentialsOptions = credentialsOptions;
     }
 
-    public DeployCommand() {}
+    public RunCommand() {}
 
     @Override
     public void run() {
@@ -113,12 +121,11 @@ public class DeployCommand implements Runnable {
             new LoginCommand().run();
         }
 
-        if (walletPath.isEmpty()) {
-            walletPath =
-                    System.getenv().getOrDefault("EPIRUS_WALLET", config.getDefaultWalletPath());
+        try {
+            this.credentials = createCredentials();
+        } catch (IOException | CipherException e) {
+            throw new RuntimeException(e);
         }
-
-        this.credentials = ProjectUtils.createCredentials(Paths.get(walletPath), walletPassword);
 
         try {
             web3j = Epirus.buildWeb3j(Network.valueOf(deployNetwork.toUpperCase()));
@@ -126,16 +133,38 @@ public class DeployCommand implements Runnable {
             printErrorAndExit(e.getMessage());
         }
         try {
-            new DeployCommand(
+            new RunCommand(
                             Network.valueOf(deployNetwork.toUpperCase()),
                             new AccountService(),
                             credentials,
-                            web3j)
+                            web3j,
+                            credentialsOptions,
+                            openApiEndpoint,
+                            openApiPort)
                     .deploy();
         } catch (Exception e) {
             printErrorAndExit(
                     "Epirus failed to deploy the project. For more information please see the log file.");
         }
+    }
+
+    private Credentials createCredentials() throws IOException, CipherException {
+        if (credentialsOptions.getWalletPath() != null) {
+            if (!credentialsOptions.getWalletPassword().isEmpty()) {
+                return ProjectUtils.createCredentials(
+                        credentialsOptions.getWalletPath(), credentialsOptions.getWalletPassword());
+            }
+            return ProjectUtils.createCredentials(credentialsOptions.getWalletPath(), "");
+        } else if (!credentialsOptions.getRawKey().isEmpty()) {
+            return Credentials.create(credentialsOptions.getRawKey());
+        } else if (!credentialsOptions.getJson().isEmpty()) {
+            if (!credentialsOptions.getWalletPassword().isEmpty()) {
+                return WalletUtils.loadJsonCredentials(
+                        credentialsOptions.getWalletPassword(), credentialsOptions.getJson());
+            }
+            return WalletUtils.loadJsonCredentials("", credentialsOptions.getJson());
+        }
+        throw new RuntimeException("Failed to create credentials");
     }
 
     public void deploy() throws Exception {
@@ -150,7 +179,7 @@ public class DeployCommand implements Runnable {
                     "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
         }
         fundWallet();
-        uploadSolidityMetadata(network, workingDirectory);
+        // uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());
         coloredPrinter.println("Deploying your Web3App");
         System.out.print(System.lineSeparator());
@@ -216,8 +245,11 @@ public class DeployCommand implements Runnable {
         processBuilder
                 .environment()
                 .putIfAbsent(
-                        "EPIRUS_WALLET",
-                        walletPath.isEmpty() ? config.getDefaultWalletPath() : walletPath);
+                        "EPIRUS_WALLET_PATH",
+                        credentialsOptions.getWalletPath() == null
+                                ? config.getDefaultWalletPath()
+                                : credentialsOptions.getWalletPath().toString());
+        setOpenAPIEnvironment(processBuilder);
 
         int exitCode =
                 processBuilder
@@ -237,5 +269,31 @@ public class DeployCommand implements Runnable {
                             network.getNetworkName(), credentials.getAddress()),
                     Ansi.FColor.BLUE);
         }
+    }
+
+    private void setOpenAPIEnvironment(final ProcessBuilder processBuilder) {
+        if (credentialsOptions.getWalletPath() != null) {
+            processBuilder
+                    .environment()
+                    .putIfAbsent(
+                            "WEB3J_OPENAPI_WALLET_PATH",
+                            credentialsOptions.getWalletPath().toString());
+        } else if (credentialsOptions.getRawKey() != null) {
+            processBuilder
+                    .environment()
+                    .putIfAbsent("WEB3J_OPENAPI_PRIVATE_KEY", credentialsOptions.getRawKey());
+        } else if (credentialsOptions.getJson() != null) {
+            processBuilder
+                    .environment()
+                    .putIfAbsent("WEB3J_OPENAPI_WALLET_JSON", credentialsOptions.getJson());
+        } else {
+            processBuilder
+                    .environment()
+                    .putIfAbsent("WEB3J_OPENAPI_WALLET_PATH", config.getDefaultWalletPath());
+        }
+        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_ENDPOINT", openApiEndpoint);
+        processBuilder
+                .environment()
+                .putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(openApiPort));
     }
 }
