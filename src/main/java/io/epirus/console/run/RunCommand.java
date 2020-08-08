@@ -163,8 +163,9 @@ public class RunCommand implements Runnable {
                         credentialsOptions.getWalletPassword(), credentialsOptions.getJson());
             }
             return WalletUtils.loadJsonCredentials("", credentialsOptions.getJson());
+        } else {
+            return WalletUtils.loadCredentials("", config.getDefaultWalletPath());
         }
-        throw new RuntimeException("Failed to create credentials");
     }
 
     public void deploy() throws Exception {
