@@ -33,7 +33,7 @@ public class <project_name> {
     public static void main(String[] args) throws Exception {
         try {
             ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
-            String walletPath = System.getenv("EPIRUS_WALLET");
+            String walletPath = System.getenv("EPIRUS_WALLET_PATH");
             String walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "");
             Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
             Web3j web3j = getDeployWeb3j();

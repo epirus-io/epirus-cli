@@ -13,10 +13,6 @@
 package io.epirus.console.openapi
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.utils.GradleUtils.runGradleTask
-import org.web3j.openapi.codegen.GenerateOpenApi
-import org.web3j.openapi.codegen.config.GeneratorConfiguration
-import org.web3j.openapi.codegen.utils.GeneratorUtils.loadContractConfigurations
 import picocli.CommandLine.Command
 import java.io.File
 import java.util.concurrent.Callable
@@ -37,19 +33,13 @@ import java.util.concurrent.Callable
 class NewCommand : AbstractCommand(), Callable<Int> {
 
     override fun generate(projectFolder: File) {
-
-        val generatorConfiguration = GeneratorConfiguration(
-                projectName = projectOptions.projectName,
+        OpenApiGeneratorService(projectName = projectOptions.projectName,
                 packageName = packageName,
                 outputDir = projectFolder.path,
-                contracts = loadContractConfigurations(abis, bins),
+                abis = abis,
+                bins = bins,
                 addressLength = addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
-        )
-
-        GenerateOpenApi(generatorConfiguration).generateAll()
-        runGradleTask(projectFolder, "completeSwaggerUiGeneration", "Generating SwaggerUI...")
-
-        println("Done.")
+                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
+                isCodeOnly = false).generate()
     }
 }

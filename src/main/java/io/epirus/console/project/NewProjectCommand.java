@@ -126,7 +126,8 @@ public class NewProjectCommand implements Runnable {
                                 addressLength,
                                 contextPath != null
                                         ? StringUtils.removeEnd(contextPath, "/")
-                                        : projectName)
+                                        : projectName,
+                                true)
                         .generate();
             } else if (projectType.isJava) {
                 new JavaProjectCreatorRunner(projectCreatorConfig).run();

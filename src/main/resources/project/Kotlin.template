@@ -54,7 +54,7 @@ class <project_name> {
     private fun getDeployWeb3j(): Web3j {
         val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))
         return if (nodeUrl == null || nodeUrl.isEmpty()) {
-            Epirus.buildWeb3j(deployNetwork)
+            Epirus.buildWeb3j(deployNetwork) // deployNetwork = rinkeby/ropsten/mainnet
         } else {
             log.info("Connecting to $nodeUrl")
             Web3j.build(HttpService(nodeUrl))

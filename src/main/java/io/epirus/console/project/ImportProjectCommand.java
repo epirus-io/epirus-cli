@@ -139,7 +139,8 @@ public class ImportProjectCommand implements Runnable {
                                 addressLength,
                                 contextPath != null
                                         ? StringUtils.removeEnd(contextPath, "/")
-                                        : projectName)
+                                        : projectName,
+                                true)
                         .generate();
             } else if (projectType.isJava) {
                 new JavaProjectImporterRunner(projectImporterConfig).run();

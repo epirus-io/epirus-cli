@@ -12,12 +12,9 @@
  */
 package io.epirus.console.token.subcommand.erc777
 
+import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
-import org.web3j.openapi.codegen.GenerateOpenApi
-import org.web3j.openapi.codegen.config.GeneratorConfiguration
-import org.web3j.openapi.codegen.utils.GeneratorUtils
-import io.epirus.console.openapi.utils.GradleUtils.runGradleTask
 import org.web3j.sokt.SolcArguments
 import org.web3j.sokt.SolidityFile
 import java.io.File
@@ -73,29 +70,22 @@ class ERC777GeneratorService(private val projectName: String, private val output
             Files.delete(Paths.get(contractPath))
             FileUtils.deleteDirectory(File(dependencyFilesPath))
 
-            val generatorConfiguration = GeneratorConfiguration(
-                    projectName = projectName,
-                    packageName = "io.epirus",
-                    outputDir = outputDir + File.separator + projectName,
-                    contracts = GeneratorUtils.loadContractConfigurations(
-                            listOf(
-                                    File(buildPath + File.separator + "ERC777Implementation.abi")),
-                            listOf(
-                                    File(buildPath + File.separator + "ERC777Implementation.bin"))),
-                    addressLength = 20,
-                    contextPath = projectName
-            )
-
             File(outputDir +
                     File.separator +
                     projectName).mkdirs()
 
-            GenerateOpenApi(generatorConfiguration).generateAll()
-            runGradleTask(File(outputDir + File.separator + projectName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+            OpenApiGeneratorService(projectName = projectName,
+                    packageName = "io.epirus",
+                    outputDir = outputDir + File.separator + projectName,
+                    abis = listOf(
+                            File(buildPath + File.separator + "ERC777Implementation.abi")),
+                    bins = listOf(
+                            File(buildPath + File.separator + "ERC777Implementation.bin")),
+                    addressLength = 20,
+                    contextPath = projectName,
+                    isCodeOnly = false).generate()
 
             FileUtils.deleteDirectory(File(buildPath))
-
-            println("Done.")
         } catch (e: IOException) {
             e.printStackTrace()
         }

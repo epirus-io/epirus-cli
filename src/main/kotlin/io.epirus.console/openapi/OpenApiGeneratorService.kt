@@ -12,10 +12,12 @@
  */
 package io.epirus.console.openapi
 
+import io.epirus.console.openapi.utils.GradleUtils
 import org.web3j.openapi.codegen.GenerateOpenApi
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils
 import java.io.File
+import java.nio.file.Paths
 
 class OpenApiGeneratorService(
     val projectName: String,
@@ -24,7 +26,8 @@ class OpenApiGeneratorService(
     val abis: List<File>,
     val bins: List<File>,
     val addressLength: Int,
-    val contextPath: String
+    val contextPath: String,
+    val isCodeOnly: Boolean
 ) {
 
     fun generate() {
@@ -40,6 +43,9 @@ class OpenApiGeneratorService(
             generateServer()
             generateWrappers()
         }
+
+        if (!isCodeOnly) GradleUtils.runGradleTask(Paths.get(outputDir).toFile(), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+
         println("Done.")
     }
 }
