@@ -40,6 +40,6 @@ class NewCommand : AbstractCommand(), Callable<Int> {
                 bins = bins,
                 addressLength = addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                isCodeOnly = false).generate()
+                generateSwagger = false).generate()
     }
 }

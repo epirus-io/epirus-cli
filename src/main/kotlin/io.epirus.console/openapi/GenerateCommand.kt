@@ -39,6 +39,6 @@ class GenerateCommand : Callable<Int>, AbstractCommand() {
                 bins = bins,
                 addressLength = addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                isCodeOnly = true).generate()
+                generateSwagger = true).generate()
     }
 }

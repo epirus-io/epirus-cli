@@ -15,6 +15,7 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
@@ -23,6 +24,7 @@ import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import io.epirus.console.token.erc777.ERC777GeneratorService;
 import org.apache.commons.lang.StringUtils;
 import picocli.CommandLine;
 
@@ -43,7 +45,9 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand implements Runnable {
 
-    @CommandLine.ArgGroup() ProjectType projectType;
+    @CommandLine.ArgGroup() ProjectType projectType = new ProjectType();
+
+    @CommandLine.Parameters(defaultValue = "NONE") TemplateType templateType = TemplateType.NONE;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
@@ -76,13 +80,13 @@ public class NewProjectCommand implements Runnable {
             names = {"-a", "--abi"},
             description = {"input ABI files and folders."},
             arity = "1..*")
-    public List<File> abis;
+    public List<File> abis = new ArrayList<>();
 
     @CommandLine.Option(
             names = {"-b", "--bin"},
             description = {"input BIN files and folders."},
             arity = "1..*")
-    public List<File> bins;
+    public List<File> bins = new ArrayList<>();
 
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
@@ -101,10 +105,6 @@ public class NewProjectCommand implements Runnable {
         if (projectName == null && packageName == null) {
             buildInteractively();
         }
-        if (projectType == null) {
-            projectType = new ProjectType();
-            projectType.isJava = true;
-        }
         if (inputIsValid(projectName, packageName)) {
             if (new File(projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
@@ -117,7 +117,11 @@ public class NewProjectCommand implements Runnable {
                     new ProjectCreatorConfig(projectName, packageName, outputDir);
 
             if (projectType.isOpenApi) {
-                new OpenApiGeneratorService(
+                switch (templateType) {
+                    case NONE:
+                    case HELLOWORLD:
+
+                        new OpenApiGeneratorService(
                                 projectName,
                                 packageName,
                                 outputDir,
@@ -127,8 +131,13 @@ public class NewProjectCommand implements Runnable {
                                 contextPath != null
                                         ? StringUtils.removeEnd(contextPath, "/")
                                         : projectName,
-                                true)
-                        .generate();
+                                false)
+                                .generate();
+                        break;
+                    case ERC777:
+                        new ERC777GeneratorService(projectName, packageName, outputDir).generate();
+                        break;
+                }
             } else if (projectType.isJava) {
                 new JavaProjectCreatorRunner(projectCreatorConfig).run();
             } else {

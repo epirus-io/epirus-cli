@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.token.subcommand.erc777
+package io.epirus.console.token.erc777
 
 import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.project.templates.TemplateReader
@@ -22,7 +22,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class ERC777GeneratorService(private val projectName: String, private val outputDir: String) {
+class ERC777GeneratorService(private val projectName: String, private val packageName: String, private val outputDir: String) {
     fun generate() {
         try {
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
@@ -75,15 +75,15 @@ class ERC777GeneratorService(private val projectName: String, private val output
                     projectName).mkdirs()
 
             OpenApiGeneratorService(projectName = projectName,
-                    packageName = "io.epirus",
-                    outputDir = outputDir + File.separator + projectName,
+                    packageName = packageName,
+                    outputDir = outputDir,
                     abis = listOf(
                             File(buildPath + File.separator + "ERC777Implementation.abi")),
                     bins = listOf(
                             File(buildPath + File.separator + "ERC777Implementation.bin")),
                     addressLength = 20,
                     contextPath = projectName,
-                    isCodeOnly = false).generate()
+                    generateSwagger = false).generate()
 
             FileUtils.deleteDirectory(File(buildPath))
         } catch (e: IOException) {
