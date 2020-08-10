@@ -38,6 +38,7 @@ class GenerateCommand : Callable<Int>, AbstractCommand() {
                 abis = abis,
                 bins = bins,
                 addressLength = addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName).generate()
+                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
+                generateSwagger = true).generate()
     }
 }

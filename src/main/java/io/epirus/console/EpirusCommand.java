@@ -29,7 +29,6 @@ import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.testing.ProjectTestCommand;
 import io.epirus.console.run.RunCommand;
 import io.epirus.console.security.ContractAuditCommand;
-import io.epirus.console.token.TokenCommand;
 import io.epirus.console.wallet.WalletCommand;
 import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
@@ -62,7 +61,6 @@ import static org.web3j.codegen.Console.exitSuccess;
             UnitTestCommand.class,
             RunCommand.class,
             OpenApiCommand.class,
-            TokenCommand.class,
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,

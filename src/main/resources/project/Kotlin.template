@@ -26,7 +26,6 @@ import kotlin.system.exitProcess
 
 class <project_name> {
 
-
     private val log: Logger = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService")
     private val NODE_URL = "NODE_URL"
     private val deployNetwork = Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase())
@@ -54,7 +53,7 @@ class <project_name> {
     private fun getDeployWeb3j(): Web3j {
         val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))
         return if (nodeUrl == null || nodeUrl.isEmpty()) {
-            Epirus.buildWeb3j(deployNetwork)
+            Epirus.buildWeb3j(deployNetwork) // deployNetwork = rinkeby/ropsten/mainnet
         } else {
             log.info("Connecting to $nodeUrl")
             Web3j.build(HttpService(nodeUrl))
@@ -75,7 +74,7 @@ class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld")
         val response: String = helloWorld?.greeting()!!.send()
         log.info("Contract returned: $response")
-        println(String.format("%-20s", "Contract address") + "https://rinkeby.epirus.io/contracts/" + helloWorld.contractAddress)
+        println(String.format("%-20s", "Contract address") + "https://" + deployNetwork + ".epirus.io/contracts/" + helloWorld.contractAddress)
         exitProcess(0)
 
     }

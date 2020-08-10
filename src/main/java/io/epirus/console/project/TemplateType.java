@@ -10,12 +10,10 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.token.subcommand.erc777
+package io.epirus.console.project;
 
-class ERC777Config(
-    val tokenName: String,
-    val symbol: String,
-    val defaultOperators: List<String>,
-    val outputDir: String,
-    val initialSupply: String
-)
+public enum TemplateType {
+    NONE,
+    HELLOWORLD,
+    ERC777
+}

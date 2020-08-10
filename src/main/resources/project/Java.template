@@ -33,7 +33,7 @@ public class <project_name> {
     public static void main(String[] args) throws Exception {
         try {
             ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
-            String walletPath = System.getenv("EPIRUS_WALLET");
+            String walletPath = System.getenv("EPIRUS_WALLET_PATH");
             String walletPassword = System.getenv().getOrDefault("EPIRUS_WALLET_PASSWORD", "");
             Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
             Web3j web3j = getDeployWeb3j();
@@ -62,7 +62,7 @@ public class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld");
         String response = helloWorld.greeting().send();
         log.info("Contract returned: " + response);
-        System.out.println(String.format("%-20s", "Contract address") + "https://rinkeby.epirus.io/contracts/" + helloWorld.getContractAddress());
+        System.out.println(String.format("%-20s", "Contract address") + "https://" + deployNetwork + ".epirus.io/contracts/" + helloWorld.getContractAddress());
         System.exit(0);
 
     }

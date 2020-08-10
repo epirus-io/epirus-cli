@@ -10,14 +10,11 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.token.subcommand.erc777
+package io.epirus.console.token.erc777
 
+import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
-import org.web3j.openapi.codegen.GenerateOpenApi
-import org.web3j.openapi.codegen.config.GeneratorConfiguration
-import org.web3j.openapi.codegen.utils.GeneratorUtils
-import io.epirus.console.openapi.utils.GradleUtils.runGradleTask
 import org.web3j.sokt.SolcArguments
 import org.web3j.sokt.SolidityFile
 import java.io.File
@@ -25,14 +22,13 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class ERC777GeneratorService(private val projectName: String, private val outputDir: String) {
+class ERC777GeneratorService(private val projectName: String, private val packageName: String, private val outputDir: String) {
     fun generate() {
         try {
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
             val contractPath = (outputDir +
                     File.separator +
-                    projectName +
-                    ".sol")
+                    "ERC777.sol")
             Files.write(
                     Paths.get(
                             contractPath),
@@ -73,29 +69,22 @@ class ERC777GeneratorService(private val projectName: String, private val output
             Files.delete(Paths.get(contractPath))
             FileUtils.deleteDirectory(File(dependencyFilesPath))
 
-            val generatorConfiguration = GeneratorConfiguration(
-                    projectName = projectName,
-                    packageName = "io.epirus",
-                    outputDir = outputDir + File.separator + projectName,
-                    contracts = GeneratorUtils.loadContractConfigurations(
-                            listOf(
-                                    File(buildPath + File.separator + "ERC777Implementation.abi")),
-                            listOf(
-                                    File(buildPath + File.separator + "ERC777Implementation.bin"))),
-                    addressLength = 20,
-                    contextPath = projectName
-            )
-
             File(outputDir +
                     File.separator +
                     projectName).mkdirs()
 
-            GenerateOpenApi(generatorConfiguration).generateAll()
-            runGradleTask(File(outputDir + File.separator + projectName), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+            OpenApiGeneratorService(projectName = projectName,
+                    packageName = packageName,
+                    outputDir = outputDir,
+                    abis = listOf(
+                            File(buildPath + File.separator + "ERC777Implementation.abi")),
+                    bins = listOf(
+                            File(buildPath + File.separator + "ERC777Implementation.bin")),
+                    addressLength = 20,
+                    contextPath = projectName,
+                    generateSwagger = false).generate()
 
             FileUtils.deleteDirectory(File(buildPath))
-
-            println("Done.")
         } catch (e: IOException) {
             e.printStackTrace()
         }
