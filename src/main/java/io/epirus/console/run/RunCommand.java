@@ -71,12 +71,6 @@ public class RunCommand implements Runnable {
             arity = "1")
     String deployNetwork;
 
-    @CommandLine.Option(names = {"--openApiEndpoint"})
-    String openApiEndpoint = "";
-
-    @CommandLine.Option(names = {"--openApiPort"})
-    int openApiPort = 9090;
-
     @VisibleForTesting
     public RunCommand(
             Network network,
@@ -97,11 +91,7 @@ public class RunCommand implements Runnable {
             AccountService accountService,
             Credentials credentials,
             Web3j web3j,
-            CredentialsOptions credentialsOptions,
-            String openApiEndpoint,
-            int openApiPort) {
-        this.openApiEndpoint = openApiEndpoint;
-        this.openApiPort = openApiPort;
+            CredentialsOptions credentialsOptions) {
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.network = network;
         this.credentials = credentials;
@@ -138,9 +128,7 @@ public class RunCommand implements Runnable {
                             new AccountService(),
                             credentials,
                             web3j,
-                            credentialsOptions,
-                            openApiEndpoint,
-                            openApiPort)
+                            credentialsOptions)
                     .deploy();
         } catch (Exception e) {
             printErrorAndExit(
@@ -292,9 +280,9 @@ public class RunCommand implements Runnable {
                     .environment()
                     .putIfAbsent("WEB3J_OPENAPI_WALLET_PATH", config.getDefaultWalletPath());
         }
-        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_ENDPOINT", openApiEndpoint);
+        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_NETWORK", network.getNetworkName());
         processBuilder
                 .environment()
-                .putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(openApiPort));
+                .putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(9090));
     }
 }

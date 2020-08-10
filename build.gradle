@@ -23,7 +23,7 @@ ext {
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
-    web3jOpenApiVersion = '0.0.2'
+    web3jOpenApiVersion = '0.0.4'
     web3jSoktVersion = "0.2.0"
     gradleVersion = "6.2"
     kotlinLoggin = "1.7.9"

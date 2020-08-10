@@ -68,4 +68,5 @@ sourceSets {
 import org.web3j.solidity.gradle.plugin.OutputComponent
 solidity {
     outputComponents = [OutputComponent.BIN, OutputComponent.ABI, OutputComponent.METADATA]
+    version = '0.6.2'
 }

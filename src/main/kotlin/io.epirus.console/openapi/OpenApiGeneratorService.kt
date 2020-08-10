@@ -90,6 +90,7 @@ class OpenApiGeneratorService(
             generateCore()
             generateServer()
             generateWrappers()
+            generateGradleResources()
         }
     }
 }

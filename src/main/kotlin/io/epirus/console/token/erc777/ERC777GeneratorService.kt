@@ -28,8 +28,7 @@ class ERC777GeneratorService(private val projectName: String, private val packag
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
             val contractPath = (outputDir +
                     File.separator +
-                    projectName +
-                    ".sol")
+                    "ERC777.sol")
             Files.write(
                     Paths.get(
                             contractPath),

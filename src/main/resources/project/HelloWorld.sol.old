@@ -23,6 +23,7 @@ contract HelloWorld is Mortal {
     }
 
     function newGreeting(string _greet) public {
+        emit Modified(greet, _greet, greet, _greet);
         greet = _greet;
     }
 
@@ -30,4 +31,10 @@ contract HelloWorld is Mortal {
     function greeting() public constant returns (string)  {
         return greet;
     }
+
+    /* we include indexed events to demonstrate the difference that can be
+    captured versus non-indexed */
+    event Modified(
+        string indexed oldGreetingIdx, string indexed newGreetingIdx,
+        string oldGreeting, string newGreeting);
 }

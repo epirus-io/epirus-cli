@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ListImagesCmd;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.DockerClientBuilder;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.DockerOperations;
@@ -52,11 +53,12 @@ public class DockerRunCommand implements DockerOperations, Runnable {
     @CommandLine.Option(names = {"-t", "--tag"})
     String tag = "web3app";
 
-    @CommandLine.Option(names = {"--openApiEndpoint"})
-    String openApiEndpoint = "";
-
-    @CommandLine.Option(names = {"--openApiPort"})
-    int openApiPort = 9090;
+    @CommandLine.Parameters(
+            index = "0",
+            paramLabel = "network",
+            description = "Ethereum network [rinkeby/kovan]",
+            arity = "1")
+    String deployNetwork;
 
     @CommandLine.Option(names = {"-l", "--local"})
     boolean localMode;
@@ -78,14 +80,13 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         DockerClient dockerClient = DockerClientBuilder.getInstance().build();
         ListImagesCmd listImagesCmd = dockerClient.listImagesCmd().withShowAll(true);
 
-        if (listImagesCmd.exec().stream()
-                .noneMatch(i -> Arrays.stream(i.getRepoTags()).noneMatch(j -> j.startsWith(tag)))) {
+        if (listImagesCmd.exec().stream().flatMap(i -> Arrays.stream(i.getRepoTags())).noneMatch(j -> j.startsWith(tag))) {
             if (new InteractiveOptions()
                     .userAnsweredYes(
                             "It seems that no Docker container has yet been built. Would you like to build a Dockerized version of your app now?")) {
                 try {
                     executeDocker(
-                            new String[] {"docker", "build", "-t", "web3app", "."},
+                            new String[] {"docker", "build", "-t", tag, "."},
                             Paths.get(System.getProperty("user.dir")).toAbsolutePath());
                 } catch (Exception e) {
                     Console.exitError(e);
@@ -133,11 +134,11 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                 "--env",
                 String.format(WEB3J_OPENAPI_PREFIX + "HOST=%s", "0.0.0.0"),
                 "--env",
-                String.format(WEB3J_OPENAPI_PREFIX + "ENDPOINT=%s", openApiEndpoint),
+                String.format(WEB3J_OPENAPI_PREFIX + "NETWORK=%s", deployNetwork),
                 "--env",
-                String.format(WEB3J_OPENAPI_PREFIX + "PORT=%d", openApiPort),
+                String.format(WEB3J_OPENAPI_PREFIX + "PORT=%d", 9090),
                 "-p",
-                openApiPort + ":" + openApiPort);
+                9090 + ":" + 9090);
     }
 
     private String[] setCredentials(final String[] args) {
@@ -147,14 +148,18 @@ public class DockerRunCommand implements DockerOperations, Runnable {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(WEB3J_OPENAPI_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()),
+                    String.format(
+                            WEB3J_OPENAPI_PREFIX + "PRIVATE_KEY=%s",
+                            credentialsOptions.getRawKey()),
                     "--env",
-                    String.format(EPIRUS_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
+                    String.format(
+                            EPIRUS_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
         } else if (!credentialsOptions.getJson().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(WEB3J_OPENAPI_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()),
+                    String.format(
+                            WEB3J_OPENAPI_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()),
                     "--env",
                     String.format(EPIRUS_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
         }
@@ -186,7 +191,8 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                             credentialsOptions.getWalletPassword()),
                     "--env",
                     String.format(
-                            EPIRUS_PREFIX + "WALLET_PASSWORD=%s", credentialsOptions.getWalletPassword()));
+                            EPIRUS_PREFIX + "WALLET_PASSWORD=%s",
+                            credentialsOptions.getWalletPassword()));
         }
         return strings.toArray(new String[] {});
     }
