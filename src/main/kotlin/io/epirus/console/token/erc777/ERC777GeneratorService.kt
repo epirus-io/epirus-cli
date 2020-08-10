@@ -82,7 +82,7 @@ class ERC777GeneratorService(private val projectName: String, private val packag
                             File(buildPath + File.separator + "ERC777Implementation.bin")),
                     addressLength = 20,
                     contextPath = projectName,
-                    generateSwagger = false).generate()
+                    generateSwagger = true).generate()
 
             FileUtils.deleteDirectory(File(buildPath))
         } catch (e: IOException) {

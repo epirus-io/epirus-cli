@@ -136,7 +136,7 @@ public class NewProjectCommand implements Runnable {
                                         contextPath != null
                                                 ? StringUtils.removeEnd(contextPath, "/")
                                                 : projectName,
-                                        false)
+                                        true)
                                 .generate();
                         break;
                     case ERC777:
