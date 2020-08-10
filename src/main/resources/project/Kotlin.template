@@ -74,7 +74,7 @@ class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld")
         val response: String = helloWorld?.greeting()!!.send()
         log.info("Contract returned: $response")
-        println(String.format("%-20s", "Contract address") + "https://" + deployNetwork + ".epirus.io/contracts/" + helloWorld.contractAddress)
+        println(String.format("%-20s", "Contract address") + "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + helloWorld.contractAddress)
         exitProcess(0)
 
     }

@@ -170,7 +170,7 @@ public class RunCommand implements Runnable {
         fundWallet();
         // uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());
-        coloredPrinter.println("Deploying your Web3App");
+        coloredPrinter.println("Running your Web3App");
         System.out.print(System.lineSeparator());
         runGradle(workingDirectory);
     }
