@@ -42,7 +42,7 @@ class OpenApiGeneratorService(
             generateInternal(abis, bins)
         }
 
-        if (generateSwagger) GradleUtils.runGradleTask(Paths.get(outputDir).toFile(), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
+        if (generateSwagger) GradleUtils.runGradleTask(Paths.get(outputDir, projectName).toFile(), "completeSwaggerUiGeneration", "Generating SwaggerUI...")
 
         println("Done.")
     }
