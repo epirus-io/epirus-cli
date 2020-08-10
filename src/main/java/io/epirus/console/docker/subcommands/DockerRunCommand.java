@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ListImagesCmd;
-import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.DockerClientBuilder;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.DockerOperations;
@@ -80,7 +79,9 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         DockerClient dockerClient = DockerClientBuilder.getInstance().build();
         ListImagesCmd listImagesCmd = dockerClient.listImagesCmd().withShowAll(true);
 
-        if (listImagesCmd.exec().stream().flatMap(i -> Arrays.stream(i.getRepoTags())).noneMatch(j -> j.startsWith(tag))) {
+        if (listImagesCmd.exec().stream()
+                .flatMap(i -> Arrays.stream(i.getRepoTags()))
+                .noneMatch(j -> j.startsWith(tag))) {
             if (new InteractiveOptions()
                     .userAnsweredYes(
                             "It seems that no Docker container has yet been built. Would you like to build a Dockerized version of your app now?")) {

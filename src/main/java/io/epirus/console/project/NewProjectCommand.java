@@ -24,16 +24,13 @@ import java.util.List;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.openapi.OpenApiGeneratorService;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
-import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
-import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import io.epirus.console.project.templates.TemplateReader;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.token.erc777.ERC777GeneratorService;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import picocli.CommandLine;
 
 import static org.web3j.codegen.Console.exitError;
@@ -153,13 +150,18 @@ public class NewProjectCommand implements Runnable {
                         new JavaProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
-                        System.out.println("Generating ERC777 Java project is currently unsupported");
-//                        final String templatePath = prepareERC777Template();
-//                        final ProjectImporterConfig projectImporterConfig =
-//                                new ProjectImporterConfig(
-//                                        projectName, packageName, outputDir, templatePath, true);
-//                        new JavaProjectImporterRunner(projectImporterConfig).run();
-//                        deleteFile(templatePath);
+                        System.out.println(
+                                "Generating ERC777 Java project is currently unsupported");
+                        //                        final String templatePath =
+                        // prepareERC777Template();
+                        //                        final ProjectImporterConfig projectImporterConfig
+                        // =
+                        //                                new ProjectImporterConfig(
+                        //                                        projectName, packageName,
+                        // outputDir, templatePath, true);
+                        //                        new
+                        // JavaProjectImporterRunner(projectImporterConfig).run();
+                        //                        deleteFile(templatePath);
                         break;
                 }
             } else {
@@ -169,13 +171,18 @@ public class NewProjectCommand implements Runnable {
                         new KotlinProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
-                        System.out.println("Generating ERC777 Kotlin project is currently unsupported");
-//                        final String templatePath = prepareERC777Template();
-//                        final ProjectImporterConfig projectImporterConfig =
-//                                new ProjectImporterConfig(
-//                                        projectName, packageName, outputDir, templatePath, true);
-//                        new KotlinProjectImporterRunner(projectImporterConfig).run();
-//                        deleteFile(templatePath);
+                        System.out.println(
+                                "Generating ERC777 Kotlin project is currently unsupported");
+                        //                        final String templatePath =
+                        // prepareERC777Template();
+                        //                        final ProjectImporterConfig projectImporterConfig
+                        // =
+                        //                                new ProjectImporterConfig(
+                        //                                        projectName, packageName,
+                        // outputDir, templatePath, true);
+                        //                        new
+                        // KotlinProjectImporterRunner(projectImporterConfig).run();
+                        //                        deleteFile(templatePath);
                         break;
                 }
             }
@@ -184,35 +191,32 @@ public class NewProjectCommand implements Runnable {
 
     @NotNull
     private String prepareERC777Template() {
-        final String buildPath = outputDir +
-                File.separator +
-                "build";
+        final String buildPath = outputDir + File.separator + "build";
         final File buildDir = new File(buildPath);
         buildDir.mkdirs();
 
-        final String contractPath = (buildPath +
-                File.separator +
-                projectName +
-                ".sol");
+        final String contractPath = (buildPath + File.separator + projectName + ".sol");
         copyDependency("tokens/ERC777.template", contractPath);
 
-        final String dependencyFilesPath = buildPath +
-                File.separator +
-                "erc777";
+        final String dependencyFilesPath = buildPath + File.separator + "erc777";
         final File dependencyDir = new File(dependencyFilesPath);
         dependencyDir.mkdirs();
 
         final String erc777ResourcePath = "tokens" + File.separator + "erc777" + File.separator;
-        final String erc777OutputPath = buildPath +
-                File.separator + "erc777" + File.separator;
+        final String erc777OutputPath = buildPath + File.separator + "erc777" + File.separator;
         copyDependency(erc777ResourcePath + "Address.sol", erc777OutputPath + "Address.sol");
         copyDependency(erc777ResourcePath + "Context.sol", erc777OutputPath + "Context.sol");
         copyDependency(erc777ResourcePath + "ERC777.sol", erc777OutputPath + "ERC777.sol");
         copyDependency(erc777ResourcePath + "IERC20.sol", erc777OutputPath + "IERC20.sol");
         copyDependency(erc777ResourcePath + "IERC777.sol", erc777OutputPath + "IERC777.sol");
-        copyDependency(erc777ResourcePath + "IERC777Recipient.sol", erc777OutputPath + "IERC777Recipient.sol");
-        copyDependency(erc777ResourcePath + "IERC777Sender.sol", erc777OutputPath + "IERC777Sender.sol");
-        copyDependency(erc777ResourcePath + "IERC1820Registry.sol", erc777OutputPath + "IERC1820Registry.sol");
+        copyDependency(
+                erc777ResourcePath + "IERC777Recipient.sol",
+                erc777OutputPath + "IERC777Recipient.sol");
+        copyDependency(
+                erc777ResourcePath + "IERC777Sender.sol", erc777OutputPath + "IERC777Sender.sol");
+        copyDependency(
+                erc777ResourcePath + "IERC1820Registry.sol",
+                erc777OutputPath + "IERC1820Registry.sol");
         copyDependency(erc777ResourcePath + "SafeMath.sol", erc777OutputPath + "SafeMath.sol");
         return buildPath;
     }
@@ -221,10 +225,7 @@ public class NewProjectCommand implements Runnable {
         try {
             final String erc777Dependencies = TemplateReader.readFile(inputFolder);
             Files.write(
-                    Paths.get(
-                            outputDir +
-                                    File.separator +
-                                    outputFolder),
+                    Paths.get(outputDir + File.separator + outputFolder),
                     erc777Dependencies.getBytes());
         } catch (IOException e) {
             e.printStackTrace();

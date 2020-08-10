@@ -281,8 +281,6 @@ public class RunCommand implements Runnable {
                     .putIfAbsent("WEB3J_OPENAPI_WALLET_PATH", config.getDefaultWalletPath());
         }
         processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_NETWORK", network.getNetworkName());
-        processBuilder
-                .environment()
-                .putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(9090));
+        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(9090));
     }
 }
