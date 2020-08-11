@@ -73,11 +73,11 @@ public abstract class ProjectRunner implements Runnable {
         }
         instructionPrinter.println(
                 "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
-        instructionPrinter.print(String.format("%-40s", gradleCommand + " run"));
-        commandPrinter.println("Runs your application");
         instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
         commandPrinter.println("Test your application");
         instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"));
         commandPrinter.println("Runs your application");
+        instructionPrinter.print(String.format("%-40s", "epirus docker run rinkeby|ropsten"));
+        commandPrinter.println("Runs your application in a docker container");
     }
 }
