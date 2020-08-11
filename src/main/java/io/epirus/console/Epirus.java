@@ -14,6 +14,7 @@ package io.epirus.console;
 
 public class Epirus {
     public static void main(String[] args) {
+        System.setProperty("picocli.version.name.0", "-v");
         final int result = new EpirusCommand(System.getenv(), args).parse();
         if (result != 0) {
             System.exit(result);
