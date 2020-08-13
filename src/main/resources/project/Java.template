@@ -27,8 +27,8 @@ import java.nio.file.Paths;
 public class <project_name> {
 
     private static final Logger log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService");
-    private static final String NODE_URL = "NODE_URL";
-    private static final Network deployNetwork = Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase());
+    private static final String NODE_URL = "EPIRUS_NODE_URL";
+    private static final Network deployNetwork = Network.valueOf(System.getenv().getOrDefault("EPIRUS_DEPLOY_NETWORK", "rinkeby").toUpperCase());
 
     public static void main(String[] args) throws Exception {
         try {
@@ -64,6 +64,5 @@ public class <project_name> {
         log.info("Contract returned: " + response);
         System.out.println(String.format("%-20s", "Contract address") + "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + helloWorld.getContractAddress());
         System.exit(0);
-
     }
 }

@@ -27,9 +27,8 @@ import kotlin.system.exitProcess
 class <project_name> {
 
     private val log: Logger = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService")
-    private val NODE_URL = "NODE_URL"
-    private val deployNetwork = Network.valueOf(System.getenv().getOrDefault("DEPLOY_NETWORK", "rinkeby").toUpperCase())
-
+    private val NODE_URL = "EPIRUS_NODE_URL"
+    private val deployNetwork = Network.valueOf(System.getenv().getOrDefault("EPIRUS_DEPLOY_NETWORK", "rinkeby").toUpperCase())
 
     companion object {
         @JvmStatic
@@ -48,7 +47,6 @@ class <project_name> {
         val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, EpirusGasProvider(deployNetwork, GasPrice.High))
         callGreetMethod(helloWorld)
     }
-
 
     private fun getDeployWeb3j(): Web3j {
         val nodeUrl = System.getenv().getOrDefault(NODE_URL, System.getProperty(NODE_URL))
@@ -76,6 +74,5 @@ class <project_name> {
         log.info("Contract returned: $response")
         println(String.format("%-20s", "Contract address") + "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + helloWorld.contractAddress)
         exitProcess(0)
-
     }
 }
