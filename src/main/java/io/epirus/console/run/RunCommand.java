@@ -152,7 +152,8 @@ public class RunCommand implements Runnable {
             }
             return WalletUtils.loadJsonCredentials("", credentialsOptions.getJson());
         } else {
-            return WalletUtils.loadCredentials(config.getDefaultWalletPassword(), config.getDefaultWalletPath());
+            return WalletUtils.loadCredentials(
+                    config.getDefaultWalletPassword(), config.getDefaultWalletPath());
         }
     }
 
@@ -272,8 +273,7 @@ public class RunCommand implements Runnable {
             processBuilder
                     .environment()
                     .putIfAbsent(
-                            "WEB3J_WALLET_PATH",
-                            credentialsOptions.getWalletPath().toString());
+                            "WEB3J_WALLET_PATH", credentialsOptions.getWalletPath().toString());
         } else if (credentialsOptions.getRawKey() != null) {
             processBuilder
                     .environment()
