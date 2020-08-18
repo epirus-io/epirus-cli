@@ -34,6 +34,7 @@ import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
 import io.epirus.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
 import io.epirus.console.wrapper.TruffleFunctionWrapperGeneratorCommand;
+import org.apache.commons.lang.RandomStringUtils;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
@@ -136,9 +137,11 @@ public class EpirusCommand implements Runnable {
 
     private void maybeCreateDefaultWallet() {
         if (config.getDefaultWalletPath() == null || config.getDefaultWalletPath().isEmpty()) {
+            final String walletPassword = RandomStringUtils.randomAlphanumeric(8);
             final String walletPath =
-                    new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, "");
+                    new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, walletPassword);
             config.setDefaultWalletPath(walletPath);
+            config.setDefaultWalletPassword(walletPassword);
         }
     }
 

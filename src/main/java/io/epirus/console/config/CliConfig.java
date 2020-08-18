@@ -25,6 +25,7 @@ public class CliConfig {
     private String updatePrompt;
     private String loginToken;
     private String defaultWalletPath;
+    private String defaultWalletPassword;
     private boolean telemetryDisabled;
 
     @Expose(serialize = false, deserialize = false)
@@ -36,12 +37,14 @@ public class CliConfig {
             String updatePrompt,
             String loginToken,
             String defaultWalletPath,
+            String defaultWalletPassword,
             boolean telemetryDisabled) {
         this.clientId = clientId;
         this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
         this.loginToken = loginToken;
         this.defaultWalletPath = defaultWalletPath;
+        this.defaultWalletPassword = defaultWalletPassword;
         this.telemetryDisabled = telemetryDisabled;
     }
 
@@ -89,6 +92,11 @@ public class CliConfig {
         save();
     }
 
+    public void setDefaultWalletPassword(final String defaultWalletPassword) {
+        this.defaultWalletPassword = defaultWalletPassword;
+        save();
+    }
+
     public void save() {
         if (!isPersistent) return;
 
@@ -104,5 +112,9 @@ public class CliConfig {
 
     public void setPersistent(boolean persistent) {
         isPersistent = persistent;
+    }
+
+    public String getDefaultWalletPassword() {
+        return defaultWalletPassword;
     }
 }
