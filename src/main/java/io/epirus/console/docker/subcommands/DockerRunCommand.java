@@ -144,25 +144,27 @@ public class DockerRunCommand implements DockerOperations, Runnable {
 
     private String[] setCredentials(final String[] args) {
         if (credentialsOptions.getWalletPath() != null) {
-            return getWalletEnvironment(args, credentialsOptions.getWalletPath(), credentialsOptions.getWalletPassword());
+            return getWalletEnvironment(
+                    args,
+                    credentialsOptions.getWalletPath(),
+                    credentialsOptions.getWalletPassword());
         } else if (!credentialsOptions.getRawKey().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(
-                            WEB3J_PREFIX + "PRIVATE_KEY=%s",
-                            credentialsOptions.getRawKey()));
+                    String.format(WEB3J_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
         } else if (!credentialsOptions.getJson().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(
-                            WEB3J_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
+                    String.format(WEB3J_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
         }
-        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()), config.getDefaultWalletPassword());
+        return getWalletEnvironment(
+                args, Paths.get(config.getDefaultWalletPath()), config.getDefaultWalletPassword());
     }
 
-    private String[] getWalletEnvironment(final String[] args, final Path walletPath, final String walletPassword) {
+    private String[] getWalletEnvironment(
+            final String[] args, final Path walletPath, final String walletPassword) {
         final List<String> strings = Arrays.asList(args);
         final String[] walletArgs =
                 ArrayUtils.addAll(

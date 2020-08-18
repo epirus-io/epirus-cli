@@ -67,7 +67,7 @@ public class ConfigManager {
         if (!epirusHome.exists() && !epirusHome.mkdirs()) {
             throw new IOException("Failed to create Epirus home directory");
         }
-        return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, null,false);
+        return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, null, false);
     }
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {
