@@ -42,9 +42,9 @@ public class AccountUtils {
     }
 
     public static String accountDefaultWalletInit(
-            final String defaultWalletPath, final String walletPassword) {
+            final String defaultWalletPath, final String walletPasswordPath) {
         try {
-            ProjectWallet projectWallet = new ProjectWallet(walletPassword, defaultWalletPath);
+            ProjectWallet projectWallet = new ProjectWallet(walletPasswordPath, defaultWalletPath);
             final File file =
                     new File(
                             projectWallet.getWalletPath()

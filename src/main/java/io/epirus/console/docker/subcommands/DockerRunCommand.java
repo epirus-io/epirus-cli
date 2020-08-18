@@ -46,7 +46,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
 
-    private static final String WEB3J_OPENAPI_PREFIX = "WEB3J_OPENAPI_";
+    private static final String WEB3J_PREFIX = "WEB3J_";
     private static final String EPIRUS_PREFIX = "EPIRUS_";
 
     @CommandLine.Option(names = {"-t", "--tag"})
@@ -133,66 +133,53 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         return ArrayUtils.addAll(
                 args,
                 "--env",
-                String.format(WEB3J_OPENAPI_PREFIX + "HOST=%s", "0.0.0.0"),
+                String.format(WEB3J_PREFIX + "HOST=%s", "0.0.0.0"),
                 "--env",
-                String.format(WEB3J_OPENAPI_PREFIX + "NETWORK=%s", deployNetwork),
+                String.format(WEB3J_PREFIX + "NETWORK=%s", deployNetwork),
                 "--env",
-                String.format(WEB3J_OPENAPI_PREFIX + "PORT=%d", 9090),
+                String.format(WEB3J_PREFIX + "PORT=%d", 9090),
                 "-p",
                 9090 + ":" + 9090);
     }
 
     private String[] setCredentials(final String[] args) {
         if (credentialsOptions.getWalletPath() != null) {
-            return getWalletEnvironment(args, credentialsOptions.getWalletPath());
+            return getWalletEnvironment(args, credentialsOptions.getWalletPath(), credentialsOptions.getWalletPassword());
         } else if (!credentialsOptions.getRawKey().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
                     String.format(
-                            WEB3J_OPENAPI_PREFIX + "PRIVATE_KEY=%s",
-                            credentialsOptions.getRawKey()),
-                    "--env",
-                    String.format(
-                            EPIRUS_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
+                            WEB3J_PREFIX + "PRIVATE_KEY=%s",
+                            credentialsOptions.getRawKey()));
         } else if (!credentialsOptions.getJson().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
                     String.format(
-                            WEB3J_OPENAPI_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()),
-                    "--env",
-                    String.format(EPIRUS_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
+                            WEB3J_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
         }
-        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()));
+        return getWalletEnvironment(args, Paths.get(config.getDefaultWalletPath()), config.getDefaultWalletPassword());
     }
 
-    private String[] getWalletEnvironment(final String[] args, final Path walletPath) {
+    private String[] getWalletEnvironment(final String[] args, final Path walletPath, final String walletPassword) {
         final List<String> strings = Arrays.asList(args);
         final String[] walletArgs =
                 ArrayUtils.addAll(
                         args,
                         "--env",
                         String.format(
-                                WEB3J_OPENAPI_PREFIX + "WALLET_PATH=%s",
-                                "/root/key/" + walletPath.getFileName().toString()),
-                        "--env",
-                        String.format(
-                                EPIRUS_PREFIX + "WALLET_PATH=%s",
+                                WEB3J_PREFIX + "WALLET_PATH=%s",
                                 "/root/key/" + walletPath.getFileName().toString()),
                         "-v",
                         walletPath.getParent().toAbsolutePath().toString() + ":/root/key");
 
-        if (credentialsOptions.getWalletPassword() != null) {
+        if (walletPassword != null) {
             return ArrayUtils.addAll(
                     walletArgs,
                     "--env",
                     String.format(
-                            WEB3J_OPENAPI_PREFIX + "WALLET_PASSWORD=%s",
-                            credentialsOptions.getWalletPassword()),
-                    "--env",
-                    String.format(
-                            EPIRUS_PREFIX + "WALLET_PASSWORD=%s",
+                            WEB3J_PREFIX + "WALLET_PASSWORD=%s",
                             credentialsOptions.getWalletPassword()));
         }
         return strings.toArray(new String[] {});

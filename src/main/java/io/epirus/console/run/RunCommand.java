@@ -152,7 +152,7 @@ public class RunCommand implements Runnable {
             }
             return WalletUtils.loadJsonCredentials("", credentialsOptions.getJson());
         } else {
-            return WalletUtils.loadCredentials("", config.getDefaultWalletPath());
+            return WalletUtils.loadCredentials(config.getDefaultWalletPassword(), config.getDefaultWalletPath());
         }
     }
 
@@ -234,10 +234,17 @@ public class RunCommand implements Runnable {
         processBuilder
                 .environment()
                 .putIfAbsent(
-                        "EPIRUS_WALLET_PATH",
+                        "WEB3J_WALLET_PATH",
                         credentialsOptions.getWalletPath() == null
                                 ? config.getDefaultWalletPath()
                                 : credentialsOptions.getWalletPath().toString());
+        processBuilder
+                .environment()
+                .putIfAbsent(
+                        "WEB3J_WALLET_PASSWORD",
+                        credentialsOptions.getWalletPath() == null
+                                ? config.getDefaultWalletPassword()
+                                : credentialsOptions.getWalletPassword());
         setOpenAPIEnvironment(processBuilder);
 
         int exitCode =
@@ -265,22 +272,25 @@ public class RunCommand implements Runnable {
             processBuilder
                     .environment()
                     .putIfAbsent(
-                            "WEB3J_OPENAPI_WALLET_PATH",
+                            "WEB3J_WALLET_PATH",
                             credentialsOptions.getWalletPath().toString());
         } else if (credentialsOptions.getRawKey() != null) {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_OPENAPI_PRIVATE_KEY", credentialsOptions.getRawKey());
+                    .putIfAbsent("WEB3J_PRIVATE_KEY", credentialsOptions.getRawKey());
         } else if (credentialsOptions.getJson() != null) {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_OPENAPI_WALLET_JSON", credentialsOptions.getJson());
+                    .putIfAbsent("WEB3J_WALLET_JSON", credentialsOptions.getJson());
         } else {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_OPENAPI_WALLET_PATH", config.getDefaultWalletPath());
+                    .putIfAbsent("WEB3J_WALLET_PATH", config.getDefaultWalletPath());
+            processBuilder
+                    .environment()
+                    .putIfAbsent("WEB3J_WALLET_PASSWORD", config.getDefaultWalletPassword());
         }
-        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_NETWORK", network.getNetworkName());
-        processBuilder.environment().putIfAbsent("WEB3J_OPENAPI_PORT", Integer.toString(9090));
+        processBuilder.environment().putIfAbsent("WEB3J_NETWORK", network.getNetworkName());
+        processBuilder.environment().putIfAbsent("WEB3J_PORT", Integer.toString(9090));
     }
 }

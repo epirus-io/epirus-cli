@@ -28,7 +28,7 @@ public class DockerCommandTest extends ProjectTest {
     public void setupWallet() {
         final String walletPath =
                 AccountUtils.accountDefaultWalletInit(EpirusCommand.DEFAULT_WALLET_FOLDER, "");
-        ConfigManager.setDevelopment("", "", "", "<login_token>", walletPath, true);
+        ConfigManager.setDevelopment("", "", "", "<login_token>", walletPath, "", true);
     }
 
     @Disabled("must have a login token & docker installed")
