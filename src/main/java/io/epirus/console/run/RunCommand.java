@@ -158,7 +158,7 @@ public class RunCommand implements Runnable {
     }
 
     public void deploy() throws Exception {
-        coloredPrinter.println("Preparing to deploy your Web3App");
+        coloredPrinter.println("Preparing to run your Web3App");
         System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountService);
         if (accountService.checkIfAccountIsConfirmed(20)) {
@@ -232,21 +232,7 @@ public class RunCommand implements Runnable {
     private void executeProcess(File workingDir, String[] command) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.environment().put("DEPLOY_NETWORK", network.getNetworkName());
-        processBuilder
-                .environment()
-                .putIfAbsent(
-                        "WEB3J_WALLET_PATH",
-                        credentialsOptions.getWalletPath() == null
-                                ? config.getDefaultWalletPath()
-                                : credentialsOptions.getWalletPath().toString());
-        processBuilder
-                .environment()
-                .putIfAbsent(
-                        "WEB3J_WALLET_PASSWORD",
-                        credentialsOptions.getWalletPath() == null
-                                ? config.getDefaultWalletPassword()
-                                : credentialsOptions.getWalletPassword());
-        setOpenAPIEnvironment(processBuilder);
+        setEnvironment(processBuilder);
 
         int exitCode =
                 processBuilder
@@ -268,17 +254,23 @@ public class RunCommand implements Runnable {
         }
     }
 
-    private void setOpenAPIEnvironment(final ProcessBuilder processBuilder) {
+    private void setEnvironment(final ProcessBuilder processBuilder) {
         if (credentialsOptions.getWalletPath() != null) {
             processBuilder
                     .environment()
                     .putIfAbsent(
                             "WEB3J_WALLET_PATH", credentialsOptions.getWalletPath().toString());
-        } else if (credentialsOptions.getRawKey() != null) {
+            if (credentialsOptions.getWalletPassword() != null) {
+                processBuilder
+                        .environment()
+                        .putIfAbsent(
+                                "WEB3J_WALLET_PASSWORD", credentialsOptions.getWalletPassword());
+            }
+        } else if (!credentialsOptions.getRawKey().isEmpty()) {
             processBuilder
                     .environment()
                     .putIfAbsent("WEB3J_PRIVATE_KEY", credentialsOptions.getRawKey());
-        } else if (credentialsOptions.getJson() != null) {
+        } else if (!credentialsOptions.getJson().isEmpty()) {
             processBuilder
                     .environment()
                     .putIfAbsent("WEB3J_WALLET_JSON", credentialsOptions.getJson());
@@ -286,9 +278,11 @@ public class RunCommand implements Runnable {
             processBuilder
                     .environment()
                     .putIfAbsent("WEB3J_WALLET_PATH", config.getDefaultWalletPath());
-            processBuilder
-                    .environment()
-                    .putIfAbsent("WEB3J_WALLET_PASSWORD", config.getDefaultWalletPassword());
+            if (!config.getDefaultWalletPassword().isEmpty()) {
+                processBuilder
+                        .environment()
+                        .putIfAbsent("WEB3J_WALLET_PASSWORD", config.getDefaultWalletPassword());
+            }
         }
         processBuilder.environment().putIfAbsent("WEB3J_NETWORK", network.getNetworkName());
         processBuilder.environment().putIfAbsent("WEB3J_PORT", Integer.toString(9090));

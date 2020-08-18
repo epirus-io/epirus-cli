@@ -176,7 +176,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                         "-v",
                         walletPath.getParent().toAbsolutePath().toString() + ":/root/key");
 
-        if (walletPassword != null) {
+        if (!walletPassword.isEmpty()) {
             return ArrayUtils.addAll(
                     walletArgs,
                     "--env",

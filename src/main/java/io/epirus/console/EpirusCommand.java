@@ -143,6 +143,11 @@ public class EpirusCommand implements Runnable {
             config.setDefaultWalletPath(walletPath);
             config.setDefaultWalletPassword(walletPassword);
         }
+
+        if (config.getDefaultWalletPassword() == null) {
+            // default wallet password was introduced in v1.2.0
+            config.setDefaultWalletPassword("");
+        }
     }
 
     private void performTelemetryUpload() {
