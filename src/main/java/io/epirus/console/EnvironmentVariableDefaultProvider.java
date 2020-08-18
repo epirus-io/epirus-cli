@@ -23,7 +23,8 @@ import picocli.CommandLine.Model.ArgSpec;
 import picocli.CommandLine.Model.OptionSpec;
 
 public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider {
-    private static final String ENV_VAR_PREFIX = "EPIRUS_";
+    private static final String EPIRUS_VAR_PREFIX = "EPIRUS_";
+    private static final String WEB3J_VAR_PREFIX = "WEB3J_";
 
     private final Map<String, String> environment;
 
@@ -48,7 +49,7 @@ public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider
                 .filter(name -> name.startsWith("--")) // Only long options are allowed
                 .flatMap(
                         name ->
-                                Stream.of(ENV_VAR_PREFIX)
+                                Stream.of(EPIRUS_VAR_PREFIX, WEB3J_VAR_PREFIX)
                                         .map(prefix -> prefix + nameToEnvVarSuffix(name)));
     }
 
