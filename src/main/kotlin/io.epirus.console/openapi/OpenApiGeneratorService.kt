@@ -12,7 +12,6 @@
  */
 package io.epirus.console.openapi
 
-import io.epirus.console.openapi.utils.GradleUtils
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
 import org.web3j.openapi.codegen.GenerateOpenApi
