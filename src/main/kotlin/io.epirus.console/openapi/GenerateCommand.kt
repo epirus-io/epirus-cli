@@ -32,13 +32,21 @@ import java.util.concurrent.Callable
 class GenerateCommand : Callable<Int>, AbstractCommand() {
 
     override fun generate(projectFolder: File) {
-        OpenApiGeneratorService(projectName = projectOptions.projectName,
-                packageName = packageName,
-                outputDir = projectFolder.path,
-                abis = abis,
-                bins = bins,
-                addressLength = addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                generateSwagger = false).generate()
+
+        OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(
+            projectName = projectOptions.projectName,
+            packageName = packageName,
+            outputDir = projectFolder.path,
+            abis = abis,
+            bins = bins,
+            addressLength = addressLength,
+            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
+            withSwaggerUi = false,
+            withGradleResources = false,
+            withWrappers = true,
+            withServerBuildFile = true,
+            withCoreBuildFile = true
+        )
+        ).generate()
     }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.openapi.OpenApiGeneratorService;
+import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.templates.TemplateReader;
@@ -133,16 +134,21 @@ public class NewProjectCommand implements Runnable {
                     case NONE:
                     case HELLOWORLD:
                         new OpenApiGeneratorService(
-                                        projectName,
-                                        packageName,
-                                        outputDir,
-                                        abis,
-                                        bins,
-                                        addressLength,
-                                        contextPath != null
-                                                ? StringUtils.removeEnd(contextPath, "/")
-                                                : projectName,
-                                        true)
+                                        new OpenApiGeneratorServiceConfiguration(
+                                                projectName,
+                                                packageName,
+                                                outputDir,
+                                                abis,
+                                                bins,
+                                                addressLength,
+                                                contextPath != null
+                                                        ? StringUtils.removeEnd(contextPath, "/")
+                                                        : projectName,
+                                                true,
+                                                true,
+                                                true,
+                                                true,
+                                                true))
                                 .generate();
                         break;
                     case ERC777:

@@ -18,28 +18,33 @@ import java.io.File
 import java.util.concurrent.Callable
 
 @Command(
-        name = "new",
-        showDefaultValues = true,
-        description = ["Generates a whole OpenAPI project."],
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = EpirusVersionProvider::class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = ["Epirus CLI is licensed under the Apache License 2.0"]
+    name = "new",
+    showDefaultValues = true,
+    description = ["Generates a whole OpenAPI project."],
+    abbreviateSynopsis = true,
+    mixinStandardHelpOptions = true,
+    versionProvider = EpirusVersionProvider::class,
+    synopsisHeading = "%n",
+    descriptionHeading = "%nDescription:%n%n",
+    optionListHeading = "%nOptions:%n",
+    footerHeading = "%n",
+    footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
 class NewCommand : AbstractCommand(), Callable<Int> {
 
     override fun generate(projectFolder: File) {
-        OpenApiGeneratorService(projectName = projectOptions.projectName,
-                packageName = packageName,
-                outputDir = projectFolder.path,
-                abis = abis,
-                bins = bins,
-                addressLength = addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                generateSwagger = true).generate()
+        OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(projectName = projectOptions.projectName,
+            packageName = packageName,
+            outputDir = projectFolder.path,
+            abis = abis,
+            bins = bins,
+            addressLength = addressLength,
+            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
+            withSwaggerUi = true,
+            withGradleResources = true,
+            withWrappers = true,
+            withCoreBuildFile = true,
+            withServerBuildFile = true
+        )).generate()
     }
 }
