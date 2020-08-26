@@ -22,7 +22,6 @@ import java.util.concurrent.Callable
     showDefaultValues = true,
     description = ["Generates a whole OpenAPI project."],
     abbreviateSynopsis = true,
-    mixinStandardHelpOptions = true,
     versionProvider = EpirusVersionProvider::class,
     synopsisHeading = "%n",
     descriptionHeading = "%nDescription:%n%n",

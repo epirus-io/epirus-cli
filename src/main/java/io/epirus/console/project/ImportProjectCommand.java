@@ -19,6 +19,7 @@ import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.openapi.OpenApiGeneratorService;
+import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration;
 import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import io.epirus.console.project.utils.InputVerifier;

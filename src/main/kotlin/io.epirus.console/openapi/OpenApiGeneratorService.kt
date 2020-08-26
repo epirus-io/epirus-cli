@@ -28,12 +28,7 @@ class OpenApiGeneratorService(
 ) {
 
     fun generate() {
-        if (openApiGeneratorServiceConfiguration.abis.isEmpty()) {
-            generateWithHelloWorldTemplate()
-        } else {
-            generateInternal(openApiGeneratorServiceConfiguration.abis, openApiGeneratorServiceConfiguration.bins)
-        }
-
+        generateWithHelloWorldTemplate()
         println("Done.")
     }
 
