@@ -135,16 +135,21 @@ public class ImportProjectCommand implements Runnable {
 
             if (projectType.isOpenApi) {
                 new OpenApiGeneratorService(
-                                projectName,
-                                packageName,
-                                outputDir,
-                                abis,
-                                bins,
-                                addressLength,
-                                contextPath != null
-                                        ? StringUtils.removeEnd(contextPath, "/")
-                                        : projectName,
-                                true)
+                                new OpenApiGeneratorServiceConfiguration(
+                                        projectName,
+                                        packageName,
+                                        outputDir,
+                                        abis,
+                                        bins,
+                                        addressLength,
+                                        contextPath != null
+                                                ? StringUtils.removeEnd(contextPath, "/")
+                                                : projectName,
+                                        true,
+                                        true,
+                                        true,
+                                        true,
+                                        true))
                         .generate();
             } else if (projectType.isKotlin) {
                 new KotlinProjectImporterRunner(projectImporterConfig).run();
