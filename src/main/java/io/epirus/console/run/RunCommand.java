@@ -39,6 +39,8 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
+import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR_PREFIX;
+import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
 import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
@@ -259,32 +261,40 @@ public class RunCommand implements Runnable {
             processBuilder
                     .environment()
                     .putIfAbsent(
-                            "WEB3J_WALLET_PATH", credentialsOptions.getWalletPath().toString());
+                            WEB3J_VAR_PREFIX + "WALLET_PATH",
+                            credentialsOptions.getWalletPath().toString());
             if (credentialsOptions.getWalletPassword() != null) {
                 processBuilder
                         .environment()
                         .putIfAbsent(
-                                "WEB3J_WALLET_PASSWORD", credentialsOptions.getWalletPassword());
+                                WEB3J_VAR_PREFIX + "WALLET_PASSWORD",
+                                credentialsOptions.getWalletPassword());
             }
         } else if (!credentialsOptions.getRawKey().isEmpty()) {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_PRIVATE_KEY", credentialsOptions.getRawKey());
+                    .putIfAbsent(WEB3J_VAR_PREFIX + "PRIVATE_KEY", credentialsOptions.getRawKey());
         } else if (!credentialsOptions.getJson().isEmpty()) {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_WALLET_JSON", credentialsOptions.getJson());
+                    .putIfAbsent(WEB3J_VAR_PREFIX + "WALLET_JSON", credentialsOptions.getJson());
         } else {
             processBuilder
                     .environment()
-                    .putIfAbsent("WEB3J_WALLET_PATH", config.getDefaultWalletPath());
+                    .putIfAbsent(WEB3J_VAR_PREFIX + "WALLET_PATH", config.getDefaultWalletPath());
             if (!config.getDefaultWalletPassword().isEmpty()) {
                 processBuilder
                         .environment()
-                        .putIfAbsent("WEB3J_WALLET_PASSWORD", config.getDefaultWalletPassword());
+                        .putIfAbsent(
+                                WEB3J_VAR_PREFIX + "WALLET_PASSWORD",
+                                config.getDefaultWalletPassword());
             }
         }
-        processBuilder.environment().putIfAbsent("WEB3J_NETWORK", network.getNetworkName());
-        processBuilder.environment().putIfAbsent("WEB3J_PORT", Integer.toString(9090));
+        processBuilder
+                .environment()
+                .putIfAbsent(WEB3J_VAR_PREFIX + "NETWORK", network.getNetworkName());
+        processBuilder
+                .environment()
+                .putIfAbsent(WEB3J_OPENAPI_VAR_PREFIX + "PORT", Integer.toString(9090));
     }
 }
