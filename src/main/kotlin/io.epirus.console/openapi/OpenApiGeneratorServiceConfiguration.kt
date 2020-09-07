@@ -14,7 +14,7 @@ package io.epirus.console.openapi
 
 import java.io.File
 
-class OpenApiGeneratorServiceConfiguration constructor(
+class OpenApiGeneratorServiceConfiguration(
     val projectName: String,
     val packageName: String,
     val outputDir: String,
