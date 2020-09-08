@@ -29,6 +29,7 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 
+import static io.epirus.console.EnvironmentVariablesProperties.*;
 import static io.epirus.console.config.ConfigManager.config;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
@@ -45,9 +46,6 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
-
-    private static final String WEB3J_PREFIX = "WEB3J_";
-    private static final String EPIRUS_PREFIX = "EPIRUS_";
 
     @CommandLine.Option(names = {"-t", "--tag"})
     String tag = "web3app";
@@ -100,7 +98,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     "docker",
                     "run",
                     "--env",
-                    String.format(EPIRUS_PREFIX + "LOGIN_TOKEN=%s", config.getLoginToken())
+                    String.format(EPIRUS_VAR_PREFIX + "LOGIN_TOKEN=%s", config.getLoginToken())
                 };
 
         args = setCredentials(args);
@@ -133,11 +131,11 @@ public class DockerRunCommand implements DockerOperations, Runnable {
         return ArrayUtils.addAll(
                 args,
                 "--env",
-                String.format(WEB3J_PREFIX + "HOST=%s", "0.0.0.0"),
+                String.format(WEB3J_OPENAPI_VAR_PREFIX + "HOST=%s", "0.0.0.0"),
                 "--env",
-                String.format(WEB3J_PREFIX + "NETWORK=%s", deployNetwork),
+                String.format(WEB3J_VAR_PREFIX + "NETWORK=%s", deployNetwork),
                 "--env",
-                String.format(WEB3J_PREFIX + "PORT=%d", 9090),
+                String.format(WEB3J_OPENAPI_VAR_PREFIX + "PORT=%d", 9090),
                 "-p",
                 9090 + ":" + 9090);
     }
@@ -152,12 +150,14 @@ public class DockerRunCommand implements DockerOperations, Runnable {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(WEB3J_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
+                    String.format(
+                            WEB3J_VAR_PREFIX + "PRIVATE_KEY=%s", credentialsOptions.getRawKey()));
         } else if (!credentialsOptions.getJson().isEmpty()) {
             return ArrayUtils.addAll(
                     args,
                     "--env",
-                    String.format(WEB3J_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
+                    String.format(
+                            WEB3J_VAR_PREFIX + "WALLET_JSON=%s", credentialsOptions.getJson()));
         }
         return getWalletEnvironment(
                 args, Paths.get(config.getDefaultWalletPath()), config.getDefaultWalletPassword());
@@ -171,7 +171,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                         args,
                         "--env",
                         String.format(
-                                WEB3J_PREFIX + "WALLET_PATH=%s",
+                                WEB3J_VAR_PREFIX + "WALLET_PATH=%s",
                                 "/root/key/" + walletPath.getFileName().toString()),
                         "-v",
                         walletPath.getParent().toAbsolutePath().toString() + ":/root/key");
@@ -181,7 +181,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     walletArgs,
                     "--env",
                     String.format(
-                            WEB3J_PREFIX + "WALLET_PASSWORD=%s",
+                            WEB3J_VAR_PREFIX + "WALLET_PASSWORD=%s",
                             credentialsOptions.getWalletPassword()));
         }
         return strings.toArray(new String[] {});

@@ -22,10 +22,9 @@ import picocli.CommandLine.IDefaultValueProvider;
 import picocli.CommandLine.Model.ArgSpec;
 import picocli.CommandLine.Model.OptionSpec;
 
-public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider {
-    private static final String EPIRUS_VAR_PREFIX = "EPIRUS_";
-    private static final String WEB3J_VAR_PREFIX = "WEB3J_";
+import static io.epirus.console.EnvironmentVariablesProperties.*;
 
+public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider {
     private final Map<String, String> environment;
 
     public EnvironmentVariableDefaultProvider(final Map<String, String> environment) {
@@ -47,10 +46,20 @@ public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider
     private Stream<String> envVarNames(final OptionSpec spec) {
         return Arrays.stream(spec.names())
                 .filter(name -> name.startsWith("--")) // Only long options are allowed
-                .flatMap(
-                        name ->
-                                Stream.of(EPIRUS_VAR_PREFIX, WEB3J_VAR_PREFIX)
-                                        .map(prefix -> prefix + nameToEnvVarSuffix(name)));
+                .map(this::fullEnvVarName);
+    }
+
+    private String fullEnvVarName(final String name) {
+        String suffix = nameToEnvVarSuffix(name);
+        String prefix;
+        if (Arrays.asList(EPIRUS_SPECIFIC_VARIABLES).contains(suffix)) {
+            prefix = EPIRUS_VAR_PREFIX;
+        } else if (Arrays.asList(OPENAPI_SPECIFIC_VARIABLES).contains(suffix)) {
+            prefix = WEB3J_OPENAPI_VAR_PREFIX;
+        } else {
+            prefix = WEB3J_VAR_PREFIX;
+        }
+        return prefix + suffix;
     }
 
     private String nameToEnvVarSuffix(final String name) {
