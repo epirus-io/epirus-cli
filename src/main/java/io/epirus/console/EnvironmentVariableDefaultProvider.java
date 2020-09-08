@@ -52,10 +52,13 @@ public class EnvironmentVariableDefaultProvider implements IDefaultValueProvider
     private String fullEnvVarName(final String name) {
         String suffix = nameToEnvVarSuffix(name);
         String prefix;
-        if (Arrays.asList(EPIRUS_SPECIFIC_VARIABLES).contains(suffix)) prefix = EPIRUS_VAR_PREFIX;
-        else if (Arrays.asList(OPENAPI_SPECIFIC_VARIABLES).contains(suffix))
+        if (Arrays.asList(EPIRUS_SPECIFIC_VARIABLES).contains(suffix)) {
+            prefix = EPIRUS_VAR_PREFIX;
+        } else if (Arrays.asList(OPENAPI_SPECIFIC_VARIABLES).contains(suffix)) {
             prefix = WEB3J_OPENAPI_VAR_PREFIX;
-        else prefix = WEB3J_VAR_PREFIX;
+        } else {
+            prefix = WEB3J_VAR_PREFIX;
+        }
         return prefix + suffix;
     }
 
