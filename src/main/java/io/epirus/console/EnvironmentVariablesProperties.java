@@ -17,7 +17,9 @@ public class EnvironmentVariablesProperties {
     public static final String EPIRUS_VAR_PREFIX = "EPIRUS_";
     public static final String WEB3J_OPENAPI_VAR_PREFIX = "WEB3J_OPENAPI_";
     public static final String[] OPENAPI_SPECIFIC_VARIABLES =
-            new String[] {"NAME", "CONTEXT_PATH", "HOST", "PORT", "CONTRACT_ADDRESSES"};
+            new String[] {
+                "NAME", "CONTEXT_PATH", "HOST", "PORT", "CONTRACT_ADDRESSES", "CONFIG_FILE"
+            };
     public static final String[] EPIRUS_SPECIFIC_VARIABLES =
             new String[] {"LOGIN_TOKEN", "APP_URL"};
 }
