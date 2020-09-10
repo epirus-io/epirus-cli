@@ -16,6 +16,16 @@ public class ProjectCreatorConfig {
     private final String projectName;
     private final String packageName;
     private final String outputDir;
+    private final Boolean generateJar;
+
+    public ProjectCreatorConfig(
+            final String projectName, final String packageName, final String outputDir, final Boolean generateJar) {
+
+        this.projectName = projectName;
+        this.packageName = packageName;
+        this.outputDir = outputDir;
+        this.generateJar = generateJar;
+    }
 
     public ProjectCreatorConfig(
             final String projectName, final String packageName, final String outputDir) {
@@ -23,6 +33,7 @@ public class ProjectCreatorConfig {
         this.projectName = projectName;
         this.packageName = packageName;
         this.outputDir = outputDir;
+        this.generateJar = false;
     }
 
     public String getProjectName() {
@@ -35,5 +46,9 @@ public class ProjectCreatorConfig {
 
     public String getOutputDir() {
         return outputDir;
+    }
+
+    public Boolean getGenerateJar() {
+        return generateJar;
     }
 }

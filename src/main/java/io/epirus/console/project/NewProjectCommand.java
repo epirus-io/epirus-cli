@@ -78,6 +78,12 @@ public class NewProjectCommand implements Runnable {
     public int addressLength = 20;
 
     @CommandLine.Option(
+            names = {"--jar"},
+            description = {"generate the JAR (default: false)"},
+            defaultValue = "false")
+    public Boolean generateJar = false;
+
+    @CommandLine.Option(
             names = {"--context-path"},
             description = {"set the API context path (default: the project name)"})
     public String contextPath;
@@ -120,7 +126,7 @@ public class NewProjectCommand implements Runnable {
                 }
             }
             final ProjectCreatorConfig projectCreatorConfig =
-                    new ProjectCreatorConfig(projectName, packageName, outputDir);
+                    new ProjectCreatorConfig(projectName, packageName, outputDir, generateJar);
 
             if (projectType.isOpenApi) {
                 switch (templateType) {

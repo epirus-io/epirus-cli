@@ -23,6 +23,6 @@ public class KotlinProjectCreatorRunner extends KotlinProjectRunner {
     }
 
     protected void createProject() {
-        generateKotlin(true, Optional.empty(), true, true, "new");
+        generateKotlin(true, Optional.empty(), generateJar, true, "new");
     }
 }
