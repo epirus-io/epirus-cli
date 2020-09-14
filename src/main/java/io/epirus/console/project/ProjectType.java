@@ -17,17 +17,19 @@ import picocli.CommandLine;
 public class ProjectType {
     @CommandLine.Option(
             names = {"--java"},
-            description = "Whether java code should be generated.")
-    public boolean isJava;
+            description = "Whether java code should be generated.",
+            defaultValue = "true")
+    public boolean isJava = true;
 
     @CommandLine.Option(
             names = {"--kotlin"},
             description = "Whether kotlin code should be generated.",
-            defaultValue = "true")
-    public boolean isKotlin = true;
+            defaultValue = "false")
+    public boolean isKotlin = false;
 
     @CommandLine.Option(
             names = {"--openapi"},
-            description = "Whether openapi code should be generated.")
-    public boolean isOpenApi;
+            description = "Whether openapi code should be generated.",
+            defaultValue = "false")
+    public boolean isOpenApi = false;
 }

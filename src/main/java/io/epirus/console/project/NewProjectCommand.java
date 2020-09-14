@@ -149,11 +149,11 @@ public class NewProjectCommand implements Runnable {
                         new ERC777GeneratorService(projectName, packageName, outputDir).generate();
                         break;
                 }
-            } else if (projectType.isJava) {
+            } else if (projectType.isKotlin) {
                 switch (templateType) {
                     case NONE:
                     case HELLOWORLD:
-                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
+                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
                         System.out.println(
@@ -174,7 +174,7 @@ public class NewProjectCommand implements Runnable {
                 switch (templateType) {
                     case NONE:
                     case HELLOWORLD:
-                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
                         System.out.println(
