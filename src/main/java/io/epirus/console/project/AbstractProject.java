@@ -69,7 +69,7 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
             setExecutable(pathToDirectory, "gradlew.bat");
             executeBuild(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "gradlew.bat build -q"});
+                    new String[] {"cmd", "/c", ".\\gradlew.bat build -q"});
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         } else {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
+                    new String[] {"cmd", "/c", ".\\gradlew.bat shadowJar", "-q"});
         }
     }
 
