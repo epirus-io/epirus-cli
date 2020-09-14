@@ -142,10 +142,10 @@ public class ImportProjectCommand implements Runnable {
                                         : projectName,
                                 true)
                         .generate();
-            } else if (projectType.isJava) {
-                new JavaProjectImporterRunner(projectImporterConfig).run();
-            } else {
+            } else if (projectType.isKotlin) {
                 new KotlinProjectImporterRunner(projectImporterConfig).run();
+            } else {
+                new JavaProjectImporterRunner(projectImporterConfig).run();
             }
         }
     }
