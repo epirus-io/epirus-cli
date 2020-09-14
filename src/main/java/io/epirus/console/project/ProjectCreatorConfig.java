@@ -19,7 +19,10 @@ public class ProjectCreatorConfig {
     private final Boolean generateJar;
 
     public ProjectCreatorConfig(
-            final String projectName, final String packageName, final String outputDir, final Boolean generateJar) {
+            final String projectName,
+            final String packageName,
+            final String outputDir,
+            final Boolean generateJar) {
 
         this.projectName = projectName;
         this.packageName = packageName;

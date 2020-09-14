@@ -44,7 +44,7 @@ object GradleUtils {
                         }
 
                         override fun onComplete(result: Void?) {
-                            if(description.isNotBlank()) print(" Done.\n")
+                            if (description.isNotBlank()) print(" Done.\n")
                         }
                     })
                 close()
