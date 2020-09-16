@@ -81,7 +81,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() {
         final String[] args = {
-            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir, "-t"
+            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
         };
         int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
