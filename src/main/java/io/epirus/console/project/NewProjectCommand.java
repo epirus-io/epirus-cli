@@ -117,8 +117,8 @@ public class NewProjectCommand implements Runnable {
         if (projectName == null && packageName == null) {
             buildInteractively();
         }
-        projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
         if (inputIsValid(projectName, packageName)) {
+            projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
             if (new File(projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
                     ProjectUtils.deleteFolder(new File(projectName).toPath());
