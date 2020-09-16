@@ -47,13 +47,15 @@ public class ImportProjectCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
-            description = "Project name.")
-    public String projectName;
+            description = "Project name.",
+            showDefaultValue = ALWAYS)
+    public String projectName = "Web3App";
 
     @CommandLine.Option(
             names = {"-p", "--package"},
-            description = "Base package name.")
-    public String packageName;
+            description = "Base package name.",
+            showDefaultValue = ALWAYS)
+    public String packageName = "io.epirus";
 
     @CommandLine.Option(
             names = {"-o", "--output-dir"},
@@ -114,7 +116,7 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (projectName == null && packageName == null) {
+        if (solidityImportPath == null) {
             buildInteractively();
         }
         if (inputIsValid(projectName, packageName)) {
@@ -151,14 +153,7 @@ public class ImportProjectCommand implements Runnable {
     }
 
     private void buildInteractively() {
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
         generateTests = interactiveOptions.userWantsTests();
     }
 

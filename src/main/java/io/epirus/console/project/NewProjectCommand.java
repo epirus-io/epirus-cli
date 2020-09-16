@@ -57,13 +57,15 @@ public class NewProjectCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
-            description = "Project name.")
-    public String projectName;
+            description = "Project name.",
+            showDefaultValue = ALWAYS)
+    public String projectName = "Web3App";
 
     @CommandLine.Option(
             names = {"-p", "--package"},
-            description = "Base package name.")
-    public String packageName;
+            description = "Base package name.",
+            showDefaultValue = ALWAYS)
+    public String packageName = "io.epirus";
 
     @CommandLine.Option(
             names = {"-o", "--output-dir"},
@@ -108,9 +110,6 @@ public class NewProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (projectName == null && packageName == null) {
-            buildInteractively();
-        }
         if (inputIsValid(projectName, packageName)) {
             if (new File(projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
@@ -238,15 +237,6 @@ public class NewProjectCommand implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void buildInteractively() {
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
     }
 
     private boolean inputIsValid(String... requiredArgs) {
