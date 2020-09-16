@@ -12,15 +12,11 @@
  */
 package io.epirus.console.project;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
@@ -119,33 +115,5 @@ public class ImportProjectCommandTest extends ClassExecutor {
                 outputStream
                         .toString()
                         .contains("Please make sure the required parameters are not empty."));
-    }
-
-    @Test
-    public void testWhenInteractiveAndArgumentsAreCorrect() throws IOException {
-        final String[] args = {"--java"};
-        final String input =
-                "Test1"
-                        + "\n"
-                        + "org.com"
-                        + "\n"
-                        + solidityTestDir
-                        + "\n"
-                        + tempDirPath
-                        + "\n"
-                        + "n";
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        final PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
-        int exitCode =
-                new CommandLine(
-                                ImportProjectCommand.class,
-                                FactoryHarness.getFactory(inputStream, printStream))
-                        .execute(args);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            List<String> stringList = reader.lines().collect(Collectors.toList());
-            stringList.forEach(string -> System.out.println(string + "\n"));
-        }
-
-        assertEquals(0, exitCode);
     }
 }
