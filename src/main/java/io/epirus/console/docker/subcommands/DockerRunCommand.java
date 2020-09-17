@@ -180,9 +180,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
             return ArrayUtils.addAll(
                     walletArgs,
                     "--env",
-                    String.format(
-                            WEB3J_VAR_PREFIX + "WALLET_PASSWORD=%s",
-                            credentialsOptions.getWalletPassword()));
+                    String.format(WEB3J_VAR_PREFIX + "WALLET_PASSWORD=%s", walletPassword));
         }
         return strings.toArray(new String[] {});
     }
