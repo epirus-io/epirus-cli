@@ -20,13 +20,13 @@ public abstract class ProjectRunner implements Runnable {
     public String projectName;
     public String packageName;
     public String outputDir;
-    public Boolean generateJar;
+    public Boolean withJar;
 
     public ProjectRunner(final ProjectCreatorConfig projectCreatorConfig) {
         this.projectName = projectCreatorConfig.getProjectName();
         this.packageName = projectCreatorConfig.getPackageName();
         this.outputDir = projectCreatorConfig.getOutputDir();
-        this.generateJar = projectCreatorConfig.getGenerateJar();
+        this.withJar = projectCreatorConfig.getWithJar();
     }
 
     @Override
