@@ -43,17 +43,19 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
 
-    @CommandLine.ArgGroup() ProjectType projectType;
+    @CommandLine.ArgGroup() ProjectType projectType = new ProjectType();
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
-            description = "Project name.")
-    public String projectName;
+            description = "Project name.",
+            showDefaultValue = ALWAYS)
+    public String projectName = "Web3App";
 
     @CommandLine.Option(
             names = {"-p", "--package"},
-            description = "Base package name.")
-    public String packageName;
+            description = "Base package name.",
+            showDefaultValue = ALWAYS)
+    public String packageName = "io.epirus";
 
     @CommandLine.Option(
             names = {"-o", "--output-dir"},
@@ -70,7 +72,7 @@ public class ImportProjectCommand implements Runnable {
             names = {"-t", "--generate-tests"},
             description = "Generate unit tests for the contract wrappers",
             showDefaultValue = ALWAYS)
-    boolean generateTests = false;
+    boolean generateTests = true;
 
     @CommandLine.Option(
             names = {"--address-length"},
@@ -114,7 +116,7 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (projectName == null && packageName == null) {
+        if (solidityImportPath == null) {
             buildInteractively();
         }
         if (inputIsValid(projectName, packageName)) {
@@ -152,15 +154,7 @@ public class ImportProjectCommand implements Runnable {
     }
 
     private void buildInteractively() {
-        projectName = interactiveOptions.getProjectName();
-        packageName = interactiveOptions.getPackageName();
         solidityImportPath = interactiveOptions.getSolidityProjectPath();
-
-        interactiveOptions
-                .getProjectDestination(projectName)
-                .ifPresent(projectDest -> outputDir = projectDest);
-
-        generateTests = interactiveOptions.userWantsTests();
     }
 
     private boolean inputIsValid(String... requiredArgs) {
