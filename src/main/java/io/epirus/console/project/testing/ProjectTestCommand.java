@@ -43,7 +43,7 @@ public class ProjectTestCommand implements Runnable {
 
         if (OSUtils.determineOS() == OSUtils.OS.WINDOWS) {
             setExecutable(currentDirPath, "gradlew.bat");
-            runTests(new File(currentDirPath), new String[] {"cmd.exe", "/c", "gradlew.bat test"});
+            runTests(new File(currentDirPath), new String[] {"cmd", "/c", ".\\gradlew.bat test"});
         } else if (OSUtils.determineOS() == OSUtils.OS.LINUX) {
             setExecutable(currentDirPath, "gradlew");
             runTests(new File(currentDirPath), new String[] {"bash", "-c", "./gradlew test"});

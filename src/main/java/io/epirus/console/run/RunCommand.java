@@ -221,8 +221,8 @@ public class RunCommand implements Runnable {
     private void runGradle(Path runLocation) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             executeProcess(
-                    new File(File.separator, runLocation.toString()),
-                    new String[] {"cmd.exe", "/c", "./gradlew.bat run", "-q"});
+                    new File(runLocation.toString()),
+                    new String[] {"cmd", "/c", ".\\gradlew.bat run", "-q"});
         } else {
             executeProcess(
                     new File(File.separator, runLocation.toString()),

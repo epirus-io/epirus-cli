@@ -59,17 +59,18 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         return project.projectWallet;
     }
 
-    protected void buildGradleProject(final String pathToDirectory)
+    protected void generateWrappers(final String pathToDirectory)
             throws IOException, InterruptedException {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew");
             executeBuild(
-                    new File(pathToDirectory), new String[] {"bash", "-c", "./gradlew build -q"});
+                    new File(pathToDirectory),
+                    new String[] {"bash", "-c", "./gradlew generateContractWrappers -q"});
         } else {
             setExecutable(pathToDirectory, "gradlew.bat");
             executeBuild(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "gradlew.bat build -q"});
+                    new String[] {"cmd", "/c", ".\\gradlew.bat generateContractWrappers -q"});
         }
     }
 
@@ -109,7 +110,7 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         } else {
             executeProcess(
                     new File(pathToDirectory),
-                    new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
+                    new String[] {"cmd", "/c", ".\\gradlew.bat shadowJar", "-q"});
         }
     }
 
@@ -124,8 +125,7 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         generateTopLevelDirectories(projectStructure);
         getTemplateProvider().generateFiles(projectStructure);
         progressCounter.processing("Creating " + projectStructure.projectName);
-        buildGradleProject(projectStructure.getProjectRoot());
-
+        generateWrappers(projectStructure.getProjectRoot());
         if (withTests) {
             generateTests(projectStructure);
         }

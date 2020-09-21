@@ -78,6 +78,12 @@ public class NewProjectCommand implements Runnable {
     public int addressLength = 20;
 
     @CommandLine.Option(
+            names = {"--jar"},
+            description = {"generate the JAR (default: false)"},
+            defaultValue = "false")
+    public Boolean generateJar = false;
+
+    @CommandLine.Option(
             names = {"--context-path"},
             description = {"set the API context path (default: the project name)"})
     public String contextPath;
@@ -112,6 +118,7 @@ public class NewProjectCommand implements Runnable {
             buildInteractively();
         }
         if (inputIsValid(projectName, packageName)) {
+            projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
             if (new File(projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
                     ProjectUtils.deleteFolder(new File(projectName).toPath());
@@ -120,7 +127,7 @@ public class NewProjectCommand implements Runnable {
                 }
             }
             final ProjectCreatorConfig projectCreatorConfig =
-                    new ProjectCreatorConfig(projectName, packageName, outputDir);
+                    new ProjectCreatorConfig(projectName, packageName, outputDir, generateJar);
 
             if (projectType.isOpenApi) {
                 switch (templateType) {
@@ -143,11 +150,11 @@ public class NewProjectCommand implements Runnable {
                         new ERC777GeneratorService(projectName, packageName, outputDir).generate();
                         break;
                 }
-            } else if (projectType.isJava) {
+            } else if (projectType.isKotlin) {
                 switch (templateType) {
                     case NONE:
                     case HELLOWORLD:
-                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
+                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
                         System.out.println(
@@ -168,7 +175,7 @@ public class NewProjectCommand implements Runnable {
                 switch (templateType) {
                     case NONE:
                     case HELLOWORLD:
-                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
                         System.out.println(

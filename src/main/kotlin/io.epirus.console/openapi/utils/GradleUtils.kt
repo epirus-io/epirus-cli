@@ -18,11 +18,14 @@ import org.gradle.tooling.ResultHandler
 import java.io.File
 import java.io.OutputStream
 
-internal object GradleUtils {
+object GradleUtils {
+    @JvmStatic
+    @JvmOverloads
     fun runGradleTask(
         projectFolder: File,
         task: String,
-        description: String,
+        args: List<String>,
+        description: String = "",
         outputStream: OutputStream? = null
     ) {
         print(description)
@@ -33,6 +36,7 @@ internal object GradleUtils {
             .apply {
                 newBuild()
                     .forTasks(task)
+                    .addArguments(args)
                     .setStandardOutput(outputStream)
                     .run(object : ResultHandler<Void> {
                         override fun onFailure(failure: GradleConnectionException) {
@@ -40,7 +44,7 @@ internal object GradleUtils {
                         }
 
                         override fun onComplete(result: Void?) {
-                            print(" Done.\n")
+                            if (description.isNotBlank()) print(" Done.\n")
                         }
                     })
                 close()
