@@ -13,7 +13,7 @@
 package io.epirus.console.wrapper;
 
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.wallet.SubCommand;
+import io.epirus.console.SubCommand;
 import io.epirus.console.wrapper.subcommand.TruffleGenerateCommand;
 import picocli.CommandLine;
 

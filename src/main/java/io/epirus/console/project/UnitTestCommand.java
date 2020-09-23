@@ -13,9 +13,9 @@
 package io.epirus.console.project;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.SubCommand;
 import io.epirus.console.project.java.JavaTestCLIRunner;
 import io.epirus.console.project.kotlin.KotlinTestCLIRunner;
-import io.epirus.console.wallet.SubCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(

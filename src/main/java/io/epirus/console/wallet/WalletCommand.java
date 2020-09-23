@@ -13,6 +13,7 @@
 package io.epirus.console.wallet;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.SubCommand;
 import io.epirus.console.wallet.subcommands.WalletCreateCommand;
 import io.epirus.console.wallet.subcommands.WalletFundCommand;
 import io.epirus.console.wallet.subcommands.WalletImportCommand;
