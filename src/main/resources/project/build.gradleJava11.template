@@ -1,11 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://dl.bintray.com/hotkeytlt/maven' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.web3j:web3j-gradle-plugin:4.6.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.61'
     id 'application'
-    id 'org.web3j' version '4.5.11'
     id "com.github.johnrengelman.shadow" version "5.1.0"
-
 }
+apply plugin: "org.web3j"
 
 group '<package_name>'
 version '0.1.0'
@@ -75,6 +87,5 @@ sourceSets {
 import org.web3j.solidity.gradle.plugin.OutputComponent
 solidity {
     outputComponents = [OutputComponent.BIN, OutputComponent.ABI, OutputComponent.METADATA]
-    version = '0.6.2'
 }
 
