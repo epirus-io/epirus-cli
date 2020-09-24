@@ -14,7 +14,7 @@ package io.epirus.console.openapi
 
 import java.io.File
 
-class OpenApiGeneratorServiceConfiguration(
+class OpenApiGeneratorServiceConfiguration @JvmOverloads constructor(
     val projectName: String,
     val packageName: String,
     val outputDir: String,
@@ -22,9 +22,9 @@ class OpenApiGeneratorServiceConfiguration(
     val bins: List<File>,
     val addressLength: Int,
     val contextPath: String,
-    val withSwaggerUi: Boolean,
-    val withGradleResources: Boolean,
-    val withWrappers: Boolean,
-    val withServerBuildFile: Boolean,
-    val withCoreBuildFile: Boolean
+    val withSwaggerUi: Boolean = true,
+    val withGradleResources: Boolean = true,
+    val withWrappers: Boolean = true,
+    val withServerBuildFile: Boolean = true,
+    val withCoreBuildFile: Boolean = true
 )
