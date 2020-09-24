@@ -14,18 +14,18 @@ package io.epirus.console.project;
 
 public class ProjectImporterConfig extends ProjectCreatorConfig {
     private final String solidityImportPath;
-    private final boolean generateTests;
+    private final Boolean withTests;
 
     public ProjectImporterConfig(
             final String projectName,
             final String packageName,
             final String outputDir,
             final String solidityImportPath,
-            final boolean generateTests) {
+            final Boolean withTests) {
         super(projectName, packageName, outputDir);
 
         this.solidityImportPath = solidityImportPath;
-        this.generateTests = generateTests;
+        this.withTests = withTests;
     }
 
     public String getSolidityImportPath() {
@@ -33,6 +33,6 @@ public class ProjectImporterConfig extends ProjectCreatorConfig {
     }
 
     public boolean shouldGenerateTests() {
-        return generateTests;
+        return withTests;
     }
 }
