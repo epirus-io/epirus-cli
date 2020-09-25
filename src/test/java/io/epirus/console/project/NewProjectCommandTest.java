@@ -50,7 +50,7 @@ public class NewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
+        final String[] args = {"-u=org.org", "-b=test", "-z=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(NewProjectCommand.class);
         Assertions.assertThrows(
                 CommandLine.UnmatchedArgumentException.class, () -> commandLine.parseArgs(args));
