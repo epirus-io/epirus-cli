@@ -19,7 +19,7 @@ import io.epirus.console.project.kotlin.KotlinTestCLIRunner;
 import picocli.CommandLine;
 
 @CommandLine.Command(
-        name = "generate-tests",
+        name = "tests",
         description = "Generate tests for a Web3j Java smart contract wrapper",
         showDefaultValues = true,
         abbreviateSynopsis = true,
