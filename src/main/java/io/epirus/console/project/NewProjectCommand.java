@@ -18,24 +18,17 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.openapi.OpenApiGeneratorService;
-import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.templates.TemplateReader;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
-import io.epirus.console.token.erc777.ERC777GeneratorService;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import static org.web3j.codegen.Console.exitError;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "new",
@@ -49,65 +42,10 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class NewProjectCommand implements Runnable {
-
-    @CommandLine.ArgGroup() ProjectType projectType = new ProjectType();
+public class NewProjectCommand extends ProjectOptions implements Runnable {
 
     @CommandLine.Parameters(defaultValue = "NONE")
     TemplateType templateType = TemplateType.NONE;
-
-    @CommandLine.Option(
-            names = {"-n", "--project-name"},
-            description = "Project name.",
-            showDefaultValue = ALWAYS)
-    public String projectName = "Web3App";
-
-    @CommandLine.Option(
-            names = {"-p", "--package"},
-            description = "Base package name.",
-            showDefaultValue = ALWAYS)
-    public String packageName = "io.epirus";
-
-    @CommandLine.Option(
-            names = {"-o", "--output-dir"},
-            description = "Destination base directory.",
-            showDefaultValue = ALWAYS)
-    public String outputDir = ".";
-
-    @CommandLine.Option(
-            names = {"--address-length"},
-            description = {"specify the address length."},
-            defaultValue = "20")
-    public int addressLength = 20;
-
-    @CommandLine.Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers",
-            showDefaultValue = ALWAYS)
-    public Boolean generateTests = true;
-
-    @CommandLine.Option(
-            names = {"--jar"},
-            description = {"generate the JAR (default: false)"},
-            defaultValue = "false")
-    public Boolean generateJar = false;
-
-    @CommandLine.Option(
-            names = {"--context-path"},
-            description = {"set the API context path (default: the project name)"})
-    public String contextPath;
-
-    @CommandLine.Option(
-            names = {"-a", "--abi"},
-            description = {"input ABI files and folders."},
-            arity = "1..*")
-    public List<File> abis = new ArrayList<>();
-
-    @CommandLine.Option(
-            names = {"-b", "--bin"},
-            description = {"input BIN files and folders."},
-            arity = "1..*")
-    public List<File> bins = new ArrayList<>();
 
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
@@ -136,28 +74,7 @@ public class NewProjectCommand implements Runnable {
                     new ProjectCreatorConfig(
                             projectName, packageName, outputDir, generateJar, generateTests);
 
-            if (projectType.isOpenApi) {
-                switch (templateType) {
-                    case NONE:
-                    case HELLOWORLD:
-                        new OpenApiGeneratorService(
-                                        new OpenApiGeneratorServiceConfiguration(
-                                                projectName,
-                                                packageName,
-                                                outputDir,
-                                                abis,
-                                                bins,
-                                                addressLength,
-                                                contextPath != null
-                                                        ? StringUtils.removeEnd(contextPath, "/")
-                                                        : projectName))
-                                .generate();
-                        break;
-                    case ERC777:
-                        new ERC777GeneratorService(projectName, packageName, outputDir).generate();
-                        break;
-                }
-            } else if (projectType.isKotlin) {
+            if (isKotlin) {
                 switch (templateType) {
                     case NONE:
                     case HELLOWORLD:
@@ -165,7 +82,7 @@ public class NewProjectCommand implements Runnable {
                         break;
                     case ERC777:
                         System.out.println(
-                                "Generating ERC777 Java project is currently unsupported");
+                                "Generating ERC777 Kotlin project is currently unsupported");
                         //                        final String templatePath =
                         // prepareERC777Template();
                         //                        final ProjectImporterConfig projectImporterConfig
@@ -186,7 +103,7 @@ public class NewProjectCommand implements Runnable {
                         break;
                     case ERC777:
                         System.out.println(
-                                "Generating ERC777 Kotlin project is currently unsupported");
+                                "Generating ERC777 Java project is currently unsupported");
                         //                        final String templatePath =
                         // prepareERC777Template();
                         //                        final ProjectImporterConfig projectImporterConfig
