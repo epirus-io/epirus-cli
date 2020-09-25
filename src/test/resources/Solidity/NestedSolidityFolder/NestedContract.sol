@@ -7,7 +7,7 @@ contract Mortal {
     address owner;
 
     /* this function is executed at initialization and sets the owner of the contract */
-    constructor () public {owner = msg.sender;}
+    constructor () {owner = msg.sender;}
 
     modifier onlyOwner {
         require(

@@ -21,7 +21,7 @@ public class <project_name> {
 
     private static final Logger log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService");
     private static final boolean epirusDeploy = Boolean.parseBoolean(System.getenv().getOrDefault("EPIRUS_DEPLOY", "false"));
-    private static final Network deployNetwork = Network.valueOf(System.getenv().getOrDefault("WEB3J_DEPLOY_NETWORK", "rinkeby").toUpperCase());
+    private static final Network deployNetwork = Network.valueOf(System.getenv().getOrDefault("WEB3J_NETWORK", "rinkeby").toUpperCase());
     private static final String walletPath = System.getenv("WEB3J_WALLET_PATH");
     private static final String walletPassword = System.getenv().getOrDefault("WEB3J_WALLET_PASSWORD", "");
     private static final String nodeUrl = System.getenv().getOrDefault("WEB3J_NODE_URL", System.getProperty("WEB3J_NODE_URL"));
@@ -29,12 +29,12 @@ public class <project_name> {
 
     public static void main(String[] args) {
         try {
+            ((ch.qos.logback.classic.Logger) (log)).setLevel(epirusDeploy ? Level.ERROR : Level.INFO);
             if (!epirusDeploy && (walletPath == null || walletPassword.isBlank() || nodeUrl == null)) {
                 System.out.println("As the application isn't being run using the Epirus Platform, the following environment variables are expected: " +
                         "WEB3J_WALLET_PATH, WEB3J_WALLET_PASSWORD, WEB3J_NODE_URL. Please ensure these are set and try again.");
                 System.exit(-1);
             }
-            ((ch.qos.logback.classic.Logger) (log)).setLevel(Level.ERROR);
             Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
             Web3j web3j = getDeployWeb3j();
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new EpirusGasProvider(deployNetwork, GasPrice.High));
