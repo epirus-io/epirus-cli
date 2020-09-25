@@ -19,7 +19,7 @@ class ProjectOptions {
     @Option(
         names = ["-n", "--name"],
         description = ["specify the project name."],
-        defaultValue = "Web3j-OpenAPI",
+        defaultValue = "Web3App",
         required = true
     )
     lateinit var projectName: String
