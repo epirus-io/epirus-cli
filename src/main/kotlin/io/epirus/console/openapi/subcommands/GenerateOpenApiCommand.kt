@@ -15,9 +15,10 @@ package io.epirus.console.openapi.subcommands
 import io.epirus.console.EpirusVersionProvider
 import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
+import io.epirus.console.openapi.options.PreCompiledContractOptions
+import picocli.CommandLine
 import picocli.CommandLine.Command
 import java.io.File
-import java.util.concurrent.Callable
 
 @Command(
         name = "generate",
@@ -31,18 +32,21 @@ import java.util.concurrent.Callable
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class GenerateOpenApiCommand : Callable<Int>, AbstractSubCommand() {
+class GenerateOpenApiCommand : AbstractSubCommand() {
+
+    @CommandLine.Mixin
+    val preCompiledContractOptions = PreCompiledContractOptions()
 
     override fun generate(projectFolder: File) {
 
         OpenApiGeneratorService(
             OpenApiGeneratorServiceConfiguration(
                 projectName = projectOptions.projectName,
-                packageName = packageName,
+                packageName = projectOptions.packageName,
                 outputDir = projectFolder.path,
-                abis = abis,
-                bins = bins,
-                addressLength = addressLength,
+                abis = preCompiledContractOptions.abis,
+                bins = preCompiledContractOptions.bins,
+                addressLength = projectOptions.addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
                 withSwaggerUi = false,
                 withGradleResources = false,

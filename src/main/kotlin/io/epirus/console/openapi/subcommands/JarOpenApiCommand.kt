@@ -13,7 +13,9 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
+import io.epirus.console.openapi.options.PreCompiledContractOptions
 import picocli.CommandLine
+import java.io.File
 
 @CommandLine.Command(
     name = "jar",
@@ -28,6 +30,10 @@ import picocli.CommandLine
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class JarOpenApiCommand : Runnable {
-    override fun run() {}
+class JarOpenApiCommand : AbstractSubCommand() {
+    @CommandLine.Mixin
+    val preCompiledContractOptions = PreCompiledContractOptions()
+
+    override fun generate(projectFolder: File) {
+    }
 }

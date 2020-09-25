@@ -12,67 +12,24 @@
  */
 package io.epirus.console.openapi.subcommands
 
-import io.epirus.console.openapi.options.ProjectOptions
+import io.epirus.console.openapi.options.OpenApiProjectOptions
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Paths
+import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-abstract class AbstractSubCommand {
+abstract class AbstractSubCommand : Callable<Int> {
 
     @CommandLine.Mixin
-    protected val projectOptions = ProjectOptions()
+    protected val projectOptions = OpenApiProjectOptions()
 
     @CommandLine.Spec
     protected lateinit var spec: CommandLine.Model.CommandSpec
 
-    @CommandLine.Option(
-            names = ["-o", "--output"],
-            description = ["project output directory."],
-            defaultValue = "."
-    )
-    protected lateinit var outputDirectory: File
-
-    @CommandLine.Option(
-            names = ["-a", "--abi"],
-            description = ["input ABI files and folders."],
-            arity = "1..*",
-            required = true
-    )
-    protected lateinit var abis: List<File>
-
-    @CommandLine.Option(
-            names = ["-b", "--bin"],
-            description = ["input BIN files and folders."],
-            arity = "1..*",
-            required = true
-    )
-    protected lateinit var bins: List<File>
-
-    @CommandLine.Option(
-            names = ["-p", "--package-name"],
-            description = ["generated package name."],
-            required = true
-    )
-    protected lateinit var packageName: String
-
-    @CommandLine.Option(
-            names = ["--dev"],
-            description = ["not delete the failed build files."],
-            defaultValue = "false"
-    )
-    protected var dev: Boolean = false
-
-    @CommandLine.Option(
-            names = ["--address-length"],
-            description = ["specify the address length."],
-            defaultValue = "20"
-    )
-    protected var addressLength: Int = 20
-
-    fun call(): Int {
+    override fun call(): Int {
         val projectFolder = Paths.get(
-                outputDirectory.canonicalPath,
+            projectOptions.outputDir,
                 projectOptions.projectName
         ).toFile().apply {
             deleteRecursively()
@@ -83,7 +40,7 @@ abstract class AbstractSubCommand {
             generate(projectFolder)
             CommandLine.ExitCode.OK
         } catch (e: Exception) {
-            if (!dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
+            if (!projectOptions.dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
             e.printStackTrace()
             exitProcess(1)
         }

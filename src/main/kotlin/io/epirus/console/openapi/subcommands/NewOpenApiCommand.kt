@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import java.io.File
-import java.util.concurrent.Callable
 
 @Command(
     name = "new",
@@ -36,24 +35,34 @@ import java.util.concurrent.Callable
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class NewOpenApiCommand : AbstractSubCommand(), Callable<Int> {
+class NewOpenApiCommand : AbstractSubCommand() {
 
     @CommandLine.Parameters(defaultValue = "NONE")
     var templateType = TemplateType.NONE
 
     override fun generate(projectFolder: File) {
+        val contextPath = if (projectOptions.contextPath != null) {
+            StringUtils.removeEnd(projectOptions.contextPath, "/")
+        } else {
+            projectOptions.projectName
+        }
+
         when (templateType) {
-            TemplateType.NONE, TemplateType.HELLOWORLD -> OpenApiGeneratorService(
-                OpenApiGeneratorServiceConfiguration(
-                    projectOptions.projectName,
-                    packageName,
-                    outputDirectory.absolutePath,
-                    abis,
-                    bins,
-                    addressLength,
-                    if (projectOptions.contextPath != null) StringUtils.removeEnd(projectOptions.contextPath, "/") else projectOptions.projectName))
-                .generate()
-            TemplateType.ERC777 -> ERC777GeneratorService(projectOptions.projectName, packageName, outputDirectory.absolutePath).generate()
+            TemplateType.NONE, TemplateType.HELLOWORLD -> {
+                OpenApiGeneratorService(
+                    OpenApiGeneratorServiceConfiguration(
+                        projectOptions.projectName,
+                        projectOptions.packageName,
+                        projectOptions.outputDir,
+                        emptyList(),
+                        emptyList(),
+                        projectOptions.addressLength,
+                        contextPath)
+                ).generate()
+            }
+            TemplateType.ERC777 -> {
+                ERC777GeneratorService(projectOptions.projectName, projectOptions.packageName, projectOptions.outputDir).generate()
+            }
         }
 //        OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(projectName = projectOptions.projectName,
 //            packageName = packageName,
