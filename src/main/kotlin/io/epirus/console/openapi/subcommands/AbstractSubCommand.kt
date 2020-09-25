@@ -10,14 +10,18 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.openapi
+package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.openapi.options.ProjectOptions
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Paths
+import kotlin.system.exitProcess
 
-abstract class AbstractCommand {
+abstract class AbstractSubCommand {
+
+    @CommandLine.Mixin
+    protected val projectOptions = ProjectOptions()
 
     @CommandLine.Spec
     protected lateinit var spec: CommandLine.Model.CommandSpec
@@ -44,9 +48,6 @@ abstract class AbstractCommand {
             required = true
     )
     protected lateinit var bins: List<File>
-
-    @CommandLine.Mixin
-    protected val projectOptions = ProjectOptions()
 
     @CommandLine.Option(
             names = ["-p", "--package-name"],
@@ -84,7 +85,7 @@ abstract class AbstractCommand {
         } catch (e: Exception) {
             if (!dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
             e.printStackTrace()
-            CommandLine.ExitCode.SOFTWARE
+            exitProcess(1)
         }
     }
 
