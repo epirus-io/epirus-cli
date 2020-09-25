@@ -44,7 +44,7 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand extends ProjectOptions implements Runnable {
 
-    @CommandLine.Parameters(defaultValue = "NONE")
+    @CommandLine.Parameters(description = "HELLOWORLD, ERC777", defaultValue = "HELLOWORLD")
     TemplateType templateType = TemplateType.NONE;
 
     private final InteractiveOptions interactiveOptions;
