@@ -13,15 +13,25 @@
 package io.epirus.console.openapi
 
 import io.epirus.console.EpirusVersionProvider
-import picocli.CommandLine.Command
-import java.io.File
-import java.util.concurrent.Callable
+import io.epirus.console.SubCommand
+import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
+import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
+import io.epirus.console.openapi.subcommands.JarOpenApiCommand
+import io.epirus.console.openapi.subcommands.NewOpenApiCommand
+import picocli.CommandLine
 
-@Command(
-    name = "new",
+@CommandLine.Command(
+    name = "openapi",
+    description = ["Generate a Web3j-OpenAPI project"],
+    subcommands = [
+        GenerateOpenApiCommand::class,
+        CommandLine.HelpCommand::class,
+        ImportOpenApiCommand::class,
+        JarOpenApiCommand::class,
+        NewOpenApiCommand::class],
     showDefaultValues = true,
-    description = ["Generates a whole OpenAPI project."],
     abbreviateSynopsis = true,
+    mixinStandardHelpOptions = true,
     versionProvider = EpirusVersionProvider::class,
     synopsisHeading = "%n",
     descriptionHeading = "%nDescription:%n%n",
@@ -29,21 +39,4 @@ import java.util.concurrent.Callable
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class NewCommand : AbstractCommand(), Callable<Int> {
-
-    override fun generate(projectFolder: File) {
-        OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(projectName = projectOptions.projectName,
-            packageName = packageName,
-            outputDir = projectFolder.path,
-            abis = abis,
-            bins = bins,
-            addressLength = addressLength,
-            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-            withSwaggerUi = true,
-            withGradleResources = true,
-            withWrappers = true,
-            withCoreBuildFile = true,
-            withServerBuildFile = true
-        )).generate()
-    }
-}
+class OpenApiCommand : SubCommand()
