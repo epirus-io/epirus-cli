@@ -84,7 +84,7 @@ public class NewProjectCommand implements Runnable {
             names = {"-t", "--generate-tests"},
             description = "Generate unit tests for the contract wrappers",
             showDefaultValue = ALWAYS)
-    boolean generateTests = true;
+    public Boolean generateTests = true;
 
     @CommandLine.Option(
             names = {"--jar"},
