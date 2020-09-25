@@ -12,21 +12,29 @@
  */
 package io.epirus.console.openapi.options
 
+import io.epirus.console.project.BaseProjectOptions
+import picocli.CommandLine
 import picocli.CommandLine.Option
 
-class ProjectOptions {
-
-    @Option(
-        names = ["-n", "--name"],
-        description = ["specify the project name."],
-        defaultValue = "Web3App",
-        required = true
-    )
-    lateinit var projectName: String
+class OpenApiProjectOptions : BaseProjectOptions() {
 
     @Option(
         names = ["--context-path"],
-        description = ["set the API context path (default: the project name)"]
+        description = ["set the API context path (Default: project name)"]
     )
     var contextPath: String? = null
+
+    @CommandLine.Option(
+        names = ["--dev"],
+        description = ["Not delete the failed build files."],
+        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+    )
+    var dev: Boolean = false
+
+    @Option(
+        names = ["--address-length"],
+        description = ["specify the address length."],
+        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+    )
+    var addressLength = 20
 }

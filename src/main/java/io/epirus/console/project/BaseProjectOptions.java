@@ -16,22 +16,22 @@ import picocli.CommandLine;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-public class ProjectOptions extends BaseProjectOptions {
+public class BaseProjectOptions {
     @CommandLine.Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers.",
+            names = {"-n", "--project-name"},
+            description = "Project name.",
             showDefaultValue = ALWAYS)
-    public Boolean generateTests = true;
+    public String projectName = "Web3App";
 
     @CommandLine.Option(
-            names = {"--jar"},
-            description = {"generate the JAR"},
+            names = {"-p", "--package"},
+            description = "Base package name.",
             showDefaultValue = ALWAYS)
-    public Boolean generateJar = false;
+    public String packageName = "io.epirus";
 
     @CommandLine.Option(
-            names = {"--kotlin"},
-            description = "Generate Kotlin code instead of Java.",
+            names = {"-o", "--output-dir"},
+            description = "Destination base directory.",
             showDefaultValue = ALWAYS)
-    public Boolean isKotlin = false;
+    public String outputDir = ".";
 }
