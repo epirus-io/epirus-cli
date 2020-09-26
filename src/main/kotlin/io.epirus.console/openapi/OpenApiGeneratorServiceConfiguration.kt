@@ -26,5 +26,6 @@ class OpenApiGeneratorServiceConfiguration @JvmOverloads constructor(
     val withGradleResources: Boolean = true,
     val withWrappers: Boolean = true,
     val withServerBuildFile: Boolean = true,
-    val withCoreBuildFile: Boolean = true
+    val withCoreBuildFile: Boolean = true,
+    val withImplementations: Boolean = true
 )

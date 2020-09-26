@@ -37,6 +37,13 @@ class GenerateOpenApiCommand : AbstractSubCommand() {
     @CommandLine.Mixin
     val preCompiledContractOptions = PreCompiledContractOptions()
 
+    @CommandLine.Option(
+        names = ["--with-implementations"],
+        description = ["Generate the interfaces implementations."],
+        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+    )
+    var withImplementations: Boolean = true
+
     override fun generate(projectFolder: File) {
 
         OpenApiGeneratorService(

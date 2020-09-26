@@ -102,7 +102,8 @@ class OpenApiGeneratorService(
             withSwaggerUi = openApiGeneratorServiceConfiguration.withSwaggerUi,
             withGradleResources = openApiGeneratorServiceConfiguration.withGradleResources,
             withServerBuildFile = openApiGeneratorServiceConfiguration.withServerBuildFile,
-            withCoreBuildFile = openApiGeneratorServiceConfiguration.withCoreBuildFile
+            withCoreBuildFile = openApiGeneratorServiceConfiguration.withCoreBuildFile,
+            withImplementations = openApiGeneratorServiceConfiguration.withImplementations
         )).generate()
     }
 }
