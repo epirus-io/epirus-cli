@@ -59,7 +59,8 @@ class GenerateOpenApiCommand : AbstractSubCommand() {
                 withGradleResources = false,
                 withWrappers = true,
                 withServerBuildFile = true,
-                withCoreBuildFile = true
+                withCoreBuildFile = true,
+                withImplementations = withImplementations
             )
         ).generate()
     }
