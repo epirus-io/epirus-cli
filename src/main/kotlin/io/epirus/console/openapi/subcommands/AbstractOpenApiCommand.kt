@@ -13,6 +13,8 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.openapi.options.OpenApiProjectOptions
+import io.epirus.console.project.InteractiveOptions
+import io.epirus.console.project.utils.InputVerifier
 import picocli.CommandLine
 import java.io.File
 import java.nio.file.Paths
@@ -27,13 +29,23 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     @CommandLine.Spec
     protected lateinit var spec: CommandLine.Model.CommandSpec
 
+    private val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
+    private val inputVerifier: InputVerifier = InputVerifier(System.out)
+
     override fun call(): Int {
+        if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName))
+            exitProcess(1)
+
         val projectFolder = Paths.get(
             projectOptions.outputDir,
-                projectOptions.projectName
+            projectOptions.projectName
         ).toFile().apply {
-            deleteRecursively()
-            mkdirs()
+            if (!exists() || interactiveOptions.overrideExistingProject()) {
+                deleteRecursively()
+                mkdirs()
+            } else {
+                exitProcess(1)
+            }
         }
 
         return try {
@@ -47,4 +59,10 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     }
 
     abstract fun generate(projectFolder: File)
+
+    private fun inputIsNotValid(vararg requiredArgs: String): Boolean {
+        return !(inputVerifier.requiredArgsAreNotEmpty(*requiredArgs) &&
+            inputVerifier.classNameIsValid(projectOptions.projectName) &&
+            inputVerifier.packageNameIsValid(projectOptions.packageName))
+    }
 }
