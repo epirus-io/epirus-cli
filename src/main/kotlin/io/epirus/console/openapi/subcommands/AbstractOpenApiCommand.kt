@@ -19,7 +19,7 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-abstract class AbstractSubCommand : Callable<Int> {
+abstract class AbstractOpenApiCommand : Callable<Int> {
 
     @CommandLine.Mixin
     protected val projectOptions = OpenApiProjectOptions()
