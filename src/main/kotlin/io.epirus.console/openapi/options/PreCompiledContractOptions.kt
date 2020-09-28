@@ -21,12 +21,12 @@ class PreCompiledContractOptions {
         description = ["input ABI files and folders."],
         arity = "1..*"
     )
-    lateinit var abis: List<File>
+    var abis: MutableList<File> = mutableListOf()
 
     @CommandLine.Option(
         names = ["-b", "--bin"],
         description = ["input BIN files and folders."],
         arity = "1..*"
     )
-    lateinit var bins: List<File>
+    var bins: MutableList<File> = mutableListOf()
 }
