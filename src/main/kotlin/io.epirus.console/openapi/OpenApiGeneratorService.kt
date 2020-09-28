@@ -12,7 +12,6 @@
  */
 package io.epirus.console.openapi
 
-import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
 import org.web3j.openapi.codegen.GenerateOpenApi
@@ -33,15 +32,6 @@ class OpenApiGeneratorService(
             generateWithHelloWorldTemplate()
         else {
             generateInternal(openApiGeneratorServiceConfiguration.abis, openApiGeneratorServiceConfiguration.bins)
-        }
-        printInstructions()
-    }
-
-    private fun printInstructions() {
-        when {
-            openApiGeneratorServiceConfiguration.withSwaggerUi -> PrettyPrinter.onProjectSuccess()
-//            openApiGeneratorServiceConfiguration
-            else -> PrettyPrinter.onSuccess()
         }
     }
 
