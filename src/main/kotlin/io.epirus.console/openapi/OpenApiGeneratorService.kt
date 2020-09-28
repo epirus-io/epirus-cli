@@ -12,8 +12,7 @@
  */
 package io.epirus.console.openapi
 
-import com.diogonunes.jcdp.color.ColoredPrinter
-import com.diogonunes.jcdp.color.api.Ansi
+import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
 import org.web3j.openapi.codegen.GenerateOpenApi
@@ -30,31 +29,20 @@ class OpenApiGeneratorService(
 ) {
 
     fun generate() {
-        generateWithHelloWorldTemplate()
-        onSuccess()
+        if (openApiGeneratorServiceConfiguration.abis.isEmpty())
+            generateWithHelloWorldTemplate()
+        else {
+            generateInternal(openApiGeneratorServiceConfiguration.abis, openApiGeneratorServiceConfiguration.bins)
+        }
+        printInstructions()
     }
 
-    private fun onSuccess() {
-        val gradleCommand = if (System.getProperty("os.name").toLowerCase().startsWith("windows")) "./gradlew.bat" else "./gradlew"
-        print(System.lineSeparator())
-        val cp = ColoredPrinter.Builder(0, false)
-            .foreground(Ansi.FColor.WHITE)
-            .background(Ansi.BColor.GREEN)
-            .attribute(Ansi.Attribute.BOLD)
-            .build()
-        val instructionPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build()
-        val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
-        cp.println("Project Created Successfully")
-        print(System.lineSeparator())
-
-        instructionPrinter.println(
-            "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK)
-        instructionPrinter.print(String.format("%-40s", "$gradleCommand run"))
-        commandPrinter.println("Run your application manually")
-        instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"))
-        commandPrinter.println("Runs your application")
-        instructionPrinter.print(String.format("%-40s", "epirus docker run rinkeby|ropsten"))
-        commandPrinter.println("Runs your application in a docker container")
+    private fun printInstructions() {
+        when {
+            openApiGeneratorServiceConfiguration.withSwaggerUi -> PrettyPrinter.onProjectSuccess()
+//            openApiGeneratorServiceConfiguration
+            else -> PrettyPrinter.onSuccess()
+        }
     }
 
     private fun generateWithHelloWorldTemplate() {

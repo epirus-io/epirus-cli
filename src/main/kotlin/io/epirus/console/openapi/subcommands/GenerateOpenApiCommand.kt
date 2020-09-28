@@ -57,7 +57,7 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
                 withSwaggerUi = false,
                 withGradleResources = false,
-                withWrappers = true,
+                withWrappers = withImplementations, // So that we don't generate the wrappers with only the interfaces
                 withServerBuildFile = true,
                 withCoreBuildFile = true,
                 withImplementations = withImplementations
