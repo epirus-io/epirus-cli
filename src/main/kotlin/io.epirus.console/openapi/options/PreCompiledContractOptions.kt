@@ -19,16 +19,14 @@ class PreCompiledContractOptions {
     @CommandLine.Option(
         names = ["-a", "--abi"],
         description = ["input ABI files and folders."],
-        arity = "1..*",
-        required = true
+        arity = "1..*"
     )
     lateinit var abis: List<File>
 
     @CommandLine.Option(
         names = ["-b", "--bin"],
         description = ["input BIN files and folders."],
-        arity = "1..*",
-        required = true
+        arity = "1..*"
     )
     lateinit var bins: List<File>
 }
