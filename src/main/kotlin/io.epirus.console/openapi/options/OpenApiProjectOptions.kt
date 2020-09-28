@@ -24,17 +24,17 @@ class OpenApiProjectOptions : BaseProjectOptions() {
     )
     var contextPath: String? = null
 
-    @CommandLine.Option(
-        names = ["--dev"],
-        description = ["Not delete the output if failed."],
-        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
-    )
-    var dev: Boolean = false
-
     @Option(
         names = ["--address-length"],
         description = ["specify the address length."],
         showDefaultValue = CommandLine.Help.Visibility.ALWAYS
     )
     var addressLength = 20
+
+    @Option(
+        names = ["--overwrite"],
+        description = ["overwrite the project if exists."],
+        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+    )
+    var overwrite = false
 }
