@@ -32,7 +32,7 @@ import java.io.File
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
-class GenerateOpenApiCommand : AbstractSubCommand() {
+class GenerateOpenApiCommand : AbstractOpenApiCommand() {
 
     @CommandLine.Mixin
     val preCompiledContractOptions = PreCompiledContractOptions()

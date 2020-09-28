@@ -26,7 +26,7 @@ class OpenApiProjectOptions : BaseProjectOptions() {
 
     @CommandLine.Option(
         names = ["--dev"],
-        description = ["Not delete the failed build files."],
+        description = ["Not delete the output if failed."],
         showDefaultValue = CommandLine.Help.Visibility.ALWAYS
     )
     var dev: Boolean = false

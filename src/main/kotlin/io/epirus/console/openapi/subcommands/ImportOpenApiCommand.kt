@@ -30,7 +30,7 @@ import java.io.File
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class ImportOpenApiCommand : AbstractSubCommand() {
+class ImportOpenApiCommand : AbstractOpenApiCommand() {
     @CommandLine.Mixin
     val preCompiledContractOptions = PreCompiledContractOptions()
 

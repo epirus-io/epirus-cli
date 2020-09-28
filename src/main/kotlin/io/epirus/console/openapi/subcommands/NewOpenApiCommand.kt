@@ -35,7 +35,7 @@ import java.io.File
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class NewOpenApiCommand : AbstractSubCommand() {
+class NewOpenApiCommand : AbstractOpenApiCommand() {
 
     @CommandLine.Parameters(defaultValue = "NONE")
     var templateType = TemplateType.NONE
