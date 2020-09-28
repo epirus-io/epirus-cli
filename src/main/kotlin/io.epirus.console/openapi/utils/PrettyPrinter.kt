@@ -23,14 +23,21 @@ object PrettyPrinter {
         .background(Ansi.BColor.GREEN)
         .attribute(Ansi.Attribute.BOLD)
         .build()
+    private val cpf = ColoredPrinter.Builder(0, false)
+        .foreground(Ansi.FColor.RED)
+        .background(Ansi.BColor.YELLOW)
+        .attribute(Ansi.Attribute.BOLD)
+        .build()
     private val instructionPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build()
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
     init {
+        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
     }
 
     fun onProjectSuccess() {
+
         cp.println("Project Created Successfully")
         print(System.lineSeparator())
 
@@ -45,7 +52,8 @@ object PrettyPrinter {
     }
 
     fun onJarSuccess() {
-        cp.println("Jar generated Successfully")
+        SimpleFileLogger.switchToConsole()
+        cp.println("JAR generated Successfully")
         print(System.lineSeparator())
 
         instructionPrinter.println(
@@ -55,7 +63,14 @@ object PrettyPrinter {
     }
 
     fun onSuccess() {
+        SimpleFileLogger.switchToConsole()
         cp.println("Project generated Successfully")
+        print(System.lineSeparator())
+    }
+
+    fun onFailed() {
+        SimpleFileLogger.switchToConsole()
+        cpf.println("Project generation Failed. Check log file for more information.")
         print(System.lineSeparator())
     }
 }
