@@ -13,6 +13,8 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.openapi.options.OpenApiProjectOptions
+import io.epirus.console.openapi.utils.PrettyPrinter
+import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
 import picocli.CommandLine
@@ -22,6 +24,8 @@ import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 abstract class AbstractOpenApiCommand : Callable<Int> {
+
+    protected val JARSUFFIX = "-server-all.jar"
 
     @CommandLine.Mixin
     protected val projectOptions = OpenApiProjectOptions()
@@ -40,7 +44,10 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
             projectOptions.outputDir,
             projectOptions.projectName
         ).toFile().apply {
-            if (!exists() || interactiveOptions.overrideExistingProject()) {
+            if (!exists() ||
+                !File("${projectOptions.projectName}-$JARSUFFIX").exists() ||
+                projectOptions.overwrite ||
+                interactiveOptions.overrideExistingProject()) {
                 deleteRecursively()
                 mkdirs()
             } else {
@@ -50,10 +57,11 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
 
         return try {
             generate(projectFolder)
+            projectFolder.deleteOnExit()
             CommandLine.ExitCode.OK
         } catch (e: Exception) {
-            if (!projectOptions.dev) projectFolder.deleteOnExit() // FIXME project doesn't get deleted when there is an exception, try messing with the Mustache templates to reproduce
-            e.printStackTrace()
+            e.printStackTrace(SimpleFileLogger.filePrintStream)
+            PrettyPrinter.onFailed()
             exitProcess(1)
         }
     }
