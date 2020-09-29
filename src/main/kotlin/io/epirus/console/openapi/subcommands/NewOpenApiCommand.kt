@@ -13,9 +13,13 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.OpenApiGeneratorService
-import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectStructure
+import io.epirus.console.openapi.project.OpenApiTemplateProvider
+import io.epirus.console.openapi.utils.PrettyPrinter
+import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.TemplateType
+import io.epirus.console.project.utils.ProjectCreationUtils
 import io.epirus.console.token.erc777.ERC777GeneratorService
 import org.apache.commons.lang.StringUtils
 import picocli.CommandLine
@@ -37,40 +41,53 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    @CommandLine.Parameters(defaultValue = "NONE")
-    var templateType = TemplateType.NONE
+    private val contextPath = if (projectOptions.contextPath != null) {
+        StringUtils.removeEnd(projectOptions.contextPath, "/")
+    } else {
+        projectOptions.projectName
+    }
+
+    @CommandLine.Parameters(description = ["HelloWorld, ERC777"], defaultValue = "HelloWorld")
+    var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
-        val contextPath = if (projectOptions.contextPath != null) {
-            StringUtils.removeEnd(projectOptions.contextPath, "/")
-        } else {
-            projectOptions.projectName
-        }
+        print("\nGenerating Hello World OpenAPI project ...\n")
+        SimpleFileLogger.startLogging()
 
         when (templateType) {
-            TemplateType.NONE, TemplateType.HELLOWORLD -> {
-                OpenApiGeneratorService(
-                    OpenApiGeneratorServiceConfiguration(
-                        projectOptions.projectName,
-                        projectOptions.packageName,
-                        projectOptions.outputDir,
-                        emptyList(),
-                        emptyList(),
-                        projectOptions.addressLength,
-                        contextPath)
-                ).generate()
+            TemplateType.HelloWorld -> {
+                createHelloWorldProject()
             }
             TemplateType.ERC777 -> {
                 ERC777GeneratorService(projectOptions.projectName, projectOptions.packageName, projectOptions.outputDir).generate()
             }
         }
-//        OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(projectName = projectOptions.projectName,
-//            packageName = packageName,
-//            outputDir = projectFolder.path,
-//            abis = abis,
-//            bins = bins,
-//            addressLength = addressLength,
-//            contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
-//        )).generate()
+
+        PrettyPrinter.onProjectSuccess()
+    }
+
+    private fun createHelloWorldProject() {
+        val projectStructure = OpenApiProjectStructure(
+            projectOptions.outputDir,
+            projectOptions.packageName,
+            projectOptions.projectName
+        )
+        ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
+        OpenApiTemplateProvider(
+            "project/HelloWorld.sol",
+            "",
+            "project/build.gradleOpenAPI.template",
+            "project/settings.gradle.template",
+            "project/gradlew-wrapper.properties.template",
+            "project/gradlew.bat.template",
+            "project/gradlew.template",
+            "gradle-wrapper.jar",
+            projectOptions.packageName,
+            projectOptions.projectName,
+            contextPath,
+            (projectOptions.addressLength * 8).toString()
+        ).generateFiles(projectStructure)
+        OpenApiProjectCreationUtils.generateOpenApi(projectStructure.projectRoot)
+        OpenApiProjectCreationUtils.generateSwaggerUi(projectStructure.projectRoot)
     }
 }
