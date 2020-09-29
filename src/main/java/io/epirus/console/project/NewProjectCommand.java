@@ -44,8 +44,8 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand extends ProjectOptions implements Runnable {
 
-    @CommandLine.Parameters(description = "HELLOWORLD, ERC777", defaultValue = "HELLOWORLD")
-    TemplateType templateType = TemplateType.NONE;
+    @CommandLine.Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
+    TemplateType templateType = TemplateType.HelloWorld;
 
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
@@ -76,8 +76,7 @@ public class NewProjectCommand extends ProjectOptions implements Runnable {
 
             if (isKotlin) {
                 switch (templateType) {
-                    case NONE:
-                    case HELLOWORLD:
+                    case HelloWorld:
                         new KotlinProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
@@ -97,8 +96,7 @@ public class NewProjectCommand extends ProjectOptions implements Runnable {
                 }
             } else {
                 switch (templateType) {
-                    case NONE:
-                    case HELLOWORLD:
+                    case HelloWorld:
                         new JavaProjectCreatorRunner(projectCreatorConfig).run();
                         break;
                     case ERC777:
