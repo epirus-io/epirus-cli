@@ -12,14 +12,12 @@
  */
 package io.epirus.console.project;
 
-import java.io.File;
 import java.io.IOException;
 
 import io.epirus.console.project.templates.TemplateProvider;
 import io.epirus.console.project.utils.ProgressCounter;
+import io.epirus.console.project.utils.ProjectCreationUtils;
 import io.epirus.console.project.wallet.ProjectWallet;
-
-import org.web3j.codegen.Console;
 
 public abstract class AbstractProject<T extends AbstractProject<T>> {
     private T project;
@@ -59,78 +57,16 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         return project.projectWallet;
     }
 
-    protected void generateWrappers(final String pathToDirectory)
-            throws IOException, InterruptedException {
-        if (!isWindows()) {
-            setExecutable(pathToDirectory, "gradlew");
-            executeBuild(
-                    new File(pathToDirectory),
-                    new String[] {"bash", "-c", "./gradlew generateContractWrappers -q"});
-        } else {
-            setExecutable(pathToDirectory, "gradlew.bat");
-            executeBuild(
-                    new File(pathToDirectory),
-                    new String[] {"cmd", "/c", ".\\gradlew.bat generateContractWrappers -q"});
-        }
-    }
-
-    private boolean isWindows() {
-        return System.getProperty("os.name").toLowerCase().startsWith("windows");
-    }
-
-    private void setExecutable(final String pathToDirectory, final String gradlew) {
-        final File f = new File(pathToDirectory + File.separator + gradlew);
-        final boolean isExecutable = f.setExecutable(true);
-    }
-
-    private void executeBuild(final File workingDir, final String[] command)
-            throws InterruptedException, IOException {
-        executeProcess(workingDir, command);
-    }
-
-    private void executeProcess(File workingDir, String[] command)
-            throws InterruptedException, IOException {
-        int exitCode =
-                new ProcessBuilder(command)
-                        .directory(workingDir)
-                        .redirectErrorStream(true)
-                        .redirectOutput(File.createTempFile("w3j", "cli"))
-                        .start()
-                        .waitFor();
-        if (exitCode != 0) {
-            Console.exitError("Could not build project.");
-        }
-    }
-
-    protected void createFatJar(String pathToDirectory) throws IOException, InterruptedException {
-        if (!isWindows()) {
-            executeProcess(
-                    new File(pathToDirectory),
-                    new String[] {"bash", "./gradlew", "shadowJar", "-q"});
-        } else {
-            executeProcess(
-                    new File(pathToDirectory),
-                    new String[] {"cmd", "/c", ".\\gradlew.bat shadowJar", "-q"});
-        }
-    }
-
-    protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
-        projectStructure.createMainDirectory();
-        projectStructure.createTestDirectory();
-        projectStructure.createSolidityDirectory();
-        projectStructure.createWrapperDirectory();
-    }
-
     public void createProject() throws IOException, InterruptedException {
-        generateTopLevelDirectories(projectStructure);
+        ProjectCreationUtils.generateTopLevelDirectories(projectStructure);
         getTemplateProvider().generateFiles(projectStructure);
         progressCounter.processing("Creating " + projectStructure.projectName);
-        generateWrappers(projectStructure.getProjectRoot());
+        ProjectCreationUtils.generateWrappers(projectStructure.getProjectRoot());
         if (withTests) {
             generateTests(projectStructure);
         }
         if (withFatJar) {
-            createFatJar(projectStructure.getProjectRoot());
+            ProjectCreationUtils.createFatJar(projectStructure.getProjectRoot());
         }
         progressCounter.setLoading(false);
     }
