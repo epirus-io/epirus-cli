@@ -17,27 +17,30 @@ import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.io.PrintStream
 
-object SimpleFileLogger {
-    private val logFile = File("logs")
-    val filePrintStream = PrintStream(logFile)
-    init {
-        logFile.createNewFile()
-    }
+class SimpleFileLogger {
+    companion object {
+        val logFile = File("logs")
+        val filePrintStream = PrintStream(logFile)
 
-    fun startLogging() {
-        System.setOut(filePrintStream)
-        System.setErr(filePrintStream)
-    }
+        init {
+            logFile.createNewFile()
+        }
 
-    fun switchToConsole() {
-        System.setOut(PrintStream(FileOutputStream(FileDescriptor.out)))
-    }
+        fun startLogging() {
+            System.setOut(filePrintStream)
+            System.setErr(filePrintStream)
+        }
 
-    fun deleteLogging(): Boolean {
-        return logFile.delete()
-    }
+        fun switchToConsole() {
+            System.setOut(PrintStream(FileOutputStream(FileDescriptor.out)))
+        }
 
-    fun switchTo(p: PrintStream) {
-        System.setOut(p)
+        fun deleteLogging(): Boolean {
+            return logFile.delete()
+        }
+
+        fun switchTo(p: PrintStream) {
+            System.setOut(p)
+        }
     }
 }
