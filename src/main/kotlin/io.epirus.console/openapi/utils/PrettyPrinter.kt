@@ -31,13 +31,9 @@ object PrettyPrinter {
     private val instructionPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build()
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
-    init {
+    fun onProjectSuccess() {
         SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
-    }
-
-    fun onProjectSuccess() {
-
         cp.println("Project Created Successfully")
         print(System.lineSeparator())
 
@@ -53,6 +49,7 @@ object PrettyPrinter {
 
     fun onJarSuccess() {
         SimpleFileLogger.switchToConsole()
+        print(System.lineSeparator())
         cp.println("JAR generated Successfully")
         print(System.lineSeparator())
 
@@ -64,12 +61,14 @@ object PrettyPrinter {
 
     fun onSuccess() {
         SimpleFileLogger.switchToConsole()
+        print(System.lineSeparator())
         cp.println("Project generated Successfully")
         print(System.lineSeparator())
     }
 
     fun onFailed() {
         SimpleFileLogger.switchToConsole()
+        print(System.lineSeparator())
         cpf.println("Project generation Failed. Check log file for more information.")
         print(System.lineSeparator())
     }
