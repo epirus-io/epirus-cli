@@ -27,8 +27,6 @@ web3j {
     addressBitLength = <address_length>
     openapi {
         contextPath = '<context_path>'
-        contractsAbis = ['src/main/solidity/compiled']
-        contractsBins = ['src/main/solidity/compiled']
     }
 }
 
