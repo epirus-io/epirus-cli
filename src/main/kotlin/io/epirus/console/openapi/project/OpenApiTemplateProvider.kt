@@ -30,7 +30,8 @@ class OpenApiTemplateProvider(
     private val packageName: String,
     private val projectName: String,
     private val contextPath: String,
-    private val addressLength: String
+    private val addressLength: String,
+    private val readme: String
 ) : TemplateProvider {
     fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)
@@ -87,5 +88,8 @@ class OpenApiTemplateProvider(
         ProjectWriter.copyResourceFile(
             gradlewJar,
             projectStructure.wrapperPath + File.separator + "gradle-wrapper.jar")
+        ProjectWriter.copyResourceFile(
+            readme,
+            projectStructure.projectRoot + File.separator + "README.md")
     }
 }

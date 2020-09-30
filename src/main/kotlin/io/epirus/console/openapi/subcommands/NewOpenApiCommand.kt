@@ -85,7 +85,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
             projectOptions.packageName,
             projectOptions.projectName,
             contextPath,
-            (projectOptions.addressLength * 8).toString()
+            (projectOptions.addressLength * 8).toString(),
+            "project/README.openapi.md"
         ).generateFiles(projectStructure)
         OpenApiProjectCreationUtils.generateOpenApi(projectStructure.projectRoot)
         OpenApiProjectCreationUtils.generateSwaggerUi(projectStructure.projectRoot)
