@@ -13,7 +13,13 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.options.PreCompiledContractOptions
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectStructure
+import io.epirus.console.openapi.project.OpenApiTemplateProvider
+import io.epirus.console.openapi.utils.PrettyPrinter
+import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.utils.ProjectCreationUtils
+import org.apache.commons.lang.StringUtils
 import picocli.CommandLine
 import java.io.File
 
@@ -31,9 +37,57 @@ import java.io.File
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
 class ImportOpenApiCommand : AbstractOpenApiCommand() {
-    @CommandLine.Mixin
-    val preCompiledContractOptions = PreCompiledContractOptions()
+
+    @CommandLine.Option(
+        names = ["-s", "--solidity-path"],
+        description = ["Path to solidity file/folder"]
+    )
+    var solidityImportPath: String? = null
 
     override fun generate(projectFolder: File) {
+        if (solidityImportPath == null) {
+            solidityImportPath = interactiveOptions.solidityProjectPath
+        }
+
+        val contextPath = if (projectOptions.contextPath != null) {
+            StringUtils.removeEnd(projectOptions.contextPath, "/")
+        } else {
+            projectOptions.projectName
+        }
+
+        print("\nGenerating Hello World OpenAPI project ...\n")
+        SimpleFileLogger.startLogging()
+
+        createImportProject(contextPath)
+
+        PrettyPrinter.onProjectSuccess()
+    }
+
+    private fun createImportProject(contextPath: String) {
+        val projectStructure = OpenApiProjectStructure(
+            projectOptions.outputDir,
+            projectOptions.packageName,
+            projectOptions.projectName
+        )
+        ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
+        OpenApiTemplateProvider(
+            "",
+            solidityImportPath!!.replaceHome(),
+            "project/build.gradleOpenAPI.template",
+            "project/settings.gradle.template",
+            "project/gradlew-wrapper.properties.template",
+            "project/gradlew.bat.template",
+            "project/gradlew.template",
+            "gradle-wrapper.jar",
+            projectOptions.packageName,
+            projectOptions.projectName,
+            contextPath,
+            (projectOptions.addressLength * 8).toString(),
+            "project/README.openapi.md"
+        ).generateFiles(projectStructure)
+        OpenApiProjectCreationUtils.generateOpenApi(projectStructure.projectRoot)
+        OpenApiProjectCreationUtils.generateSwaggerUi(projectStructure.projectRoot)
     }
 }
+
+fun String.replaceHome() = replace("~", System.getenv("HOME"))

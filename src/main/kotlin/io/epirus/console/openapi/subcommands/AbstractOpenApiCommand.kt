@@ -33,7 +33,7 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     @CommandLine.Spec
     protected lateinit var spec: CommandLine.Model.CommandSpec
 
-    private val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
+    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
     private val inputVerifier: InputVerifier = InputVerifier(System.out)
 
     override fun call(): Int {
