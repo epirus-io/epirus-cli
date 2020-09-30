@@ -15,6 +15,7 @@ package io.epirus.console.project.utils;
 import java.io.File;
 import java.io.IOException;
 
+import io.epirus.console.openapi.utils.PrettyPrinter;
 import io.epirus.console.openapi.utils.SimpleFileLogger;
 import io.epirus.console.project.ProjectStructure;
 
@@ -58,8 +59,7 @@ public class ProjectCreationUtils {
                         .start()
                         .waitFor();
         if (exitCode != 0) {
-            SimpleFileLogger.Companion.switchToConsole();
-            System.out.println("\nCould not build project.");
+            PrettyPrinter.INSTANCE.onFailed();
             System.exit(1);
         }
     }
