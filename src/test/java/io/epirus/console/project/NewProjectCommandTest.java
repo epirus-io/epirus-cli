@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import io.epirus.console.config.ConfigManager;
+import io.epirus.console.openapi.subcommands.NewOpenApiCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -65,8 +66,8 @@ public class NewProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testCorrectArgsProjectGeneration() {
-        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+    public void testCorrectArgsJavaProjectGeneration() {
+        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode = new CommandLine(NewProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
         final File pathToTests =
@@ -89,7 +90,7 @@ public class NewProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         ConfigManager.setDevelopment();
-        final String[] args = {"--java", "-n=", "-p="};
+        final String[] args = {"-n=", "-p="};
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(outputStream);
 
@@ -103,5 +104,12 @@ public class NewProjectCommandTest extends ClassExecutor {
                 outputStream
                         .toString()
                         .contains("Please make sure the required parameters are not empty."));
+    }
+
+    @Test
+    public void testCorrectArgsOpenApiProjectGeneration() {
+        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        int exitCode = new CommandLine(NewOpenApiCommand.class).execute(args);
+        assertEquals(0, exitCode);
     }
 }

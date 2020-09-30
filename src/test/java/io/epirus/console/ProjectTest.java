@@ -42,9 +42,7 @@ public class ProjectTest extends ClassExecutor {
                 testWalletDirectory
                         + File.separator
                         + WalletUtils.generateNewWalletFile("", testWalletDirectory);
-        final String[] args = {
-            "new", "--java", "-p", "org.com", "-n", "Test", "-o" + workingDirectory
-        };
+        final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + workingDirectory};
         int result = new EpirusCommand(System.getenv(), args).parse();
         if (result != 0) {
             throw new RuntimeException("Failed to generate test project");
