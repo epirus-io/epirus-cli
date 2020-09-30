@@ -41,12 +41,6 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    private val contextPath = if (projectOptions.contextPath != null) {
-        StringUtils.removeEnd(projectOptions.contextPath, "/")
-    } else {
-        projectOptions.projectName
-    }
-
     @CommandLine.Parameters(description = ["HelloWorld, ERC777"], defaultValue = "HelloWorld")
     var templateType = TemplateType.HelloWorld
 
@@ -54,9 +48,15 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
         print("\nGenerating Hello World OpenAPI project ...\n")
         SimpleFileLogger.startLogging()
 
+        val contextPath = if (projectOptions.contextPath != null) {
+            StringUtils.removeEnd(projectOptions.contextPath, "/")
+        } else {
+            projectOptions.projectName
+        }
+
         when (templateType) {
             TemplateType.HelloWorld -> {
-                createHelloWorldProject()
+                createHelloWorldProject(contextPath)
             }
             TemplateType.ERC777 -> {
                 ERC777GeneratorService(projectOptions.projectName, projectOptions.packageName, projectOptions.outputDir).generate()
@@ -66,7 +66,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
         PrettyPrinter.onProjectSuccess()
     }
 
-    private fun createHelloWorldProject() {
+    private fun createHelloWorldProject(contextPath: String) {
         val projectStructure = OpenApiProjectStructure(
             projectOptions.outputDir,
             projectOptions.packageName,
