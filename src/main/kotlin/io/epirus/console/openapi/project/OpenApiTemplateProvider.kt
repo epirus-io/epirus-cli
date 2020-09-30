@@ -33,7 +33,7 @@ class OpenApiTemplateProvider(
     private val addressLength: String,
     private val readme: String
 ) : TemplateProvider {
-    fun loadGradleBuild(): String {
+    private fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)
             .replace("<package_name>".toRegex(), packageName)
             .replace("<project_name>".toRegex(), projectName)
@@ -45,12 +45,12 @@ class OpenApiTemplateProvider(
         return TemplateReader.readFile(solidityContract)
     }
 
-    fun loadGradleSettings(): String {
+    private fun loadGradleSettings(): String {
         return TemplateReader.readFile(gradleSettings)
             .replace("<project_name>".toRegex(), projectName)
     }
 
-    fun loadGradlewWrapperSettings(): String {
+    private fun loadGradlewWrapperSettings(): String {
         return TemplateReader.readFile(gradlewWrapperSettings)
     }
 
@@ -58,7 +58,7 @@ class OpenApiTemplateProvider(
         return TemplateReader.readFile(gradlewBatScript)
     }
 
-    fun loadGradlewScript(): String {
+    private fun loadGradlewScript(): String {
         return TemplateReader.readFile(gradlewScript)
     }
 
