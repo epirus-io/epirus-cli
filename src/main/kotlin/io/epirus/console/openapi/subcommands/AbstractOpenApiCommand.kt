@@ -44,14 +44,13 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
             projectOptions.outputDir,
             projectOptions.projectName
         ).toFile().apply {
-            if (!exists() ||
-                !File("${projectOptions.projectName}-$JARSUFFIX").exists() ||
-                projectOptions.overwrite ||
-                interactiveOptions.overrideExistingProject()) {
-                deleteRecursively()
-                mkdirs()
-            } else {
-                exitProcess(1)
+            if (exists() || File("${projectOptions.projectName}$JARSUFFIX").exists()) {
+                if (projectOptions.overwrite || interactiveOptions.overrideExistingProject()) {
+                    deleteRecursively()
+                    mkdirs()
+                } else {
+                    exitProcess(1)
+                }
             }
         }
 
