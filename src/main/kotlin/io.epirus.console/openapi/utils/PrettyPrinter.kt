@@ -72,4 +72,11 @@ object PrettyPrinter {
         cpf.println("Project generation Failed. Check log file for more information.")
         print(System.lineSeparator())
     }
+
+    fun onWrongPath() {
+        SimpleFileLogger.switchToConsole()
+        print(System.lineSeparator())
+        cpf.println("Please enter a correct file path containing solidity code.")
+        print(System.lineSeparator())
+    }
 }

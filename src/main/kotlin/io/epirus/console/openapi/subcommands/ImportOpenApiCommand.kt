@@ -72,7 +72,7 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
         ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
         OpenApiTemplateProvider(
             "",
-            solidityImportPath!!.replaceHome(),
+            solidityImportPath!!,
             "project/build.gradleOpenAPI.template",
             "project/settings.gradle.template",
             "project/gradlew-wrapper.properties.template",
@@ -89,5 +89,3 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
         OpenApiProjectCreationUtils.generateSwaggerUi(projectStructure.projectRoot)
     }
 }
-
-fun String.replaceHome() = replace("~", System.getenv("HOME"))

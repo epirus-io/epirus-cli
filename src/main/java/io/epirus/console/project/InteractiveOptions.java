@@ -18,12 +18,15 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
 import io.epirus.console.account.AccountUtils;
+import io.epirus.console.openapi.utils.PrettyPrinter;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
 
@@ -209,7 +212,22 @@ public class InteractiveOptions {
 
     public String getSolidityProjectPath() {
         print("Please enter the path to your solidity file/folder [Required Field]: ");
-        return getUserInput();
+        File file = new File(getUserInput());
+
+        if (!(file.exists()) || !containsContracts(file)) {
+            PrettyPrinter.INSTANCE.onWrongPath();
+            System.exit(1);
+        }
+        return file.getAbsolutePath();
+    }
+
+    public Boolean containsContracts(File file) {
+        if (file.isFile()) {
+            return file.getName().substring(file.getName().lastIndexOf(".") + 1).equals("sol");
+        }
+        return Arrays.stream(Objects.requireNonNull(file.listFiles()))
+                .anyMatch(
+                        f -> f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("sol"));
     }
 
     public boolean overrideExistingProject() {
