@@ -65,9 +65,6 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (solidityImportPath == null) {
-            buildInteractively();
-        }
         if (inputIsValid(projectOptions.projectName, projectOptions.packageName)) {
             projectOptions.projectName =
                     projectOptions.projectName.substring(0, 1).toUpperCase()
@@ -78,6 +75,10 @@ public class ImportProjectCommand implements Runnable {
                 } else {
                     exitError("Project creation was canceled.");
                 }
+            }
+
+            if (solidityImportPath == null) {
+                buildInteractively();
             }
 
             final ProjectImporterConfig projectImporterConfig =
