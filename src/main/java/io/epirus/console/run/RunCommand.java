@@ -233,7 +233,6 @@ public class RunCommand implements Runnable {
 
     private void executeProcess(File workingDir, String[] command) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.environment().put("DEPLOY_NETWORK", network.getNetworkName());
         setEnvironment(processBuilder);
 
         int exitCode =
@@ -296,5 +295,6 @@ public class RunCommand implements Runnable {
         processBuilder
                 .environment()
                 .putIfAbsent(WEB3J_OPENAPI_VAR_PREFIX + "PORT", Integer.toString(9090));
+        processBuilder.environment().putIfAbsent("EPIRUS_DEPLOY", String.valueOf(true));
     }
 }

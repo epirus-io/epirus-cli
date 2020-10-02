@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.7.0;
 
 // Modified Greeter contract. Based on example at https://www.ethereum.org/greeter.
 
@@ -7,10 +7,18 @@ contract Mortal {
     address owner;
 
     /* this function is executed at initialization and sets the owner of the contract */
-    constructor () public { owner = msg.sender; }
+    constructor () {owner = msg.sender;}
+
+    modifier onlyOwner {
+        require(
+            msg.sender == owner,
+            "Only owner can call this function."
+        );
+        _;
+    }
 
     /* Function to recover the funds on the contract */
-    function kill() public { if (msg.sender == owner) selfdestruct(owner); }
+    function kill() onlyOwner public {selfdestruct(msg.sender);}
 }
 
 contract HelloWorld is Mortal {
@@ -18,16 +26,21 @@ contract HelloWorld is Mortal {
     string greet;
 
     /* this runs when the contract is executed */
-    constructor (string _greet) public {
+    constructor (string memory _greet) public {
         greet = _greet;
     }
 
-    function newGreeting(string _greet) public {
+    function newGreeting(string memory _greet) onlyOwner public {
+        emit Modified(greet, _greet, greet, _greet);
         greet = _greet;
     }
 
     /* main function */
-    function greeting() public constant returns (string)  {
+    function greeting() public view returns (string memory)  {
         return greet;
     }
+
+    event Modified(
+        string indexed oldGreetingIdx, string indexed newGreetingIdx,
+        string oldGreeting, string newGreeting);
 }
