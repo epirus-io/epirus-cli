@@ -108,7 +108,7 @@ public class NewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testCorrectArgsOpenApiProjectGeneration() {
-        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"-o" + tempDirPath};
         int exitCode = new CommandLine(NewOpenApiCommand.class).execute(args);
         assertEquals(0, exitCode);
     }

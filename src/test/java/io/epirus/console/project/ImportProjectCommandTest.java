@@ -121,7 +121,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrectOpenApi() {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
+            "-p=org.com", "-n=TestOpenAPI", "-o=" + tempDirPath, "-s=" + solidityTestDir
         };
         int exitCode = new CommandLine(ImportOpenApiCommand.class).execute(args);
         assertEquals(0, exitCode);
