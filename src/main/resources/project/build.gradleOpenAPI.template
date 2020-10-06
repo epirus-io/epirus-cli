@@ -25,6 +25,7 @@ repositories {
 web3j {
     generatedPackageName = '<package_name>'
     addressBitLength = <address_length>
+    excludedContracts = ['Mortal']
     openapi {
         contextPath = '<context_path>'
     }
