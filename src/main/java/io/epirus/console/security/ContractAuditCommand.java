@@ -46,7 +46,7 @@ import ru.smartdec.smartcheck.app.cli.Tool;
 
 @CommandLine.Command(
         name = "audit",
-        description = "Audit solidity contract",
+        description = "Audit Solidity contract",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -61,7 +61,7 @@ public class ContractAuditCommand implements Runnable {
     @CommandLine.Parameters(
             index = "0",
             paramLabel = "solidity-file",
-            description = "A file containing solidity code")
+            description = "A file containing Solidity code")
     String filePath;
 
     @Override

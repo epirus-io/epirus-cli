@@ -55,7 +55,7 @@ class ERC777GeneratorService(private val projectName: String, private val packag
             val solidityFile = SolidityFile(contractPath)
             val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
-            println("Using solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
+            println("Using Solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
 
             val buildPath = outputDir + File.separator + "build"
             File(buildPath).mkdirs()

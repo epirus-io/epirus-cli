@@ -205,13 +205,13 @@ public class InteractiveOptions {
     }
 
     public boolean userWantsTests() {
-        print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
+        print("Would you like to generate unit test for your Solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
     public String getSolidityProjectPath() {
-        print("Please enter the path to your solidity file/folder [Required Field]: ");
+        print("Please enter the path to your Solidity file/folder [Required Field]: ");
         File file = new File(getUserInput());
 
         if (!(file.exists()) || !containsContracts(file)) {

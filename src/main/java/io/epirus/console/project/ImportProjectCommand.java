@@ -27,7 +27,7 @@ import static org.web3j.codegen.Console.exitError;
 
 @CommandLine.Command(
         name = "import",
-        description = "Import existing solidity contracts into a new Web3j Project",
+        description = "Import existing Solidity contracts into a new Web3j Project",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -43,7 +43,7 @@ public class ImportProjectCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder")
+            description = "Path to Solidity file/folder")
     public String solidityImportPath;
 
     private final InteractiveOptions interactiveOptions;

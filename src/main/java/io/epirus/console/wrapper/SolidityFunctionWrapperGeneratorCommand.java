@@ -19,7 +19,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "solidity",
-        description = "Generate wrappers from solidity",
+        description = "Generate wrappers from Solidity",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

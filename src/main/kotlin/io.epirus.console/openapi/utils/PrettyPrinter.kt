@@ -76,7 +76,7 @@ object PrettyPrinter {
     fun onWrongPath() {
         SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
-        cpf.println("Please enter a correct file path containing solidity code.")
+        cpf.println("Please enter a correct file path containing Solidity code.")
         print(System.lineSeparator())
     }
 }

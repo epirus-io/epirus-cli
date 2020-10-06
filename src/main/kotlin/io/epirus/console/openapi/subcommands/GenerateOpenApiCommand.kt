@@ -24,7 +24,7 @@ import java.io.File
 
 @Command(
         name = "generate",
-        description = ["Generate REST endpoints from existing solidity contracts."],
+        description = ["Generate REST endpoints from existing Solidity contracts."],
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,

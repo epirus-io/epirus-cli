@@ -60,14 +60,12 @@ public class TruffleGenerateCommand implements Runnable {
     @CommandLine.Option(
             names = {"-jt", JAVA_TYPES_ARG},
             description = "use native Java types.",
-            required = false,
             showDefaultValue = ALWAYS)
     private boolean javaTypes = true;
 
     @CommandLine.Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use solidity types.",
-            required = false)
+            description = "use Solidity types.")
     private boolean solidityTypes;
 
     @Override
@@ -89,8 +87,8 @@ public class TruffleGenerateCommand implements Runnable {
 
     private boolean useJavaNativeTypes() {
         boolean useJavaNativeTypes = true;
-        if ((solidityTypes == false && javaTypes == false)
-                || (solidityTypes == true && javaTypes == true)) {
+        if ((!solidityTypes && !javaTypes)
+                || (solidityTypes && javaTypes)) {
             Console.exitError(
                     "Invalid project type. Expecting one of "
                             + SOLIDITY_TYPES_ARG

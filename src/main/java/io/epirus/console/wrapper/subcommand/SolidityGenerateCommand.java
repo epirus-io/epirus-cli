@@ -26,7 +26,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @CommandLine.Command(
         name = "generate",
-        description = "Generate Java smart contract wrappers from solidity",
+        description = "Generate Java smart contract wrappers from Solidity",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -85,7 +85,7 @@ public class SolidityGenerateCommand implements Runnable {
 
     @CommandLine.Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use solidity types.")
+            description = "use Solidity types.")
     private boolean solidityTypes;
 
     @CommandLine.Option(
@@ -119,8 +119,8 @@ public class SolidityGenerateCommand implements Runnable {
 
     private boolean useJavaNativeTypes() {
         boolean useJavaNativeTypes = true;
-        if ((solidityTypes == false && javaTypes == false)
-                || (solidityTypes == true && javaTypes == true)) {
+        if ((!solidityTypes && !javaTypes)
+                || (solidityTypes && javaTypes)) {
             Console.exitError(
                     "Invalid project type. Expecting one of "
                             + SOLIDITY_TYPES_ARG

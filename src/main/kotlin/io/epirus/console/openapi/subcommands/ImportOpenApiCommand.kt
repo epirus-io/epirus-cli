@@ -25,7 +25,7 @@ import java.io.File
 
 @CommandLine.Command(
     name = "import",
-    description = ["Import existing solidity contracts into a new Web3j-OpenAPI Project."],
+    description = ["Import existing Solidity contracts into a new Web3j-OpenAPI Project."],
     abbreviateSynopsis = true,
     showDefaultValues = true,
     mixinStandardHelpOptions = true,
@@ -40,7 +40,7 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
 
     @CommandLine.Option(
         names = ["-s", "--solidity-path"],
-        description = ["Path to solidity file/folder"]
+        description = ["Path to Solidity file/folder"]
     )
     var solidityImportPath: String? = null
 
