@@ -87,8 +87,7 @@ public class TruffleGenerateCommand implements Runnable {
 
     private boolean useJavaNativeTypes() {
         boolean useJavaNativeTypes = true;
-        if ((!solidityTypes && !javaTypes)
-                || (solidityTypes && javaTypes)) {
+        if ((!solidityTypes && !javaTypes) || (solidityTypes && javaTypes)) {
             Console.exitError(
                     "Invalid project type. Expecting one of "
                             + SOLIDITY_TYPES_ARG
