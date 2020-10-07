@@ -27,7 +27,7 @@ contract HelloWorld is Mortal {
     string greet;
 
     /* this runs when the contract is executed */
-    constructor (string memory _greet) public {
+    constructor (string memory _greet) {
         greet = _greet;
     }
 
