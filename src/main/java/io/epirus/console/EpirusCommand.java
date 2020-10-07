@@ -33,6 +33,8 @@ import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
 import org.apache.commons.lang.RandomStringUtils;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 
@@ -41,7 +43,7 @@ import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitSuccess;
 
 /** Main entry point for running command line utilities. */
-@CommandLine.Command(
+@Command(
         name = "epirus",
         subcommands = {
             AccountCommand.class,
@@ -87,7 +89,7 @@ public class EpirusCommand implements Runnable {
     private final Map<String, String> environment;
     private final String[] args;
 
-    @CommandLine.Option(
+    @Option(
             names = {"--telemetry"},
             description = "Whether to perform analytics.",
             defaultValue = "false")

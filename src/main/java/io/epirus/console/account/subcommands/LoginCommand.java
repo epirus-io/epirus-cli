@@ -17,11 +17,11 @@ import io.epirus.console.account.AccountService;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.utils.ConsoleDevice;
 import io.epirus.console.utils.IODevice;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import org.web3j.codegen.Console;
 
-@CommandLine.Command(
+@Command(
         name = "login",
         description = "Login to an Epirus account",
         showDefaultValues = true,

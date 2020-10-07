@@ -19,9 +19,9 @@ import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
 import io.epirus.console.account.subcommands.ResetCommand;
 import io.epirus.console.account.subcommands.StatusCommand;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-@CommandLine.Command(
+@Command(
         name = "account",
         description = "Manage your epirus account",
         showDefaultValues = true,

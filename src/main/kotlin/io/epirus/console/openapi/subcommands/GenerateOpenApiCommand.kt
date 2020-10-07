@@ -18,8 +18,10 @@ import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
 import io.epirus.console.openapi.options.PreCompiledContractOptions
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
-import picocli.CommandLine
+import picocli.CommandLine.Mixin
+import picocli.CommandLine.Option
 import picocli.CommandLine.Command
+import picocli.CommandLine.Help.Visibility.ALWAYS
 import java.io.File
 
 @Command(
@@ -36,13 +38,13 @@ import java.io.File
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class GenerateOpenApiCommand : AbstractOpenApiCommand() {
 
-    @CommandLine.Mixin
+    @Mixin
     val preCompiledContractOptions = PreCompiledContractOptions()
 
-    @CommandLine.Option(
+    @Option(
         names = ["--with-implementations"],
         description = ["Generate the interfaces implementations."],
-        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+        showDefaultValue = ALWAYS
     )
     var withImplementations: Boolean = true
 

@@ -17,11 +17,12 @@ import java.nio.file.Paths;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.docker.DockerOperations;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 
-@CommandLine.Command(
+@Command(
         name = "build",
         description = "Build project in docker",
         showDefaultValues = true,
@@ -35,10 +36,10 @@ import org.web3j.codegen.Console;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerBuildCommand implements DockerOperations, Runnable {
 
-    @CommandLine.Option(names = {"-d", "--directory"})
+    @Option(names = {"-d", "--directory"})
     Path directory = Paths.get(System.getProperty("user.dir"));
 
-    @CommandLine.Option(
+    @Option(
             names = {"-t", "--tag"},
             description = {"specify the tag for the docker image."},
             defaultValue = "web3app")

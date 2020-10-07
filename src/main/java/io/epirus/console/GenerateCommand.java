@@ -16,8 +16,9 @@ import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
 import io.epirus.console.wrapper.TruffleFunctionWrapperGeneratorCommand;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-@CommandLine.Command(
+@Command(
         name = "generate",
         subcommands = {
             CommandLine.HelpCommand.class,

@@ -12,24 +12,24 @@
  */
 package io.epirus.console.project;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public class ProjectOptions extends BaseProjectOptions {
-    @CommandLine.Option(
+    @Option(
             names = {"-t", "--generate-tests"},
             description = "Generate unit tests for the contract wrappers.",
             showDefaultValue = ALWAYS)
     public Boolean generateTests = true;
 
-    @CommandLine.Option(
+    @Option(
             names = {"--jar"},
             description = {"generate the JAR"},
             showDefaultValue = ALWAYS)
     public Boolean generateJar = false;
 
-    @CommandLine.Option(
+    @Option(
             names = {"--kotlin"},
             description = "Generate Kotlin code instead of Java.",
             showDefaultValue = ALWAYS)

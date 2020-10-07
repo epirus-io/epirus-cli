@@ -22,8 +22,8 @@ import io.epirus.console.project.TemplateType
 import io.epirus.console.project.utils.ProjectCreationUtils
 import io.epirus.console.token.erc777.ERC777GeneratorService
 import org.apache.commons.lang.StringUtils
-import picocli.CommandLine
 import picocli.CommandLine.Command
+import picocli.CommandLine.Parameters
 import java.io.File
 
 @Command(
@@ -41,7 +41,7 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    @CommandLine.Parameters(description = ["HelloWorld, ERC777"], defaultValue = "HelloWorld")
+    @Parameters(description = ["HelloWorld, ERC777"], defaultValue = "HelloWorld")
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {

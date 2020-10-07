@@ -13,11 +13,11 @@
 package io.epirus.console.account.subcommands;
 
 import io.epirus.console.EpirusVersionProvider;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import static io.epirus.console.config.ConfigManager.config;
 
-@CommandLine.Command(
+@Command(
         name = "status",
         description = "Status of an Epirus account",
         showDefaultValues = true,

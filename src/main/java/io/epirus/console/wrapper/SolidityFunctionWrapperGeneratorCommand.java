@@ -15,9 +15,9 @@ package io.epirus.console.wrapper;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.SubCommand;
 import io.epirus.console.wrapper.subcommand.SolidityGenerateCommand;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-@CommandLine.Command(
+@Command(
         name = "solidity",
         description = "Generate wrappers from Solidity",
         showDefaultValues = true,

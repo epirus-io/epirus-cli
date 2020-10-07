@@ -19,10 +19,10 @@ import io.epirus.console.wallet.subcommands.WalletFundCommand;
 import io.epirus.console.wallet.subcommands.WalletImportCommand;
 import io.epirus.console.wallet.subcommands.WalletSendCommand;
 import io.epirus.console.wallet.subcommands.WalletUpdateCommand;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 /** Class for managing our wallet command line utilities. */
-@CommandLine.Command(
+@Command(
         name = "wallet",
         description = "Manage wallets for Ethereum",
         showDefaultValues = true,

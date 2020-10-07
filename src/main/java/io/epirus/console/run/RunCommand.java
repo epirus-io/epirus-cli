@@ -29,7 +29,9 @@ import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.subcommands.WalletFundCommand;
 import io.epirus.console.wrapper.CredentialsOptions;
 import io.epirus.web3j.Epirus;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.codegen.Console;
 import org.web3j.crypto.CipherException;
@@ -45,7 +47,7 @@ import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
-@CommandLine.Command(
+@Command(
         name = "run",
         description = "Run your project using a live Ethereum network",
         showDefaultValues = true,
@@ -64,9 +66,9 @@ public class RunCommand implements Runnable {
     private Credentials credentials;
     private Web3j web3j;
 
-    @CommandLine.Mixin CredentialsOptions credentialsOptions;
+    @Mixin CredentialsOptions credentialsOptions;
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "network",
             description = "Ethereum network [rinkeby/kovan]",

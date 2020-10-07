@@ -21,11 +21,12 @@ import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
 import static org.web3j.codegen.Console.exitError;
 
-@CommandLine.Command(
+@Command(
         name = "new",
         description = "Create a new Web3j Project",
         showDefaultValues = true,
@@ -39,7 +40,7 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand extends ProjectOptions implements Runnable {
 
-    @CommandLine.Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
+    @Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
 
     private final InteractiveOptions interactiveOptions;

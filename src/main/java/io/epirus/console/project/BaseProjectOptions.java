@@ -12,24 +12,24 @@
  */
 package io.epirus.console.project;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public class BaseProjectOptions {
-    @CommandLine.Option(
+    @Option(
             names = {"-n", "--project-name"},
             description = "Project name.",
             showDefaultValue = ALWAYS)
     public String projectName = "Web3App";
 
-    @CommandLine.Option(
+    @Option(
             names = {"-p", "--package"},
             description = "Base package name.",
             showDefaultValue = ALWAYS)
     public String packageName = "io.epirus";
 
-    @CommandLine.Option(
+    @Option(
             names = {"-o", "--output-dir"},
             description = "Destination base directory.",
             showDefaultValue = ALWAYS)

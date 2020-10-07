@@ -20,10 +20,11 @@ import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.utils.ProjectCreationUtils
 import org.apache.commons.lang.StringUtils
-import picocli.CommandLine
+import picocli.CommandLine.Command
+import picocli.CommandLine.Option
 import java.io.File
 
-@CommandLine.Command(
+@Command(
     name = "import",
     description = ["Import existing Solidity contracts into a new Web3j-OpenAPI Project."],
     abbreviateSynopsis = true,
@@ -38,7 +39,7 @@ import java.io.File
 )
 class ImportOpenApiCommand : AbstractOpenApiCommand() {
 
-    @CommandLine.Option(
+    @Option(
         names = ["-s", "--solidity-path"],
         description = ["Path to Solidity file/folder"]
     )

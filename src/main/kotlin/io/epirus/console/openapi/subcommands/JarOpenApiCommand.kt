@@ -19,13 +19,14 @@ import io.epirus.console.openapi.options.PreCompiledContractOptions
 import io.epirus.console.openapi.utils.GradleUtils
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
-import picocli.CommandLine
+import picocli.CommandLine.Command
+import picocli.CommandLine.Mixin
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
-@CommandLine.Command(
+@Command(
     name = "jar",
     description = ["Generate an executable Web3j-OpenAPI JAR."],
     abbreviateSynopsis = true,
@@ -39,7 +40,7 @@ import java.nio.file.StandardCopyOption
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
 class JarOpenApiCommand : AbstractOpenApiCommand() {
-    @CommandLine.Mixin
+    @Mixin
     val preCompiledContractOptions = PreCompiledContractOptions()
 
     override fun generate(projectFolder: File) {

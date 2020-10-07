@@ -19,8 +19,9 @@ import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
 import io.epirus.console.openapi.subcommands.NewOpenApiCommand
 import picocli.CommandLine
+import picocli.CommandLine.Command
 
-@CommandLine.Command(
+@Command(
     name = "openapi",
     description = ["Generate a Web3j-OpenAPI project"],
     subcommands = [

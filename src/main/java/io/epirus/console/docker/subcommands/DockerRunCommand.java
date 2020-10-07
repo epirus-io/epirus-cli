@@ -25,7 +25,10 @@ import io.epirus.console.docker.DockerOperations;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.wrapper.CredentialsOptions;
 import org.apache.commons.lang3.ArrayUtils;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.codegen.Console;
 
@@ -33,7 +36,7 @@ import static io.epirus.console.EnvironmentVariablesProperties.*;
 import static io.epirus.console.config.ConfigManager.config;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@CommandLine.Command(
+@Command(
         name = "run",
         description = "Run project in docker",
         showDefaultValues = true,
@@ -47,28 +50,28 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
 
-    @CommandLine.Option(names = {"-t", "--tag"})
+    @Option(names = {"-t", "--tag"})
     String tag = "web3app";
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "network",
             description = "Ethereum network [rinkeby/kovan]",
             arity = "1")
     String deployNetwork;
 
-    @CommandLine.Option(names = {"-l", "--local"})
+    @Option(names = {"-l", "--local"})
     boolean localMode;
 
-    @CommandLine.Mixin CredentialsOptions credentialsOptions;
+    @Mixin CredentialsOptions credentialsOptions;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-d", "--directory"},
             description = "Directory to run docker in.",
             showDefaultValue = ALWAYS)
     Path directory = Paths.get(System.getProperty("user.dir"));
 
-    @CommandLine.Option(names = {"-p", "--print"})
+    @Option(names = {"-p", "--print"})
     boolean print;
 
     @Override

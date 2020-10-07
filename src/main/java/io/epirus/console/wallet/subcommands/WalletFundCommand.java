@@ -28,7 +28,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.utils.Numeric;
 
@@ -36,7 +38,7 @@ import static io.epirus.console.config.ConfigManager.config;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.crypto.Hash.sha256;
 
-@CommandLine.Command(
+@Command(
         name = "fund",
         description = "Fund testnet wallets.",
         showDefaultValues = true,
@@ -50,21 +52,21 @@ import static org.web3j.crypto.Hash.sha256;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class WalletFundCommand extends WalletManager implements Runnable {
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "network",
             description = "Ethereum network [rinkeby/kovan]",
             arity = "1")
     String network;
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "1",
             paramLabel = "destination-address",
             description = "Ethereum 20 bytes hex address",
             arity = "1")
     String destinationAddress;
 
-    @CommandLine.Option(names = {"-t", "--token"})
+    @Option(names = {"-t", "--token"})
     String token;
 
     @Override

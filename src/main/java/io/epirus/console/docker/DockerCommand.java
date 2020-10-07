@@ -16,9 +16,9 @@ import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.SubCommand;
 import io.epirus.console.docker.subcommands.DockerBuildCommand;
 import io.epirus.console.docker.subcommands.DockerRunCommand;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-@CommandLine.Command(
+@Command(
         name = "docker",
         description = "Run generated projects in Docker",
         showDefaultValues = true,

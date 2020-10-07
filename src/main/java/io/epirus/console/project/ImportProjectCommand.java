@@ -21,11 +21,13 @@ import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Option;
 
 import static org.web3j.codegen.Console.exitError;
 
-@CommandLine.Command(
+@Command(
         name = "import",
         description = "Import existing Solidity contracts into a new Web3j Project",
         showDefaultValues = true,
@@ -39,9 +41,9 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
 
-    @CommandLine.Mixin public ProjectOptions projectOptions = new ProjectOptions();
+    @Mixin public ProjectOptions projectOptions = new ProjectOptions();
 
-    @CommandLine.Option(
+    @Option(
             names = {"-s", "--solidity-path"},
             description = "Path to Solidity file/folder")
     public String solidityImportPath;

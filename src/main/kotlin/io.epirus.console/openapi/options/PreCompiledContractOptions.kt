@@ -12,18 +12,18 @@
  */
 package io.epirus.console.openapi.options
 
-import picocli.CommandLine
+import picocli.CommandLine.Option
 import java.io.File
 
 class PreCompiledContractOptions {
-    @CommandLine.Option(
+    @Option(
         names = ["-a", "--abi"],
         description = ["input ABI files and folders."],
         arity = "1..*"
     )
     var abis: MutableList<File> = mutableListOf()
 
-    @CommandLine.Option(
+    @Option(
         names = ["-b", "--bin"],
         description = ["input BIN files and folders."],
         arity = "1..*"
