@@ -45,7 +45,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
-        print("\nGenerating Hello World OpenAPI project ...\n")
+        print("\nCreating ${projectOptions.projectName} project ...\n")
         SimpleFileLogger.startLogging()
 
         val contextPath = if (projectOptions.contextPath != null) {

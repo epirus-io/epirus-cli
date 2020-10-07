@@ -56,7 +56,7 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
             projectOptions.projectName
         }
 
-        print("\nGenerating OpenAPI project ...\n")
+        print("\nCreating ${projectOptions.projectName} project ...\n")
         SimpleFileLogger.startLogging()
 
         createImportProject(contextPath)

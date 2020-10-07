@@ -44,11 +44,7 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
     val preCompiledContractOptions = PreCompiledContractOptions()
 
     override fun generate(projectFolder: File) {
-        if (preCompiledContractOptions.abis.isEmpty()) {
-            print("\nGenerating Hello World OpenAPI JAR ...\n")
-        } else {
-            print("\nGenerating OpenAPI JAR ...\n")
-        }
+        print("\nCreating ${projectOptions.projectName} JAR ...\n")
         SimpleFileLogger.startLogging()
         val tempFolderPath = Paths.get(projectFolder.toString(), projectOptions.projectName)
 
