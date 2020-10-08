@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import io.epirus.console.config.ConfigManager;
-import io.epirus.console.openapi.subcommands.ImportOpenApiCommand;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -116,14 +115,5 @@ public class ImportProjectCommandTest extends ClassExecutor {
                 outputStream
                         .toString()
                         .contains("Please make sure the required parameters are not empty."));
-    }
-
-    @Test
-    public void testWithPicoCliWhenArgumentsAreCorrectOpenApi() {
-        final String[] args = {
-            "-p=org.com", "-n=TestOpenAPI", "-o=" + tempDirPath, "-s=" + solidityTestDir
-        };
-        int exitCode = new CommandLine(ImportOpenApiCommand.class).execute(args);
-        assertEquals(0, exitCode);
     }
 }
