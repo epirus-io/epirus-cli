@@ -17,9 +17,10 @@ import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
-import picocli.CommandLine
-import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
+import picocli.CommandLine.ExitCode
+import picocli.CommandLine.Mixin
+import picocli.CommandLine.Spec
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.Callable

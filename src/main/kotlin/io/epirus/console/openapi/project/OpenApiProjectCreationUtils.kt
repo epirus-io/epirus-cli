@@ -12,8 +12,9 @@
  */
 package io.epirus.console.openapi.project
 
-import io.epirus.console.project.utils.ProjectCreationUtils
-import io.epirus.console.project.utils.ProjectCreationUtils.*
+import io.epirus.console.project.utils.ProjectCreationUtils.setExecutable
+import io.epirus.console.project.utils.ProjectCreationUtils.executeBuild
+import io.epirus.console.project.utils.ProjectCreationUtils.isWindows
 import java.io.File
 import java.io.IOException
 
