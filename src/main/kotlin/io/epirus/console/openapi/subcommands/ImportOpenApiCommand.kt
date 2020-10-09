@@ -74,7 +74,7 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
         OpenApiTemplateProvider(
             "",
             solidityImportPath!!,
-            "project/build.gradleOpenAPI.template",
+            "project/build.gradleImportOpenAPI.template",
             "project/settings.gradle.template",
             "project/gradlew-wrapper.properties.template",
             "project/gradlew.bat.template",
