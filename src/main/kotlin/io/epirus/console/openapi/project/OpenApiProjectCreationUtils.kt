@@ -13,32 +13,33 @@
 package io.epirus.console.openapi.project
 
 import io.epirus.console.project.utils.ProjectCreationUtils
+import io.epirus.console.project.utils.ProjectCreationUtils.*
 import java.io.File
 import java.io.IOException
 
 object OpenApiProjectCreationUtils {
     @Throws(IOException::class, InterruptedException::class)
     fun generateOpenApi(pathToDirectory: String?) {
-        if (!ProjectCreationUtils.isWindows()) {
-            ProjectCreationUtils.setExecutable(pathToDirectory, "gradlew")
-            ProjectCreationUtils.executeBuild(
+        if (!isWindows()) {
+            setExecutable(pathToDirectory, "gradlew")
+            executeBuild(
                 File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jOpenAPI"))
         } else {
-            ProjectCreationUtils.setExecutable(pathToDirectory, "gradlew.bat")
-            ProjectCreationUtils.executeBuild(
+            setExecutable(pathToDirectory, "gradlew.bat")
+            executeBuild(
                 File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jOpenAPI"))
         }
     }
 
     @Throws(IOException::class, InterruptedException::class)
     fun generateSwaggerUi(pathToDirectory: String?) {
-        if (!ProjectCreationUtils.isWindows()) {
-            ProjectCreationUtils.setExecutable(pathToDirectory, "gradlew")
-            ProjectCreationUtils.executeBuild(
+        if (!isWindows()) {
+            setExecutable(pathToDirectory, "gradlew")
+            executeBuild(
                 File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jSwaggerUI"))
         } else {
-            ProjectCreationUtils.setExecutable(pathToDirectory, "gradlew.bat")
-            ProjectCreationUtils.executeBuild(
+            setExecutable(pathToDirectory, "gradlew.bat")
+            executeBuild(
                 File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jSwaggerUI"))
         }
     }

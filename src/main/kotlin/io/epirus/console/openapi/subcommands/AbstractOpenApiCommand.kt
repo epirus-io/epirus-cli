@@ -18,8 +18,8 @@ import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
 import picocli.CommandLine
-import picocli.CommandLine.Mixin
-import picocli.CommandLine.Spec
+import picocli.CommandLine.*
+import picocli.CommandLine.Model.CommandSpec
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.Callable
@@ -33,7 +33,7 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     protected val projectOptions = OpenApiProjectOptions()
 
     @Spec
-    protected lateinit var spec: CommandLine.Model.CommandSpec
+    protected lateinit var spec: CommandSpec
 
     protected val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
     private val inputVerifier: InputVerifier = InputVerifier(System.out)
@@ -59,7 +59,7 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
         return try {
             generate(projectFolder)
             projectFolder.deleteOnExit()
-            CommandLine.ExitCode.OK
+            ExitCode.OK
         } catch (e: Exception) {
             e.printStackTrace(SimpleFileLogger.filePrintStream)
             PrettyPrinter.onFailed()

@@ -17,7 +17,8 @@ import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
 import io.epirus.console.openapi.subcommands.NewOpenApiCommand
 import io.epirus.console.project.utils.Folders
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.nio.file.Paths
@@ -30,16 +31,16 @@ class OpenApiProjectTest {
     fun testCorrectArgsOpenApiEndpointsGeneration() {
         val args = arrayOf("-o", tempDirPath, "-n", "generationTest")
         val exitCode = CommandLine(GenerateOpenApiCommand::class.java).execute(*args)
-        Assertions.assertEquals(0, exitCode)
+        assertEquals(0, exitCode)
     }
 
     @Test
     fun testCorrectArgsOpenApiJarGeneration() {
         val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath)
         val exitCode = CommandLine(JarOpenApiCommand::class.java).execute(*args)
-        Assertions.assertEquals(0, exitCode)
+        assertEquals(0, exitCode)
         val jarFile = Paths.get(tempDirPath, "Test-server-all.jar").toFile()
-        Assertions.assertTrue(jarFile.exists())
+        assertTrue(jarFile.exists())
     }
 
     @Test
@@ -49,7 +50,7 @@ class OpenApiProjectTest {
             "-p=org.com", "-n=$projectName", "-o=$tempDirPath", "-s=$solidityTestDir"
         )
         val exitCode = CommandLine(ImportOpenApiCommand::class.java).execute(*args)
-        Assertions.assertEquals(0, exitCode)
+        assertEquals(0, exitCode)
     }
 
     @Test
@@ -57,6 +58,6 @@ class OpenApiProjectTest {
         val projectName = "newTest"
         val args = arrayOf("-o", tempDirPath, "-n", projectName)
         val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
-        Assertions.assertEquals(0, exitCode)
+        assertEquals(0, exitCode)
     }
 }
