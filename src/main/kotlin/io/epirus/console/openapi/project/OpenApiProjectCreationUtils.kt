@@ -20,20 +20,7 @@ import java.io.IOException
 
 object OpenApiProjectCreationUtils {
     @Throws(IOException::class, InterruptedException::class)
-    fun generateOpenApi(pathToDirectory: String?) {
-        if (!isWindows()) {
-            setExecutable(pathToDirectory, "gradlew")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jOpenAPI"))
-        } else {
-            setExecutable(pathToDirectory, "gradlew.bat")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jOpenAPI"))
-        }
-    }
-
-    @Throws(IOException::class, InterruptedException::class)
-    fun generateSwaggerUi(pathToDirectory: String?) {
+    fun generateOpenApiAndSwaggerUi(pathToDirectory: String?) {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
