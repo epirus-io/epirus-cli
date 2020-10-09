@@ -40,7 +40,7 @@ public class <project_name> {
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new EpirusGasProvider(deployNetwork, GasPrice.High));
             callGreetMethod(helloWorld);
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
