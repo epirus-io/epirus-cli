@@ -101,7 +101,9 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     "docker",
                     "run",
                     "--env",
-                    String.format(EPIRUS_VAR_PREFIX + "LOGIN_TOKEN=%s", config.getLoginToken())
+                    String.format(EPIRUS_VAR_PREFIX + "LOGIN_TOKEN=%s", config.getLoginToken()),
+                    "--env",
+                    String.format(EPIRUS_VAR_PREFIX + "DEPLOY=%s", true)
                 };
 
         args = setCredentials(args);
