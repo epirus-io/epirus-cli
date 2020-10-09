@@ -14,7 +14,7 @@ package io.epirus.console.openapi
 
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
-import org.web3j.openapi.codegen.GenerateOpenApi
+import org.web3j.openapi.codegen.OpenApiGenerator
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils
 import org.web3j.sokt.SolcArguments
@@ -67,7 +67,7 @@ class OpenApiGeneratorService(
     }
 
     private fun generateInternal(abis: List<File>, bins: List<File>) {
-        GenerateOpenApi(GeneratorConfiguration(
+        OpenApiGenerator(GeneratorConfiguration(
             projectName = openApiGeneratorServiceConfiguration.projectName,
             packageName = openApiGeneratorServiceConfiguration.packageName,
             outputDir = if (openApiGeneratorServiceConfiguration.outputDir.endsWith(openApiGeneratorServiceConfiguration.projectName))
