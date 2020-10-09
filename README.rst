@@ -23,7 +23,9 @@ About
 The Epirus command line tools enable developers to interact with blockchains more easily. The Epirus command line tools allow allow you to use some of the key functionality of Epirus using Web3j from your terminal, including:
 
 * New project creation
+* New `Web3j-OpenAPI <https://github.com/web3j/web3j-openapi>`_ project creation
 * Project creation from existing Solidity code
+* `Web3j-OpenAPI <https://github.com/web3j/web3j-openapi>`_ project creation from existing Solidity code
 * Wallet creation
 * Wallet password management
 * Ether transfer from one wallet to another
