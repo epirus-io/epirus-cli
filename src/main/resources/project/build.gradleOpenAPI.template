@@ -2,12 +2,10 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-        maven { url 'https://dl.bintray.com/hotkeytlt/maven' }
         maven { url "https://plugins.gradle.org/m2/" }
-        mavenLocal()
     }
     dependencies {
-        classpath 'org.web3j.openapi:web3j-openapi-gradle-plugin:4.5.12.4'
+        classpath 'org.web3j.openapi:web3j-openapi-gradle-plugin:4.7.0'
     }
 }
 
@@ -18,7 +16,6 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 // For more options, check: https://github.com/web3j/web3j-openapi-gradle-plugin
@@ -30,16 +27,3 @@ web3j {
         contextPath = '<context_path>'
     }
 }
-
-resolve {
-    resourcePackages = ['org.web3j.openapi', '<package_name>']
-    classpath = sourceSets.main.runtimeClasspath
-    outputDir = file('src/main/resources/static')
-}
-
-swaggerSources {
-    openapi {
-        inputFile = file('src/main/resources/static/openapi.json')
-    }
-}
-
