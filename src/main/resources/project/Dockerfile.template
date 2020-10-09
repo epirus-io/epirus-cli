@@ -8,7 +8,7 @@ RUN apk \
 	&& curl -L get.epirus.io | sh \
 	&& /root/.epirus/epirus \
 	&& cd /root/app \
-	&& ./gradlew
+	&& ./gradlew generateContractWrappers
 
 FROM alpine
 COPY --from=Build /root /root/
