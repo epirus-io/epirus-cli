@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'org.web3j.openapi:web3j-openapi-gradle-plugin:4.7.0'
+    }
+}
+
+apply plugin: 'org.web3j.openapi'
+
+group '<package_name>'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+// For more options, check: https://github.com/web3j/web3j-openapi-gradle-plugin
+web3j {
+    generatedPackageName = '<package_name>'
+    addressBitLength = <address_length>
+    openapi {
+        contextPath = '<context_path>'
+    }
+}
