@@ -16,15 +16,14 @@ mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
 ext {
-    web3jVersion = "4.6.1"
+    web3jVersion = "4.7.0"
     picocli = "4.0.4"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
-    web3jOpenApiVersion = '0.0.6'
-    web3jSoktVersion = "0.2.0"
+    web3jSoktVersion = "0.2.1"
     gradleVersion = "6.2"
     kotlinLoggin = "1.7.9"
     dockerJavaVersion = '3.2.5'
@@ -57,7 +56,6 @@ repositories {
     maven { url "https://dl.bintray.com/ethereum/maven/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-    maven { setUrl("https://dl.bintray.com/hotkeytlt/maven") }
 }
 
 test {
@@ -82,7 +80,7 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j.openapi:web3j-openapi-codegen:$web3jOpenApiVersion",
+            "org.web3j.openapi:web3j-openapi-codegen:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
             "org.web3j:web3j-sokt:$web3jSoktVersion",
             "io.epirus:epirus-web3j:$web3jEpirusVersion",

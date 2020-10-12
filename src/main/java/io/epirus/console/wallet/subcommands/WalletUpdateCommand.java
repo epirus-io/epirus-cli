@@ -18,7 +18,8 @@ import java.io.IOException;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.utils.IODevice;
 import io.epirus.console.wallet.WalletManager;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -26,7 +27,7 @@ import org.web3j.crypto.WalletUtils;
 
 import static org.web3j.codegen.Console.exitError;
 
-@CommandLine.Command(
+@Command(
         name = "update",
         description = "Update wallet passwords",
         showDefaultValues = true,
@@ -40,7 +41,7 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class WalletUpdateCommand extends WalletManager implements Runnable {
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "wallet-path",
             description = "Path/filename of the wallet file",

@@ -13,6 +13,7 @@
 package io.epirus.console.token.erc777
 
 import io.epirus.console.openapi.OpenApiGeneratorService
+import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
 import org.web3j.sokt.SolcArguments
@@ -27,15 +28,15 @@ class ERC777GeneratorService(private val projectName: String, private val packag
         try {
             val erc777Template = TemplateReader.readFile("tokens/ERC777.template")
             val contractPath = (outputDir +
-                    File.separator +
-                    "ERC777.sol")
+                File.separator +
+                "ERC777.sol")
             Files.write(
-                    Paths.get(
-                            contractPath),
-                    erc777Template.toByteArray())
+                Paths.get(
+                    contractPath),
+                erc777Template.toByteArray())
             val dependencyFilesPath = outputDir +
-                    File.separator +
-                    "erc777"
+                File.separator +
+                "erc777"
             val dependencyDir = File(dependencyFilesPath)
             dependencyDir.mkdirs()
             val erc777ResourcePath = "tokens" + File.separator + "erc777" + File.separator
@@ -54,35 +55,41 @@ class ERC777GeneratorService(private val projectName: String, private val packag
             val solidityFile = SolidityFile(contractPath)
             val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
-            println("Using solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
+            println("Using Solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
 
             val buildPath = outputDir + File.separator + "build"
             File(buildPath).mkdirs()
 
             compilerInstance.execute(
-                    SolcArguments.OUTPUT_DIR.param { buildPath },
-                    SolcArguments.ABI,
-                    SolcArguments.BIN,
-                    SolcArguments.OVERWRITE
+                SolcArguments.OUTPUT_DIR.param { buildPath },
+                SolcArguments.ABI,
+                SolcArguments.BIN,
+                SolcArguments.OVERWRITE
             )
 
             Files.delete(Paths.get(contractPath))
             FileUtils.deleteDirectory(File(dependencyFilesPath))
 
             File(outputDir +
-                    File.separator +
-                    projectName).mkdirs()
+                File.separator +
+                projectName).mkdirs()
 
-            OpenApiGeneratorService(projectName = projectName,
-                    packageName = packageName,
-                    outputDir = outputDir,
-                    abis = listOf(
-                            File(buildPath + File.separator + "ERC777Implementation.abi")),
-                    bins = listOf(
-                            File(buildPath + File.separator + "ERC777Implementation.bin")),
-                    addressLength = 20,
-                    contextPath = projectName,
-                    generateSwagger = true).generate()
+            OpenApiGeneratorService(OpenApiGeneratorServiceConfiguration(
+                projectName = projectName,
+                packageName = packageName,
+                outputDir = outputDir,
+                abis = listOf(
+                    File(buildPath + File.separator + "ERC777Implementation.abi")),
+                bins = listOf(
+                    File(buildPath + File.separator + "ERC777Implementation.bin")),
+                addressLength = 20,
+                contextPath = projectName,
+                withSwaggerUi = true,
+                withWrappers = true,
+                withGradleResources = true,
+                withCoreBuildFile = true,
+                withServerBuildFile = true
+            )).generate()
 
             FileUtils.deleteDirectory(File(buildPath))
         } catch (e: IOException) {
@@ -94,10 +101,10 @@ class ERC777GeneratorService(private val projectName: String, private val packag
     private fun copyDependency(inputFolder: String, outputFolder: String) {
         val erc777Dependencies = TemplateReader.readFile(inputFolder)
         Files.write(
-                Paths.get(
-                        outputDir +
-                                File.separator +
-                                outputFolder),
-                erc777Dependencies.toByteArray())
+            Paths.get(
+                outputDir +
+                    File.separator +
+                    outputFolder),
+            erc777Dependencies.toByteArray())
     }
 }

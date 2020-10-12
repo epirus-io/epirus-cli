@@ -15,11 +15,11 @@ package io.epirus.console.account.subcommands;
 import io.epirus.console.EpirusCommand;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import static io.epirus.console.config.ConfigManager.config;
 
-@CommandLine.Command(
+@Command(
         name = "reset",
         description = "Initialise an Epirus account wallet",
         showDefaultValues = true,

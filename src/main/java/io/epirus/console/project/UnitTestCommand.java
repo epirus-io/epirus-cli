@@ -13,13 +13,13 @@
 package io.epirus.console.project;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.SubCommand;
 import io.epirus.console.project.java.JavaTestCLIRunner;
 import io.epirus.console.project.kotlin.KotlinTestCLIRunner;
-import io.epirus.console.wallet.SubCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
-        name = "generate-tests",
+        name = "tests",
         description = "Generate tests for a Web3j Java smart contract wrapper",
         showDefaultValues = true,
         abbreviateSynopsis = true,

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.7.0;
 
 // Modified Greeter contract. Based on example at https://www.ethereum.org/greeter.
@@ -26,7 +27,7 @@ contract HelloWorld is Mortal {
     string greet;
 
     /* this runs when the contract is executed */
-    constructor (string memory _greet) public {
+    constructor (string memory _greet) {
         greet = _greet;
     }
 

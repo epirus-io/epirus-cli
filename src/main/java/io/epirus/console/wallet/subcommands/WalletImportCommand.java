@@ -19,7 +19,8 @@ import java.util.Optional;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.utils.IODevice;
 import io.epirus.console.wallet.WalletManager;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
@@ -30,7 +31,7 @@ import static org.web3j.codegen.Console.exitError;
 import static org.web3j.crypto.Keys.PRIVATE_KEY_LENGTH_IN_HEX;
 
 /** Create Ethereum wallet file from a provided private key. */
-@CommandLine.Command(
+@Command(
         name = "import",
         description = "Create wallet from Ethereum private key",
         showDefaultValues = true,
@@ -44,7 +45,7 @@ import static org.web3j.crypto.Keys.PRIVATE_KEY_LENGTH_IN_HEX;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class WalletImportCommand extends WalletManager implements Runnable {
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "private-key",
             description = "A hex private-key or a key file path")

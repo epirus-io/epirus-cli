@@ -15,11 +15,11 @@ package io.epirus.console.account.subcommands;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.project.InteractiveOptions;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import org.web3j.codegen.Console;
 
-@CommandLine.Command(
+@Command(
         name = "create",
         description = "Create an Epirus account",
         showDefaultValues = true,

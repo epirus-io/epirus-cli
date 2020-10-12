@@ -20,7 +20,8 @@ import java.util.concurrent.Future;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.wallet.WalletManager;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
@@ -37,7 +38,7 @@ import org.web3j.utils.Convert;
 
 import static org.web3j.codegen.Console.exitError;
 
-@CommandLine.Command(
+@Command(
         name = "send",
         description = "Send to Ethereum wallet",
         showDefaultValues = true,
@@ -51,14 +52,14 @@ import static org.web3j.codegen.Console.exitError;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class WalletSendCommand extends WalletManager implements Runnable {
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "wallet-path",
             description = "Path/filename of the wallet file",
             arity = "1")
     String walletFileLocation;
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "1",
             paramLabel = "destination-address",
             description = "Ethereum 20 bytes hex address",

@@ -21,14 +21,14 @@ import java.security.NoSuchProviderException;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.utils.IODevice;
 import io.epirus.console.wallet.WalletManager;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import org.web3j.codegen.Console;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
 
 /** Simple class for creating a wallet file. */
-@CommandLine.Command(
+@Command(
         name = "create",
         description = "Create wallets for Ethereum",
         showDefaultValues = true,

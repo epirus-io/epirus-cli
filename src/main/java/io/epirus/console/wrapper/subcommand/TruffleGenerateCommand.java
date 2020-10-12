@@ -15,14 +15,15 @@ package io.epirus.console.wrapper.subcommand;
 import java.io.File;
 
 import io.epirus.console.EpirusVersionProvider;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@CommandLine.Command(
+@Command(
         name = "generate",
         description = "Generate Java smart contract wrappers from truffle json",
         showDefaultValues = true,
@@ -39,35 +40,33 @@ public class TruffleGenerateCommand implements Runnable {
     static final String JAVA_TYPES_ARG = "--javaTypes";
     static final String SOLIDITY_TYPES_ARG = "--solidityTypes";
 
-    @CommandLine.Option(
+    @Option(
             names = {"-t", "--truffle-json"},
             description = "abi file with contract definition.",
             required = true)
     private File jsonFileLocation;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-o", "--outputDir"},
             description = "destination base directory.",
             required = true)
     private File destinationDirLocation;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-p", "--package"},
             description = "base package name.",
             required = true)
     private String basePackageName;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-jt", JAVA_TYPES_ARG},
             description = "use native Java types.",
-            required = false,
             showDefaultValue = ALWAYS)
     private boolean javaTypes = true;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use solidity types.",
-            required = false)
+            description = "use Solidity types.")
     private boolean solidityTypes;
 
     @Override
@@ -89,8 +88,7 @@ public class TruffleGenerateCommand implements Runnable {
 
     private boolean useJavaNativeTypes() {
         boolean useJavaNativeTypes = true;
-        if ((solidityTypes == false && javaTypes == false)
-                || (solidityTypes == true && javaTypes == true)) {
+        if ((!solidityTypes && !javaTypes) || (solidityTypes && javaTypes)) {
             Console.exitError(
                     "Invalid project type. Expecting one of "
                             + SOLIDITY_TYPES_ARG

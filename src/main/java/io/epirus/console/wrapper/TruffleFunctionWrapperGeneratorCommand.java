@@ -13,11 +13,11 @@
 package io.epirus.console.wrapper;
 
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.wallet.SubCommand;
+import io.epirus.console.SubCommand;
 import io.epirus.console.wrapper.subcommand.TruffleGenerateCommand;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-@CommandLine.Command(
+@Command(
         name = "truffle",
         description = "Generate wrappers from truffle json",
         showDefaultValues = true,

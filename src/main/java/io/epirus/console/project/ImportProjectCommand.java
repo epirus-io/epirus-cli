@@ -15,23 +15,21 @@ package io.epirus.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.List;
 
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.openapi.OpenApiGeneratorService;
 import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
-import org.apache.commons.lang.StringUtils;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Option;
 
 import static org.web3j.codegen.Console.exitError;
-import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@CommandLine.Command(
+@Command(
         name = "import",
-        description = "Import existing solidity contracts into a new Web3j Project",
+        description = "Import existing Solidity contracts into a new Web3j Project",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -43,59 +41,12 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ImportProjectCommand implements Runnable {
 
-    @CommandLine.ArgGroup() ProjectType projectType = new ProjectType();
+    @Mixin public ProjectOptions projectOptions = new ProjectOptions();
 
-    @CommandLine.Option(
-            names = {"-n", "--project-name"},
-            description = "Project name.",
-            showDefaultValue = ALWAYS)
-    public String projectName = "Web3App";
-
-    @CommandLine.Option(
-            names = {"-p", "--package"},
-            description = "Base package name.",
-            showDefaultValue = ALWAYS)
-    public String packageName = "io.epirus";
-
-    @CommandLine.Option(
-            names = {"-o", "--output-dir"},
-            description = "Destination base directory.",
-            showDefaultValue = ALWAYS)
-    public String outputDir = ".";
-
-    @CommandLine.Option(
+    @Option(
             names = {"-s", "--solidity-path"},
-            description = "Path to solidity file/folder")
+            description = "Path to Solidity file/folder")
     public String solidityImportPath;
-
-    @CommandLine.Option(
-            names = {"-t", "--generate-tests"},
-            description = "Generate unit tests for the contract wrappers",
-            showDefaultValue = ALWAYS)
-    boolean generateTests = true;
-
-    @CommandLine.Option(
-            names = {"--address-length"},
-            description = {"specify the address length."},
-            defaultValue = "20")
-    public int addressLength = 20;
-
-    @CommandLine.Option(
-            names = {"--context-path"},
-            description = {"set the API context path (default: the project name)"})
-    public String contextPath;
-
-    @CommandLine.Option(
-            names = {"-a", "--abi"},
-            description = {"input ABI files and folders."},
-            arity = "1..*")
-    public List<File> abis;
-
-    @CommandLine.Option(
-            names = {"-b", "--bin"},
-            description = {"input BIN files and folders."},
-            arity = "1..*")
-    public List<File> bins;
 
     private final InteractiveOptions interactiveOptions;
     private final InputVerifier inputVerifier;
@@ -116,36 +67,31 @@ public class ImportProjectCommand implements Runnable {
 
     @Override
     public void run() {
-        if (solidityImportPath == null) {
-            buildInteractively();
-        }
-        if (inputIsValid(projectName, packageName)) {
-            projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
-            if (new File(projectName).exists()) {
+        if (inputIsValid(projectOptions.projectName, projectOptions.packageName)) {
+            projectOptions.projectName =
+                    projectOptions.projectName.substring(0, 1).toUpperCase()
+                            + projectOptions.projectName.substring(1);
+            if (new File(projectOptions.projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
-                    ProjectUtils.deleteFolder(new File(projectName).toPath());
+                    ProjectUtils.deleteFolder(new File(projectOptions.projectName).toPath());
                 } else {
                     exitError("Project creation was canceled.");
                 }
             }
+
+            if (solidityImportPath == null) {
+                buildInteractively();
+            }
+
             final ProjectImporterConfig projectImporterConfig =
                     new ProjectImporterConfig(
-                            projectName, packageName, outputDir, solidityImportPath, generateTests);
+                            projectOptions.projectName,
+                            projectOptions.packageName,
+                            projectOptions.outputDir,
+                            solidityImportPath,
+                            projectOptions.generateTests);
 
-            if (projectType.isOpenApi) {
-                new OpenApiGeneratorService(
-                                projectName,
-                                packageName,
-                                outputDir,
-                                abis,
-                                bins,
-                                addressLength,
-                                contextPath != null
-                                        ? StringUtils.removeEnd(contextPath, "/")
-                                        : projectName,
-                                true)
-                        .generate();
-            } else if (projectType.isKotlin) {
+            if (projectOptions.isKotlin) {
                 new KotlinProjectImporterRunner(projectImporterConfig).run();
             } else {
                 new JavaProjectImporterRunner(projectImporterConfig).run();
@@ -159,7 +105,7 @@ public class ImportProjectCommand implements Runnable {
 
     private boolean inputIsValid(String... requiredArgs) {
         return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
-                && inputVerifier.classNameIsValid(projectName)
-                && inputVerifier.packageNameIsValid(packageName);
+                && inputVerifier.classNameIsValid(projectOptions.projectName)
+                && inputVerifier.packageNameIsValid(projectOptions.packageName);
     }
 }

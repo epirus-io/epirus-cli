@@ -78,7 +78,7 @@ public class KotlinTestCreatorTest extends ClassExecutor {
                         .waitFor();
         Assertions.assertEquals(0, exitCode);
         final String[] unitTestsArgs = {
-            "generate-tests", "kotlin", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
+            "generate", "tests", "kotlin", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
         };
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(

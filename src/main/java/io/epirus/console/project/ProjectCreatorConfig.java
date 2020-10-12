@@ -17,17 +17,20 @@ public class ProjectCreatorConfig {
     private final String packageName;
     private final String outputDir;
     private final Boolean withJar;
+    private final Boolean withTests;
 
     public ProjectCreatorConfig(
             final String projectName,
             final String packageName,
             final String outputDir,
-            final Boolean withJar) {
+            final Boolean withJar,
+            final Boolean withTests) {
 
         this.projectName = projectName;
         this.packageName = packageName;
         this.outputDir = outputDir;
         this.withJar = withJar;
+        this.withTests = withTests;
     }
 
     public ProjectCreatorConfig(
@@ -37,6 +40,7 @@ public class ProjectCreatorConfig {
         this.packageName = packageName;
         this.outputDir = outputDir;
         this.withJar = false;
+        this.withTests = true;
     }
 
     public String getProjectName() {
@@ -53,5 +57,9 @@ public class ProjectCreatorConfig {
 
     public Boolean getWithJar() {
         return withJar;
+    }
+
+    public Boolean getWithTests() {
+        return withTests;
     }
 }

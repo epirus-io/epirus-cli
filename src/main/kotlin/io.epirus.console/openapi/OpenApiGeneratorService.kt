@@ -12,10 +12,9 @@
  */
 package io.epirus.console.openapi
 
-import io.epirus.console.openapi.utils.GradleUtils
 import io.epirus.console.project.templates.TemplateReader
 import org.apache.commons.io.FileUtils
-import org.web3j.openapi.codegen.GenerateOpenApi
+import org.web3j.openapi.codegen.OpenApiGenerator
 import org.web3j.openapi.codegen.config.GeneratorConfiguration
 import org.web3j.openapi.codegen.utils.GeneratorUtils
 import org.web3j.sokt.SolcArguments
@@ -25,52 +24,41 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class OpenApiGeneratorService(
-    val projectName: String,
-    val packageName: String,
-    val outputDir: String,
-    val abis: List<File>,
-    val bins: List<File>,
-    val addressLength: Int,
-    val contextPath: String,
-    val generateSwagger: Boolean
+    private val openApiGeneratorServiceConfiguration: OpenApiGeneratorServiceConfiguration
 ) {
 
     fun generate() {
-        if (abis.isEmpty()) {
+        if (openApiGeneratorServiceConfiguration.abis.isEmpty())
             generateWithHelloWorldTemplate()
-        } else {
-            generateInternal(abis, bins)
+        else {
+            generateInternal(openApiGeneratorServiceConfiguration.abis, openApiGeneratorServiceConfiguration.bins)
         }
-
-        if (generateSwagger) GradleUtils.runGradleTask(Paths.get(outputDir, projectName).toFile(), "completeSwaggerUiGeneration", emptyList(), "Generating SwaggerUI...")
-
-        println("Done.")
     }
 
     private fun generateWithHelloWorldTemplate() {
         val erc777Template = TemplateReader.readFile("project/HelloWorld.sol")
 
-        val buildPath = outputDir + File.separator + "build"
+        val buildPath = openApiGeneratorServiceConfiguration.outputDir + File.separator + "build"
         File(buildPath).mkdirs()
 
         val contractPath = (buildPath +
-                File.separator +
-                "HelloWorld.sol")
+            File.separator +
+            "HelloWorld.sol")
         Files.write(
-                Paths.get(
-                        contractPath),
-                erc777Template.toByteArray())
+            Paths.get(
+                contractPath),
+            erc777Template.toByteArray())
         val fileName = contractPath.substringAfterLast("/")
         val solidityFile = SolidityFile(contractPath)
         val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
-        println("Using solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
+        println("Using Solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
 
         compilerInstance.execute(
-                SolcArguments.OUTPUT_DIR.param { buildPath },
-                SolcArguments.ABI,
-                SolcArguments.BIN,
-                SolcArguments.OVERWRITE
+            SolcArguments.OUTPUT_DIR.param { buildPath },
+            SolcArguments.ABI,
+            SolcArguments.BIN,
+            SolcArguments.OVERWRITE
         )
 
         generateInternal(listOf(File(buildPath + File.separator + "HelloWorld.abi")), listOf(File(buildPath + File.separator + "HelloWorld.bin")))
@@ -79,18 +67,21 @@ class OpenApiGeneratorService(
     }
 
     private fun generateInternal(abis: List<File>, bins: List<File>) {
-        GenerateOpenApi(GeneratorConfiguration(
-                projectName = projectName,
-                packageName = packageName,
-                outputDir = outputDir + File.separator + projectName,
-                contracts = GeneratorUtils.loadContractConfigurations(abis, bins),
-                addressLength = addressLength,
-                contextPath = contextPath
-        )).apply {
-            generateCore()
-            generateServer()
-            generateWrappers()
-            generateGradleResources()
-        }
+        OpenApiGenerator(GeneratorConfiguration(
+            projectName = openApiGeneratorServiceConfiguration.projectName,
+            packageName = openApiGeneratorServiceConfiguration.packageName,
+            outputDir = if (openApiGeneratorServiceConfiguration.outputDir.endsWith(openApiGeneratorServiceConfiguration.projectName))
+                openApiGeneratorServiceConfiguration.outputDir
+            else "${openApiGeneratorServiceConfiguration.outputDir}${File.separator}${openApiGeneratorServiceConfiguration.projectName}",
+            contracts = GeneratorUtils.loadContractConfigurations(abis, bins),
+            addressLength = openApiGeneratorServiceConfiguration.addressLength,
+            contextPath = openApiGeneratorServiceConfiguration.contextPath,
+            withWrappers = openApiGeneratorServiceConfiguration.withWrappers,
+            withSwaggerUi = openApiGeneratorServiceConfiguration.withSwaggerUi,
+            withGradleResources = openApiGeneratorServiceConfiguration.withGradleResources,
+            withServerBuildFile = openApiGeneratorServiceConfiguration.withServerBuildFile,
+            withCoreBuildFile = openApiGeneratorServiceConfiguration.withCoreBuildFile,
+            withImplementations = openApiGeneratorServiceConfiguration.withImplementations
+        )).generate()
     }
 }

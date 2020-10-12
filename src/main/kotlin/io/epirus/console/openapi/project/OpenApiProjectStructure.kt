@@ -10,23 +10,17 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.openapi.options
+package io.epirus.console.openapi.project
 
-import picocli.CommandLine.Option
+import io.epirus.console.project.ProjectStructure
 
-class ProjectOptions {
-
-    @Option(
-        names = ["-n", "--name"],
-        description = ["specify the project name."],
-        defaultValue = "Web3j-OpenAPI",
-        required = true
-    )
-    lateinit var projectName: String
-
-    @Option(
-        names = ["--context-path"],
-        description = ["set the API context path (default: the project name)"]
-    )
-    var contextPath: String? = null
-}
+class OpenApiProjectStructure(
+    rootDir: String,
+    packageName: String,
+    projectName: String
+) : ProjectStructure(
+    rootDir,
+    packageName,
+    projectName,
+    "kotlin"
+)

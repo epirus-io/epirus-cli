@@ -31,7 +31,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathFactory;
 
 import io.epirus.console.EpirusVersionProvider;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
 import ru.smartdec.smartcheck.RulesCached;
 import ru.smartdec.smartcheck.RulesXml;
 import ru.smartdec.smartcheck.app.DirectoryAnalysis;
@@ -44,9 +45,9 @@ import ru.smartdec.smartcheck.app.SourceLanguages;
 import ru.smartdec.smartcheck.app.TreeFactoryDefault;
 import ru.smartdec.smartcheck.app.cli.Tool;
 
-@CommandLine.Command(
+@Command(
         name = "audit",
-        description = "Audit solidity contract",
+        description = "Audit Solidity contract",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -58,10 +59,10 @@ import ru.smartdec.smartcheck.app.cli.Tool;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class ContractAuditCommand implements Runnable {
 
-    @CommandLine.Parameters(
+    @Parameters(
             index = "0",
             paramLabel = "solidity-file",
-            description = "A file containing solidity code")
+            description = "A file containing Solidity code")
     String filePath;
 
     @Override

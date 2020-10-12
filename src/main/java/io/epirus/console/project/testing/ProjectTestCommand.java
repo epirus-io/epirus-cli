@@ -16,11 +16,11 @@ import java.io.File;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.utils.OSUtils;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 import org.web3j.codegen.Console;
 
-@CommandLine.Command(
+@Command(
         name = "test",
         description = "Run the tests of a gradle project",
         showDefaultValues = true,

@@ -48,9 +48,9 @@ public class ImportProjectCommandTest extends ClassExecutor {
         };
         final ImportProjectCommand importProjectCommand = new ImportProjectCommand();
         new CommandLine(importProjectCommand).parseArgs(args);
-        assertEquals("Test", importProjectCommand.projectName);
-        assertEquals("org.com", importProjectCommand.packageName);
-        assertEquals(tempDirPath, importProjectCommand.outputDir);
+        assertEquals("Test", importProjectCommand.projectOptions.projectName);
+        assertEquals("org.com", importProjectCommand.projectOptions.packageName);
+        assertEquals(tempDirPath, importProjectCommand.projectOptions.outputDir);
         assertEquals(solidityTestDir, importProjectCommand.solidityImportPath);
     }
 
@@ -77,7 +77,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() {
         final String[] args = {
-            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
+            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
         };
         int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
@@ -101,7 +101,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         ConfigManager.setDevelopment();
-        final String[] args = {"--java", "-n=", "-p=", "-s="};
+        final String[] args = {"-n=", "-p=", "-s="};
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(outputStream);
 

@@ -25,17 +25,16 @@ import io.epirus.console.openapi.OpenApiCommand;
 import io.epirus.console.project.ImportProjectCommand;
 import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.NewProjectCommand;
-import io.epirus.console.project.UnitTestCommand;
 import io.epirus.console.project.testing.ProjectTestCommand;
 import io.epirus.console.run.RunCommand;
 import io.epirus.console.security.ContractAuditCommand;
 import io.epirus.console.wallet.WalletCommand;
 import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
-import io.epirus.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
-import io.epirus.console.wrapper.TruffleFunctionWrapperGeneratorCommand;
 import org.apache.commons.lang.RandomStringUtils;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 
@@ -44,24 +43,22 @@ import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitSuccess;
 
 /** Main entry point for running command line utilities. */
-@CommandLine.Command(
+@Command(
         name = "epirus",
         subcommands = {
-            CommandLine.HelpCommand.class,
-            WalletCommand.class,
-            DockerCommand.class,
-            SolidityFunctionWrapperGeneratorCommand.class,
-            TruffleFunctionWrapperGeneratorCommand.class,
-            ContractAuditCommand.class,
-            NewProjectCommand.class,
-            ImportProjectCommand.class,
             AccountCommand.class,
+            ContractAuditCommand.class,
+            DockerCommand.class,
+            GenerateCommand.class,
+            CommandLine.HelpCommand.class,
+            ImportProjectCommand.class,
             LoginCommand.class,
             LogoutCommand.class,
-            ProjectTestCommand.class,
-            UnitTestCommand.class,
-            RunCommand.class,
+            NewProjectCommand.class,
             OpenApiCommand.class,
+            RunCommand.class,
+            ProjectTestCommand.class,
+            WalletCommand.class,
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,
@@ -92,7 +89,7 @@ public class EpirusCommand implements Runnable {
     private final Map<String, String> environment;
     private final String[] args;
 
-    @CommandLine.Option(
+    @Option(
             names = {"--telemetry"},
             description = "Whether to perform analytics.",
             defaultValue = "false")

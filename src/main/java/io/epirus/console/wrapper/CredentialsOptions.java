@@ -14,30 +14,30 @@ package io.epirus.console.wrapper;
 
 import java.nio.file.Path;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 public class CredentialsOptions {
-    @CommandLine.Option(
+    @Option(
             names = {"-w", "--wallet-path"},
             description = "Wallet file path.",
             showDefaultValue = ALWAYS)
     Path walletPath;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-k", "--wallet-password"},
             description = "Wallet password.",
             showDefaultValue = ALWAYS)
     String walletPassword = "";
 
-    @CommandLine.Option(
+    @Option(
             names = {"-r", "--private-key"},
             description = "Raw hex private key.",
             showDefaultValue = ALWAYS)
     String rawKey = "";
 
-    @CommandLine.Option(
+    @Option(
             names = {"-j", "--wallet-json"},
             description = "JSON wallet.",
             showDefaultValue = ALWAYS)

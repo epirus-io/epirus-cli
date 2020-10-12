@@ -50,7 +50,7 @@ public class NewProjectCommandTest extends ClassExecutor {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
+        final String[] args = {"-u=org.org", "-b=test", "-z=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(NewProjectCommand.class);
         Assertions.assertThrows(
                 CommandLine.UnmatchedArgumentException.class, () -> commandLine.parseArgs(args));
@@ -65,8 +65,8 @@ public class NewProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testCorrectArgsProjectGeneration() {
-        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+    public void testCorrectArgsJavaProjectGeneration() {
+        final String[] args = {"-p", "org.com", "-n", "Test", "-o", tempDirPath};
         int exitCode = new CommandLine(NewProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
         final File pathToTests =
@@ -89,7 +89,7 @@ public class NewProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         ConfigManager.setDevelopment();
-        final String[] args = {"--java", "-n=", "-p="};
+        final String[] args = {"-n=", "-p="};
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(outputStream);
 

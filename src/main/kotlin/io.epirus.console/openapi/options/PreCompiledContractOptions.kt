@@ -10,19 +10,23 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package io.epirus.console.wallet;
+package io.epirus.console.openapi.options
 
-import picocli.CommandLine;
+import picocli.CommandLine.Option
+import java.io.File
 
-public abstract class SubCommand implements Runnable {
-    @Override
-    public void run() {
-        if (isHelpRequired()) {
-            CommandLine.usage(this, System.out);
-        }
-    }
+class PreCompiledContractOptions {
+    @Option(
+        names = ["-a", "--abi"],
+        description = ["input ABI files and folders."],
+        arity = "1..*"
+    )
+    var abis: MutableList<File> = mutableListOf()
 
-    public boolean isHelpRequired() {
-        return true;
-    }
+    @Option(
+        names = ["-b", "--bin"],
+        description = ["input BIN files and folders."],
+        arity = "1..*"
+    )
+    var bins: MutableList<File> = mutableListOf()
 }

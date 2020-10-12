@@ -50,12 +50,7 @@ public class JavaTestCreatorTest extends ClassExecutor {
     @Test
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
-            "import",
-            "--java",
-            "-p=org.com",
-            "-n=Testing",
-            "-o=" + tempDirPath,
-            "-s=" + formattedPath
+            "import", "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
         };
         final String pathToJavaWrappers =
                 new File(
@@ -78,7 +73,7 @@ public class JavaTestCreatorTest extends ClassExecutor {
                         .waitFor();
         Assertions.assertEquals(0, exitCode);
         final String[] unitTestsArgs = {
-            "generate-tests", "java", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
+            "generate", "tests", "java", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
         };
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
