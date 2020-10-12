@@ -47,5 +47,6 @@ public class LoginCommand implements Runnable {
             Console.exitError(
                     "Server response did not contain the authentication token required to log in.");
         }
+        accountService.close();
     }
 }
