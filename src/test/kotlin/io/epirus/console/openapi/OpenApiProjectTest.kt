@@ -55,7 +55,7 @@ class OpenApiProjectTest {
 
     @Test
     fun testCorrectArgsOpenApiProjectGeneration() {
-        val args = arrayOf("-o", tempDirPath, "-n", "NewTest")
+        val args = arrayOf("-o=$tempDirPath")
         val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
     }
