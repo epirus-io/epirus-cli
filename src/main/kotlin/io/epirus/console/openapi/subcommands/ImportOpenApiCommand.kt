@@ -87,5 +87,7 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
             "project/README.openapi.md"
         ).generateFiles(projectStructure)
         OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
+        OpenApiProjectCreationUtils.runGradleClean(projectStructure.projectRoot)
+        OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
     }
 }

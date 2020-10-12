@@ -31,4 +31,17 @@ object OpenApiProjectCreationUtils {
                 File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jSwaggerUI"))
         }
     }
+
+    @Throws(IOException::class, InterruptedException::class)
+    fun runGradleClean(pathToDirectory: String?) {
+        if (!isWindows()) {
+            setExecutable(pathToDirectory, "gradlew")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew clean"))
+        } else {
+            setExecutable(pathToDirectory, "gradlew.bat")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat clean"))
+        }
+    }
 }
