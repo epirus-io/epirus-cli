@@ -16,6 +16,7 @@ import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
 import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
 import io.epirus.console.openapi.subcommands.NewOpenApiCommand
+import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.utils.Folders
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,6 +33,7 @@ class OpenApiProjectTest {
         val args = arrayOf("-o", tempDirPath, "-n", "generationTest")
         val exitCode = CommandLine(GenerateOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
+        print(SimpleFileLogger.logFile.readText())
     }
 
     @Test
@@ -41,6 +43,7 @@ class OpenApiProjectTest {
         assertEquals(0, exitCode)
         val jarFile = Paths.get(tempDirPath, "Test-server-all.jar").toFile()
         assertTrue(jarFile.exists())
+        print(SimpleFileLogger.logFile.readText())
     }
 
     @Test
@@ -51,6 +54,7 @@ class OpenApiProjectTest {
         )
         val exitCode = CommandLine(ImportOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
+        print(SimpleFileLogger.logFile.readText())
     }
 
     @Test
@@ -58,5 +62,6 @@ class OpenApiProjectTest {
         val args = arrayOf("-o=$tempDirPath", "-n=NewOpenApiProjectTest")
         val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
+        print(SimpleFileLogger.logFile.readText())
     }
 }
