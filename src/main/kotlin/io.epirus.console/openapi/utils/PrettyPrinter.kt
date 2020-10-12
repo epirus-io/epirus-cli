@@ -68,6 +68,7 @@ object PrettyPrinter {
 
     fun onFailed() {
         SimpleFileLogger.switchToConsole()
+        print(SimpleFileLogger.logFile.readText())
         print(System.lineSeparator())
         cpf.println("Project generation Failed. Check log file for more information.")
         print(System.lineSeparator())
