@@ -15,8 +15,6 @@ package io.epirus.console.openapi
 import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
 import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
-import io.epirus.console.openapi.subcommands.NewOpenApiCommand
-import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.utils.Folders
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -52,13 +50,5 @@ class OpenApiProjectTest {
         )
         val exitCode = CommandLine(ImportOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
-    }
-
-    @Test
-    fun testCorrectArgsOpenApiProjectGeneration() {
-        val args = arrayOf("-o=$tempDirPath", "-n=TestNew")
-        val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
-        assertEquals(0, exitCode)
-        print(SimpleFileLogger.logFile.readText())
     }
 }
