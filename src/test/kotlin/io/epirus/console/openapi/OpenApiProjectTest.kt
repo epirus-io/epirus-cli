@@ -13,7 +13,6 @@
 package io.epirus.console.openapi
 
 import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
-import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
 import io.epirus.console.project.utils.Folders
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -42,13 +41,5 @@ class OpenApiProjectTest {
         assertTrue(jarFile.exists())
     }
 
-    @Test
-    fun testWithPicoCliWhenArgumentsAreCorrectOpenApi() {
-        val projectName = "TestOpenAPI"
-        val args = arrayOf(
-            "-p=org.com", "-n=$projectName", "-o=$tempDirPath", "-s=$solidityTestDir"
-        )
-        val exitCode = CommandLine(ImportOpenApiCommand::class.java).execute(*args)
-        assertEquals(0, exitCode)
-    }
+    // FIXME: add tests for epirus openapi new and epirus openapi import
 }
