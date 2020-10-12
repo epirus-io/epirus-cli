@@ -29,6 +29,7 @@ class SimpleFileLogger {
         fun startLogging() {
             System.setOut(filePrintStream)
             System.setErr(filePrintStream)
+            switchToConsole()
         }
 
         fun switchToConsole() {
