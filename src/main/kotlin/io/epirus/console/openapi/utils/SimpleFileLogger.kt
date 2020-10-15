@@ -33,6 +33,7 @@ class SimpleFileLogger {
 
         fun switchToConsole() {
             System.setOut(PrintStream(FileOutputStream(FileDescriptor.out)))
+            System.setErr(PrintStream(FileOutputStream(FileDescriptor.out)))
         }
 
         fun deleteLogging(): Boolean {
@@ -41,6 +42,7 @@ class SimpleFileLogger {
 
         fun switchTo(p: PrintStream) {
             System.setOut(p)
+            System.setErr(p)
         }
     }
 }
