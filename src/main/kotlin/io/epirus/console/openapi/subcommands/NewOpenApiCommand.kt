@@ -13,14 +13,16 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.runGradleClean
 import io.epirus.console.openapi.project.OpenApiProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.ProjectStructure
 import io.epirus.console.project.TemplateType
 import io.epirus.console.project.utils.ProjectCreationUtils
-import io.epirus.console.token.erc777.ERC777GeneratorService
+import io.epirus.console.token.erc777.ERC777Utils
 import org.apache.commons.lang.StringUtils
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
@@ -56,38 +58,83 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
 
         when (templateType) {
             TemplateType.HelloWorld -> {
-                createHelloWorldProject(contextPath)
+                val projectStructure = createNewProject(
+                    OpenApiTemplateProvider(
+                        "project/HelloWorld.sol",
+                        "",
+                        "project/build.gradleOpenApi.template",
+                        "project/settings.gradle.template",
+                        "project/gradlew-wrapper.properties.template",
+                        "project/gradlew.bat.template",
+                        "project/gradlew.template",
+                        "gradle-wrapper.jar",
+                        projectOptions.packageName,
+                        projectOptions.projectName,
+                        contextPath,
+                        (projectOptions.addressLength * 8).toString(),
+                        "project/README.openapi.md"
+                    )
+                )
+                buildNewProject(projectStructure.projectRoot)
             }
+
             TemplateType.ERC777 -> {
-                ERC777GeneratorService(projectOptions.projectName, projectOptions.packageName, projectOptions.outputDir).generate()
+                val projectStructure = createNewProject(
+                    OpenApiTemplateProvider(
+                        "",
+                        "",
+                        "project/build.gradleOpenApiErc777.template",
+                        "project/settings.gradle.template",
+                        "project/gradlew-wrapper.properties.template",
+                        "project/gradlew.bat.template",
+                        "project/gradlew.template",
+                        "gradle-wrapper.jar",
+                        projectOptions.packageName,
+                        projectOptions.projectName,
+                        contextPath,
+                        (projectOptions.addressLength * 8).toString(),
+                        "project/README.openapi.md"
+                    )
+                )
+                copyErc777Contract(projectStructure.solidityPath)
+                buildNewProject(projectStructure.projectRoot)
             }
         }
 
         PrettyPrinter.onProjectSuccess()
     }
 
-    private fun createHelloWorldProject(contextPath: String) {
-        val projectStructure = OpenApiProjectStructure(
+    /**
+     * Copies ERC777 contract implementation and its dependencies to the new project solidity folder
+     */
+    private fun copyErc777Contract(solidityPath: String) {
+        ERC777Utils.copy(solidityPath)
+    }
+
+    /**
+     * Creates a new OpenAPI project structure from a set of predefined contracts.
+     *
+     * @param openApiTemplateProvider: is the OpenApiTemplateProvider containing all parameters for the generation
+     */
+    private fun createNewProject(openApiTemplateProvider: OpenApiTemplateProvider): ProjectStructure {
+        return OpenApiProjectStructure(
             projectOptions.outputDir,
             projectOptions.packageName,
             projectOptions.projectName
-        )
-        ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
-        OpenApiTemplateProvider(
-            "project/HelloWorld.sol",
-            "",
-            "project/build.gradleOpenAPI.template",
-            "project/settings.gradle.template",
-            "project/gradlew-wrapper.properties.template",
-            "project/gradlew.bat.template",
-            "project/gradlew.template",
-            "gradle-wrapper.jar",
-            projectOptions.packageName,
-            projectOptions.projectName,
-            contextPath,
-            (projectOptions.addressLength * 8).toString(),
-            "project/README.openapi.md"
-        ).generateFiles(projectStructure)
-        OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
+        ).apply {
+            ProjectCreationUtils.generateTopLevelDirectories(this)
+            openApiTemplateProvider.generateFiles(this)
+        }
+    }
+
+    /**
+     * Runs the necessary gradle tasks to have a working project.
+     *
+     * @param projectRoot: The project root directory containing the gradle executables
+     */
+    private fun buildNewProject(projectRoot: String) {
+        generateOpenApiAndSwaggerUi(projectRoot)
+        runGradleClean(projectRoot)
+        generateOpenApiAndSwaggerUi(projectRoot)
     }
 }

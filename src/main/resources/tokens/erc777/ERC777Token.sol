@@ -1,15 +1,16 @@
+// SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.6.0;
 
-import "./erc777/ERC777.sol";
+import "./ERC777.sol";
 
 
 /**
- * @title ERC777Implementationls
+ * @title ERC777Token
  * @dev Simple ERC777 Token, where all tokens are pre-assigned to the creator.
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `ERC20` or `ERC777` functions.
  */
-contract ERC777Implementation is ERC777 {
+contract ERC777Token is ERC777 {
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
