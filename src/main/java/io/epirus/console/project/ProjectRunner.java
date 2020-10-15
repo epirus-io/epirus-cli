@@ -54,6 +54,7 @@ public abstract class ProjectRunner implements Runnable {
                 new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build();
         ColoredPrinter commandPrinter =
                 new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build();
+        System.out.print(System.lineSeparator());
         cp.println("Project Created Successfully");
         System.out.print(System.lineSeparator());
 

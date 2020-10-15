@@ -62,7 +62,6 @@ class ImportOpenApiCommand(
         }
 
         print("\nCreating ${projectOptions.projectName} project ...\n")
-        SimpleFileLogger.startLogging()
 
         createImportProject(contextPath)
 
@@ -91,6 +90,8 @@ class ImportOpenApiCommand(
             (projectOptions.addressLength * 8).toString(),
             "project/README.openapi.md"
         ).generateFiles(projectStructure)
+        print("\nBuilding project ... Subsequent builds will be faster\n")
+        SimpleFileLogger.startLogging()
         OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
     }
 }

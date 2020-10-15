@@ -48,7 +48,6 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
 
     override fun generate(projectFolder: File) {
         print("\nCreating ${projectOptions.projectName} project ...\n")
-        SimpleFileLogger.startLogging()
 
         val contextPath = if (projectOptions.contextPath != null) {
             StringUtils.removeEnd(projectOptions.contextPath, "/")
@@ -75,6 +74,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         "project/README.openapi.md"
                     )
                 )
+                print("\nBuilding project ... Subsequent builds will be faster\n")
+                SimpleFileLogger.startLogging()
                 buildNewProject(projectStructure.projectRoot)
             }
 
@@ -97,6 +98,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                     )
                 )
                 copyErc777Contract(projectStructure.solidityPath)
+                print("\nBuilding project ... Subsequent builds will be faster\n")
+                SimpleFileLogger.startLogging()
                 buildNewProject(projectStructure.projectRoot)
             }
         }

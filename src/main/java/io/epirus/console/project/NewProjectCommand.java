@@ -21,6 +21,7 @@ import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
@@ -38,7 +39,9 @@ import static org.web3j.codegen.Console.exitError;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class NewProjectCommand extends ProjectOptions implements Runnable {
+public class NewProjectCommand implements Runnable {
+
+    @CommandLine.Mixin public ProjectOptions projectOptions = new ProjectOptions();
 
     @Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
@@ -57,20 +60,26 @@ public class NewProjectCommand extends ProjectOptions implements Runnable {
 
     @Override
     public void run() {
-        if (inputIsValid(projectName, packageName)) {
-            projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
-            if (new File(projectName).exists()) {
+        if (inputIsValid(projectOptions.projectName, projectOptions.packageName)) {
+            projectOptions.projectName =
+                    projectOptions.projectName.substring(0, 1).toUpperCase()
+                            + projectOptions.projectName.substring(1);
+            if (new File(projectOptions.projectName).exists()) {
                 if (interactiveOptions.overrideExistingProject()) {
-                    ProjectUtils.deleteFolder(new File(projectName).toPath());
+                    ProjectUtils.deleteFolder(new File(projectOptions.projectName).toPath());
                 } else {
                     exitError("Project creation was canceled.");
                 }
             }
             final ProjectCreatorConfig projectCreatorConfig =
                     new ProjectCreatorConfig(
-                            projectName, packageName, outputDir, generateJar, generateTests);
+                            projectOptions.projectName,
+                            projectOptions.packageName,
+                            projectOptions.outputDir,
+                            projectOptions.generateJar,
+                            projectOptions.generateTests);
 
-            if (isKotlin) {
+            if (projectOptions.isKotlin) {
                 switch (templateType) {
                     case HelloWorld:
                         new KotlinProjectCreatorRunner(projectCreatorConfig).run();
@@ -96,7 +105,7 @@ public class NewProjectCommand extends ProjectOptions implements Runnable {
 
     private boolean inputIsValid(String... requiredArgs) {
         return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
-                && inputVerifier.classNameIsValid(projectName)
-                && inputVerifier.packageNameIsValid(packageName);
+                && inputVerifier.classNameIsValid(projectOptions.projectName)
+                && inputVerifier.packageNameIsValid(projectOptions.packageName);
     }
 }
