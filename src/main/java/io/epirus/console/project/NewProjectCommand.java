@@ -12,20 +12,11 @@
  */
 package io.epirus.console.project;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
-
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
-import io.epirus.console.project.utils.InputVerifier;
-import io.epirus.console.project.utils.ProjectUtils;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
-
-import static org.web3j.codegen.Console.exitError;
 
 @Command(
         name = "new",
@@ -39,73 +30,40 @@ import static org.web3j.codegen.Console.exitError;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class NewProjectCommand implements Runnable {
-
-    @CommandLine.Mixin public ProjectOptions projectOptions = new ProjectOptions();
+public class NewProjectCommand extends AbstractProjectCommand implements Runnable {
 
     @Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
 
-    private final InteractiveOptions interactiveOptions;
-    private final InputVerifier inputVerifier;
-
-    public NewProjectCommand() {
-        this(System.in, System.out);
-    }
-
-    public NewProjectCommand(InputStream inputStream, PrintStream outputStream) {
-        this.interactiveOptions = new InteractiveOptions(inputStream, outputStream);
-        this.inputVerifier = new InputVerifier(outputStream);
-    }
-
     @Override
     public void run() {
-        if (inputIsValid(projectOptions.projectName, projectOptions.packageName)) {
-            projectOptions.projectName =
-                    projectOptions.projectName.substring(0, 1).toUpperCase()
-                            + projectOptions.projectName.substring(1);
-            if (new File(projectOptions.projectName).exists()) {
-                if (interactiveOptions.overrideExistingProject()) {
-                    ProjectUtils.deleteFolder(new File(projectOptions.projectName).toPath());
-                } else {
-                    exitError("Project creation was canceled.");
-                }
-            }
-            final ProjectCreatorConfig projectCreatorConfig =
-                    new ProjectCreatorConfig(
-                            projectOptions.projectName,
-                            projectOptions.packageName,
-                            projectOptions.outputDir,
-                            projectOptions.generateJar,
-                            projectOptions.generateTests);
+        setupProject();
+        final ProjectCreatorConfig projectCreatorConfig =
+                new ProjectCreatorConfig(
+                        projectOptions.projectName,
+                        projectOptions.packageName,
+                        projectOptions.outputDir,
+                        projectOptions.generateJar,
+                        projectOptions.generateTests);
 
-            if (projectOptions.isKotlin) {
-                switch (templateType) {
-                    case HelloWorld:
-                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
-                        break;
-                    case ERC777:
-                        System.out.println(
-                                "Generating ERC777 Kotlin project is currently unsupported");
-                        break;
-                }
-            } else {
-                switch (templateType) {
-                    case HelloWorld:
-                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
-                        break;
-                    case ERC777:
-                        System.out.println(
-                                "Generating ERC777 Java project is currently unsupported");
-                        break;
-                }
+        if (projectOptions.isKotlin) {
+            switch (templateType) {
+                case HelloWorld:
+                    new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+                    break;
+                case ERC777:
+                    System.out.println("Generating ERC777 Kotlin project is currently unsupported");
+                    break;
+            }
+        } else {
+            switch (templateType) {
+                case HelloWorld:
+                    new JavaProjectCreatorRunner(projectCreatorConfig).run();
+                    break;
+                case ERC777:
+                    System.out.println("Generating ERC777 Java project is currently unsupported");
+                    break;
             }
         }
-    }
-
-    private boolean inputIsValid(String... requiredArgs) {
-        return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
-                && inputVerifier.classNameIsValid(projectOptions.projectName)
-                && inputVerifier.packageNameIsValid(projectOptions.packageName);
     }
 }
