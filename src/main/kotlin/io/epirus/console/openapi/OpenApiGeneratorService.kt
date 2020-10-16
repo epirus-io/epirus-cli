@@ -48,7 +48,6 @@ class OpenApiGeneratorService(
             Paths.get(
                 contractPath),
             erc777Template.toByteArray())
-        val fileName = contractPath.substringAfterLast("/")
         val solidityFile = SolidityFile(contractPath)
         val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
