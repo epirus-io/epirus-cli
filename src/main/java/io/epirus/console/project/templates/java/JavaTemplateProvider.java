@@ -97,7 +97,8 @@ public class JavaTemplateProvider implements TemplateProvider {
                 .replaceAll(
                         "<project_name>",
                         ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
-                .replaceAll("<package_name>", packageNameReplacement.orElse(""));
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<project_language>", "java");
     }
 
     public String loadGradleBuild() throws IOException {
