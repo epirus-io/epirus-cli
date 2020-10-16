@@ -31,7 +31,7 @@ object PrettyPrinter {
     private val instructionPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build()
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
-    fun onProjectSuccess() {
+    fun onOpenApiProjectSuccess() {
         print(System.lineSeparator())
         cp.println("Project Created Successfully")
         print(System.lineSeparator())

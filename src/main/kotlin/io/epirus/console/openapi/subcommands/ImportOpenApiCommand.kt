@@ -67,7 +67,7 @@ class ImportOpenApiCommand(
         createImportProject(contextPath)
 
         progressCounter.setLoading(false)
-        PrettyPrinter.onProjectSuccess()
+        PrettyPrinter.onOpenApiProjectSuccess()
     }
 
     private fun createImportProject(contextPath: String) {

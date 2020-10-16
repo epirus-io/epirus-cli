@@ -102,7 +102,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
         }
 
         progressCounter.setLoading(false)
-        PrettyPrinter.onProjectSuccess()
+        PrettyPrinter.onOpenApiProjectSuccess()
     }
 
     /**
