@@ -18,7 +18,7 @@ import io.epirus.console.project.utils.ProjectCreationUtils.isWindows
 import java.io.File
 import java.io.IOException
 
-internal object OpenApiProjectCreationUtils {
+internal object OpenApiProjectBuildUtils {
     @Throws(IOException::class, InterruptedException::class)
     fun generateOpenApiAndSwaggerUi(pathToDirectory: String?) {
         if (!isWindows()) {
@@ -34,6 +34,19 @@ internal object OpenApiProjectCreationUtils {
 
     @Throws(IOException::class, InterruptedException::class)
     fun runGradleClean(pathToDirectory: String?) {
+        if (!isWindows()) {
+            setExecutable(pathToDirectory, "gradlew")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew clean"))
+        } else {
+            setExecutable(pathToDirectory, "gradlew.bat")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat clean"))
+        }
+    }
+
+    @Throws(IOException::class, InterruptedException::class)
+    fun generateShadowJar(pathToDirectory: String?) {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(

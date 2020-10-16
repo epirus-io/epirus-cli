@@ -55,7 +55,7 @@ public class ProjectCreationUtils {
                 new ProcessBuilder(command)
                         .directory(workingDir)
                         .redirectErrorStream(true)
-                        .redirectOutput(SimpleFileLogger.Companion.getLogFile())
+                        .redirectOutput(SimpleFileLogger.INSTANCE.getLogFile())
                         .start()
                         .waitFor();
         if (exitCode != 0) {

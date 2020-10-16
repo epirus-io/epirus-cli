@@ -32,7 +32,6 @@ object PrettyPrinter {
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
     fun onProjectSuccess() {
-        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
         cp.println("Project Created Successfully")
         print(System.lineSeparator())
@@ -48,7 +47,6 @@ object PrettyPrinter {
     }
 
     fun onJarSuccess() {
-        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
         cp.println("JAR generated Successfully")
         print(System.lineSeparator())
@@ -60,21 +58,18 @@ object PrettyPrinter {
     }
 
     fun onSuccess() {
-        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
         cp.println("Project generated Successfully")
         print(System.lineSeparator())
     }
 
     fun onFailed() {
-        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
         cpf.println("Project generation Failed. Check log file for more information.")
         print(System.lineSeparator())
     }
 
     fun onWrongPath() {
-        SimpleFileLogger.switchToConsole()
         print(System.lineSeparator())
         cpf.println("Please enter a correct file path containing Solidity code.")
         print(System.lineSeparator())

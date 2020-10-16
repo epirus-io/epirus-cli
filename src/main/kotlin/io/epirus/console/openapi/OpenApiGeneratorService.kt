@@ -52,8 +52,6 @@ class OpenApiGeneratorService(
         val solidityFile = SolidityFile(contractPath)
         val compilerInstance = solidityFile.getCompilerInstance(redirectOutput = true)
 
-        println("Using Solidity compiler ${compilerInstance.solcRelease.version} for $fileName")
-
         compilerInstance.execute(
             SolcArguments.OUTPUT_DIR.param { buildPath },
             SolcArguments.ABI,

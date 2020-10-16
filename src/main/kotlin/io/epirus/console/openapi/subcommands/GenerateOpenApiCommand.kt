@@ -17,7 +17,7 @@ import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
 import io.epirus.console.openapi.options.PreCompiledContractOptions
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.utils.ProgressCounter
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Option
 import picocli.CommandLine.Command
@@ -49,12 +49,8 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
     var withImplementations: Boolean = true
 
     override fun generate(projectFolder: File) {
-        if (preCompiledContractOptions.abis.isEmpty()) {
-            print("\nGenerating Hello World REST endpoints ...\n")
-        } else {
-            print("\nGenerating contracts REST endpoints ...\n")
-        }
-        SimpleFileLogger.startLogging()
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Generating REST endpoints ...")
 
         OpenApiGeneratorService(
             OpenApiGeneratorServiceConfiguration(
@@ -68,6 +64,7 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
             )
         ).generate()
 
+        progressCounter.setLoading(false)
         PrettyPrinter.onSuccess()
     }
 }

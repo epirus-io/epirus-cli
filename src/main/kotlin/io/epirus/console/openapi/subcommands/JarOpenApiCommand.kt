@@ -16,9 +16,9 @@ import io.epirus.console.EpirusVersionProvider
 import io.epirus.console.openapi.OpenApiGeneratorService
 import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
 import io.epirus.console.openapi.options.PreCompiledContractOptions
-import io.epirus.console.openapi.utils.GradleUtils
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.utils.ProgressCounter
+import io.epirus.console.project.utils.ProjectCreationUtils
 import picocli.CommandLine.Command
 import picocli.CommandLine.Mixin
 import java.io.File
@@ -44,8 +44,9 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
     val preCompiledContractOptions = PreCompiledContractOptions()
 
     override fun generate(projectFolder: File) {
-        print("\nCreating ${projectOptions.projectName} JAR ...\n")
-        SimpleFileLogger.startLogging()
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Creating and Building ${projectOptions.projectName} JAR ... Subsequent builds will be faster")
+
         val tempFolderPath = Paths.get(projectFolder.toString(), projectOptions.projectName)
 
         OpenApiGeneratorService(
@@ -59,13 +60,7 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
             )
         ).generate()
 
-        GradleUtils.runGradleTask(
-            tempFolderPath.toFile(),
-            "shadowJar",
-            emptyList(),
-            "Generating the Jar ...",
-            System.out
-        )
+        ProjectCreationUtils.createFatJar(tempFolderPath.toString())
 
         Files.copy(
             getJarFile(tempFolderPath.toFile()).toPath(),
@@ -73,6 +68,7 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
             StandardCopyOption.REPLACE_EXISTING
         )
 
+        progressCounter.setLoading(false)
         PrettyPrinter.onJarSuccess()
     }
 

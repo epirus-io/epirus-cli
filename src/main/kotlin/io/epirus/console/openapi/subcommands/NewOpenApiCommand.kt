@@ -13,14 +13,14 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.runGradleClean
+import io.epirus.console.openapi.project.OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi
+import io.epirus.console.openapi.project.OpenApiProjectBuildUtils.runGradleClean
 import io.epirus.console.openapi.project.OpenApiProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.ProjectStructure
 import io.epirus.console.project.TemplateType
+import io.epirus.console.project.utils.ProgressCounter
 import io.epirus.console.project.utils.ProjectCreationUtils
 import io.epirus.console.token.erc777.ERC777Utils
 import org.apache.commons.lang.StringUtils
@@ -47,7 +47,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
-        print("\nCreating ${projectOptions.projectName} project ...\n")
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
         val contextPath = if (projectOptions.contextPath != null) {
             StringUtils.removeEnd(projectOptions.contextPath, "/")
@@ -74,8 +75,6 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         "project/README.openapi.md"
                     )
                 )
-                print("\nBuilding project ... Subsequent builds will be faster\n")
-                SimpleFileLogger.startLogging()
                 buildNewProject(projectStructure.projectRoot)
             }
 
@@ -97,21 +96,13 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         "project/README.openapi.md"
                     )
                 )
-                copyErc777Contract(projectStructure.solidityPath)
-                print("\nBuilding project ... Subsequent builds will be faster\n")
-                SimpleFileLogger.startLogging()
+                ERC777Utils.copy(projectStructure.solidityPath)
                 buildNewProject(projectStructure.projectRoot)
             }
         }
 
+        progressCounter.setLoading(false)
         PrettyPrinter.onProjectSuccess()
-    }
-
-    /**
-     * Copies ERC777 contract implementation and its dependencies to the new project solidity folder
-     */
-    private fun copyErc777Contract(solidityPath: String) {
-        ERC777Utils.copy(solidityPath)
     }
 
     /**

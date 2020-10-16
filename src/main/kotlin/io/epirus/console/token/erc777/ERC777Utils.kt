@@ -19,6 +19,9 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 object ERC777Utils {
+    /**
+     * Copies ERC777 contract implementation and its dependencies
+     */
     fun copy(outputDir: String) {
             val erc777ResourcePath = Paths.get("tokens", "erc777").toString()
             copyDependency(Paths.get(erc777ResourcePath, "ERC777Token.sol"), Paths.get(outputDir, "ERC777Token.sol"))

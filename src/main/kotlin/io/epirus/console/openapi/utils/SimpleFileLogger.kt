@@ -13,36 +13,13 @@
 package io.epirus.console.openapi.utils
 
 import java.io.File
-import java.io.FileDescriptor
-import java.io.FileOutputStream
 import java.io.PrintStream
 
-class SimpleFileLogger {
-    companion object {
-        val logFile = File("logs")
-        val filePrintStream = PrintStream(logFile)
+object SimpleFileLogger {
+    val logFile = File("logs")
+    val filePrintStream = PrintStream(logFile)
 
-        init {
-            logFile.createNewFile()
-        }
-
-        fun startLogging() {
-            System.setOut(filePrintStream)
-            System.setErr(filePrintStream)
-        }
-
-        fun switchToConsole() {
-            System.setOut(PrintStream(FileOutputStream(FileDescriptor.out)))
-            System.setErr(PrintStream(FileOutputStream(FileDescriptor.out)))
-        }
-
-        fun deleteLogging(): Boolean {
-            return logFile.delete()
-        }
-
-        fun switchTo(p: PrintStream) {
-            System.setOut(p)
-            System.setErr(p)
-        }
+    init {
+        logFile.createNewFile()
     }
 }

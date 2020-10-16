@@ -15,6 +15,21 @@ description 'Epirus command-line tools'
 mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
+ext {
+    web3jVersion = "4.7.0"
+    picocli = "4.0.4"
+    slf4jVersion = "1.7.+"
+    junitVersion = '5.+'
+    mockitoVersion = "3.+"
+    gsonVersion = "2.8.6"
+    wireMockVersion = "2.25.1"
+    web3jSoktVersion = "0.2.1"
+    kotlinLoggin = "1.7.9"
+    dockerJavaVersion = '3.2.5'
+    web3jEpirusVersion = '0.0.7'
+}
+
+
 apply {
     [
         'jacoco',
@@ -87,7 +102,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation 'org.mockito:mockito-inline:3.3.0'
 }
 
 task createProperties(dependsOn: processResources) doLast {

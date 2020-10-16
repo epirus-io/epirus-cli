@@ -13,11 +13,11 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectBuildUtils
 import io.epirus.console.openapi.project.OpenApiProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.utils.ProgressCounter
 import io.epirus.console.project.utils.ProjectCreationUtils
 import org.apache.commons.lang.StringUtils
 import picocli.CommandLine.Command
@@ -61,10 +61,12 @@ class ImportOpenApiCommand(
             projectOptions.projectName
         }
 
-        print("\nCreating ${projectOptions.projectName} project ...\n")
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
         createImportProject(contextPath)
 
+        progressCounter.setLoading(false)
         PrettyPrinter.onProjectSuccess()
     }
 
@@ -90,8 +92,9 @@ class ImportOpenApiCommand(
             (projectOptions.addressLength * 8).toString(),
             "project/README.openapi.md"
         ).generateFiles(projectStructure)
-        print("\nBuilding project ... Subsequent builds will be faster\n")
-        SimpleFileLogger.startLogging()
-        OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
+
+        OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
+        OpenApiProjectBuildUtils.runGradleClean(projectStructure.projectRoot)
+        OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
     }
 }
