@@ -13,15 +13,13 @@
 package io.epirus.console.project.java;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Optional;
 
+import io.epirus.console.openapi.utils.PrettyPrinter;
+import io.epirus.console.openapi.utils.SimpleFileLogger;
 import io.epirus.console.project.Project;
 import io.epirus.console.project.ProjectCreatorConfig;
 import io.epirus.console.project.ProjectRunner;
-
-import static org.web3j.codegen.Console.exitError;
 
 public abstract class JavaProjectRunner extends ProjectRunner {
 
@@ -50,9 +48,9 @@ public abstract class JavaProjectRunner extends ProjectRunner {
             javaProject.createProject();
             onSuccess(javaProject, "java");
         } catch (final Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            exitError("\nCould not generate project reason: \n" + sw.toString());
+            e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+            PrettyPrinter.INSTANCE.onFailed();
+            System.exit(1);
         }
     }
 }
