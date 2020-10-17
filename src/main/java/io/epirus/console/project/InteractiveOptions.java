@@ -249,8 +249,55 @@ public class InteractiveOptions {
 
     public String getEmail() {
         print("Please enter your email address: ");
-
         return getUserInput();
+    }
+
+    public String getErc777TokenName() {
+        print("Please enter the ERC777 token name [ERC777]: ");
+        String tokenName = getUserInput();
+        if (tokenName.isEmpty()) {
+            return "ERC777";
+        } else {
+            return tokenName;
+        }
+    }
+
+    public String getErc777TokenSymbol() {
+        print("Please enter the ERC777 token symbol [erc777]: ");
+        String tokenSymbol = getUserInput();
+        if (tokenSymbol.isEmpty()) {
+            return "erc777";
+        } else {
+            return tokenSymbol;
+        }
+    }
+
+    public Long getErc777InitialSupply() {
+        print("Please enter the ERC777 token initial supply [10]: ");
+        String supply = getUserInput();
+        if (supply.isEmpty()) {
+            return 10L;
+        } else {
+            Long value = 0L;
+            try {
+                value = Long.parseLong(supply);
+            } catch (Exception e) {
+                print("Please enter a correct initial supply!");
+                System.exit(1);
+            }
+            return value;
+        }
+    }
+
+    public String[] getErc777DefaultOperators() {
+        print(
+                "Please enter the ERC777 token default operators [your address] (0x prefixed and ; separated): ");
+        String operators = getUserInput();
+        if (operators.isEmpty()) {
+            return null;
+        } else {
+            return operators.split(";");
+        }
     }
 
     private String getUserInput() {
