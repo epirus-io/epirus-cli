@@ -50,7 +50,7 @@ public class Web3App {
                         "WEB3J_WALLET_PATH, WEB3J_WALLET_PASSWORD, WEB3J_NODE_URL. Please ensure these are set and try again.");
                 System.exit(-1);
             }
-            Credentials credentials = WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
+            Credentials credentials = getCredentials();
             Web3j web3j = getDeployWeb3j();
             ERC777Token erc777Token = deployErc777(web3j, credentials, new EpirusGasProvider(deployNetwork, GasPrice.High));
             log.info("Contract returned: " + erc777Token.getContractAddress());
@@ -58,7 +58,12 @@ public class Web3App {
             System.exit(0);
         } catch (Exception e) {
             log.error(e.getMessage());
+            System.exit(1);
         }
+    }
+
+    private static Credentials getCredentials() throws IOException, CipherException {
+        return WalletUtils.loadCredentials(walletPassword, Paths.get(walletPath).toFile());
     }
 
     private static Web3j getDeployWeb3j() throws Exception {
@@ -71,6 +76,7 @@ public class Web3App {
     }
 
     private static ERC777Token deployErc777(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) throws Exception {
+        if (DEFAULT_OPERATORS.size() == 0) DEFAULT_OPERATORS.add(getCredentials().getAddress());
         return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, DEFAULT_OPERATORS, INITIAL_SUPPLY).send();
     }
 }
