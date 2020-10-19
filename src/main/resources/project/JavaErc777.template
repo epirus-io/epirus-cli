@@ -34,7 +34,7 @@ public class Web3App {
     // ERC777 token deployment parameters
     private static final String NAME = "<NAME>";
     private static final String SYMBOL = "<SYMBOL>";
-    private static List<String> DEFAULT_OPERATORS = <DEFAULT_OPERATORS>;
+    private static final List<String> DEFAULT_OPERATORS = <DEFAULT_OPERATORS>;
     private static final BigInteger INITIAL_SUPPLY = <INITIAL_SUPPLY>;
 
     private static final Logger log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService");
@@ -78,7 +78,10 @@ public class Web3App {
     }
 
     private static ERC777Token deployErc777(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) throws Exception {
-        if (DEFAULT_OPERATORS.size() == 0) DEFAULT_OPERATORS.add(getCredentials().getAddress());
-        return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, DEFAULT_OPERATORS, INITIAL_SUPPLY).send();
+        if (DEFAULT_OPERATORS.size() == 0) {
+            return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, Collections.singletonList(getCredentials().getAddress()), INITIAL_SUPPLY).send();
+        } else {
+            return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, DEFAULT_OPERATORS, INITIAL_SUPPLY).send();
+        }
     }
 }
