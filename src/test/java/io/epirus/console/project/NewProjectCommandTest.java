@@ -12,13 +12,16 @@
  */
 package io.epirus.console.project;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -43,9 +46,9 @@ public class NewProjectCommandTest extends ClassExecutor {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
         final NewProjectCommand newProjectCommand = new NewProjectCommand();
         new CommandLine(newProjectCommand).parseArgs(args);
-        assertEquals("org.com", newProjectCommand.packageName);
-        assertEquals("Test", newProjectCommand.projectName);
-        assertEquals(tempDirPath, newProjectCommand.outputDir);
+        assertEquals("org.com", newProjectCommand.projectOptions.packageName);
+        assertEquals("Test", newProjectCommand.projectOptions.projectName);
+        assertEquals(tempDirPath, newProjectCommand.projectOptions.outputDir);
     }
 
     @Test
@@ -87,21 +90,22 @@ public class NewProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
-        ConfigManager.setDevelopment();
-        final String[] args = {"-n=", "-p="};
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final PrintStream printStream = new PrintStream(outputStream);
+    public void testCorrectArgsJavaErc777ProjectGeneration() throws IOException {
+        final String[] args = {"-p", "org.com", "-n", "TestErc777", "-o", tempDirPath, "ERC777"};
 
-        new CommandLine(
-                        NewProjectCommand.class,
-                        FactoryHarness.getFactory(
-                                new ByteArrayInputStream("".getBytes()), printStream))
-                .execute(args);
+        final String input = "ERC777Test" + "\n" + "erc777" + "\n" + "1000" + "\n" + "";
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        int exitCode =
+                new CommandLine(
+                                NewProjectCommand.class,
+                                FactoryHarness.getFactory(
+                                        inputStream, new PrintStream(new ByteArrayOutputStream())))
+                        .execute(args);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(string -> System.out.println(string + "\n"));
+        }
 
-        assertTrue(
-                outputStream
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty."));
+        assertEquals(0, exitCode);
     }
 }
