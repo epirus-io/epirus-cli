@@ -13,6 +13,7 @@
 package io.epirus.console.project;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.project.java.Erc777JavaProjectCreator;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
 import picocli.CommandLine.Command;
@@ -61,7 +62,18 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
                     new JavaProjectCreatorRunner(projectCreatorConfig).run();
                     break;
                 case ERC777:
-                    System.out.println("Generating ERC777 Java project is currently unsupported");
+                    new Erc777JavaProjectCreator(
+                                    new Erc777ProjectCreatorConfig(
+                                            projectOptions.projectName,
+                                            projectOptions.packageName,
+                                            projectOptions.outputDir,
+                                            projectOptions.generateJar,
+                                            projectOptions.generateTests,
+                                            interactiveOptions.getErc777TokenName(),
+                                            interactiveOptions.getErc777TokenSymbol(),
+                                            interactiveOptions.getErc777InitialSupply(),
+                                            interactiveOptions.getErc777DefaultOperators()))
+                            .run();
                     break;
             }
         }

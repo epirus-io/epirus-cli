@@ -38,7 +38,7 @@ public abstract class ProjectRunner implements Runnable {
 
     protected abstract void createProject();
 
-    protected void onSuccess(Project project, String projectType) {
+    public static void onSuccess(Project project, String projectType) {
         String gradleCommand =
                 System.getProperty("os.name").toLowerCase().startsWith("windows")
                         ? "./gradlew.bat"

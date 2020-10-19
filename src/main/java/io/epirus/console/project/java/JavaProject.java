@@ -24,7 +24,7 @@ import org.web3j.commons.JavaVersion;
 
 public class JavaProject extends AbstractProject<JavaProject> implements Project {
 
-    protected JavaProject(
+    public JavaProject(
             boolean withTests,
             boolean withFatJar,
             boolean withSampleCode,
