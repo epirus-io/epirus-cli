@@ -131,7 +131,7 @@ public class InteractiveOptions {
                 System.exit(1);
             }
             print(
-                    "Please enter your wallet password [Leave empty if your wallet is not password protected]");
+                    "Please ente r your wallet password [Leave empty if your wallet is not password protected]");
             String walletPassword = getUserInput();
             walletCredentials.put("path", walletPath);
             walletCredentials.put("password", walletPassword);
@@ -272,26 +272,19 @@ public class InteractiveOptions {
         }
     }
 
-    public Long getErc777InitialSupply() {
-        print("Please enter the ERC777 token initial supply [10]: ");
+    public String getErc777InitialSupply() {
+        print("Please enter the ERC777 token initial supply in Wei [1000000000]: ");
         String supply = getUserInput();
         if (supply.isEmpty()) {
-            return 10L;
+            return "1000000000";
         } else {
-            Long value = 0L;
-            try {
-                value = Long.parseLong(supply);
-            } catch (Exception e) {
-                print("Please enter a correct initial supply!");
-                System.exit(1);
-            }
-            return value;
+            return supply;
         }
     }
 
     public String[] getErc777DefaultOperators() {
         print(
-                "Please enter the ERC777 token default operators [your address] (0x prefixed and ; separated): ");
+                "Please enter the ERC777 token default operators [your wallet address] (0x prefixed and ; separated): ");
         String operators = getUserInput();
         if (operators.isEmpty()) {
             return null;
