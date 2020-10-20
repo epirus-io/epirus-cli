@@ -12,16 +12,14 @@
  */
 package io.epirus.console.project;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Collections;
 
+import io.epirus.console.Epirus;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -90,22 +88,25 @@ public class NewProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testCorrectArgsJavaErc777ProjectGeneration() throws IOException {
-        final String[] args = {"-p", "org.com", "-n", "TestErc777", "-o", tempDirPath, "ERC777"};
+    public void testCorrectArgsJavaErc777ProjectGeneration()
+            throws IOException, InterruptedException {
+        final String[] args = {"new", "-o", tempDirPath, "ERC777"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("ERC777Test", 0, "ERC777Test".length());
+        writer.newLine();
+        writer.write("erc777", 0, "erc777".length());
+        writer.newLine();
+        writer.write("10000000", 0, "10000000".length());
+        writer.newLine();
+        writer.newLine();
+        writer.close();
+        process.waitFor();
 
-        final String input = "ERC777Test" + "\n" + "erc777" + "\n" + "1000" + "\n" + "";
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        int exitCode =
-                new CommandLine(
-                                NewProjectCommand.class,
-                                FactoryHarness.getFactory(
-                                        inputStream, new PrintStream(new ByteArrayOutputStream())))
-                        .execute(args);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            List<String> stringList = reader.lines().collect(Collectors.toList());
-            stringList.forEach(string -> System.out.println(string + "\n"));
-        }
-
-        assertEquals(0, exitCode);
+        assertEquals(0, process.exitValue());
     }
 }
