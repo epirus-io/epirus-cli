@@ -13,17 +13,20 @@
 package io.epirus.console.openapi
 
 import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
+import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
-import io.epirus.console.project.utils.Folders
+import io.epirus.console.openapi.subcommands.NewOpenApiCommand
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
+import java.io.ByteArrayInputStream
+import java.nio.file.Files
 import java.nio.file.Paths
 
 class OpenApiProjectTest {
-    private val tempDirPath = Folders.tempBuildFolder().absolutePath
-    private val solidityTestDir = Paths.get("src", "test", "resources", "Solidity").toFile().absolutePath
+    //    private val tempDirPath = Folders.tempBuildFolder().absolutePath
+    private val tempDirPath = Files.createTempDirectory("openapi").toFile().absolutePath
 
     @Test
     fun testCorrectArgsOpenApiEndpointsGeneration() {
@@ -41,5 +44,19 @@ class OpenApiProjectTest {
         assertTrue(jarFile.exists())
     }
 
-    // FIXME: add tests for epirus openapi new and epirus openapi import
+    @Test
+    fun testCorrectArgsOpenApiNew() {
+        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath)
+        val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
+        assertEquals(0, exitCode)
+    }
+
+    @Test
+    fun testCorrectArgsOpenApiImport() {
+        val soliditySource = Paths.get("src", "test", "resources", "Solidity", "TestContract.sol").toFile()
+        val userInput = ByteArrayInputStream(soliditySource.absolutePath.toByteArray())
+        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath)
+        val exitCode = CommandLine(ImportOpenApiCommand(userInput, System.out)).execute(*args)
+        assertEquals(0, exitCode)
+    }
 }

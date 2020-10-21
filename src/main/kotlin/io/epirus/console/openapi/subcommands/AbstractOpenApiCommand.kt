@@ -17,18 +17,23 @@ import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
-import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
+import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.Spec
 import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-abstract class AbstractOpenApiCommand : Callable<Int> {
+abstract class AbstractOpenApiCommand(
+    input: InputStream = System.`in`,
+    output: PrintStream = System.out
+) : Callable<Int> {
 
-    protected val JARSUFFIX = "-server-all.jar"
+    protected val JAR_SUFFIX = "-server-all.jar"
 
     @Mixin
     protected val projectOptions = OpenApiProjectOptions()
@@ -36,8 +41,8 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     @Spec
     protected lateinit var spec: CommandSpec
 
-    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
-    private val inputVerifier: InputVerifier = InputVerifier(System.out)
+    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(input, output)
+    private val inputVerifier: InputVerifier = InputVerifier(output)
 
     override fun call(): Int {
         if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName))
@@ -47,7 +52,7 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
             projectOptions.outputDir,
             projectOptions.projectName
         ).toFile().apply {
-            if (exists() || File("${projectOptions.projectName}$JARSUFFIX").exists()) {
+            if (exists() || File("${projectOptions.projectName}$JAR_SUFFIX").exists()) {
                 if (projectOptions.overwrite || interactiveOptions.overrideExistingProject()) {
                     deleteRecursively()
                     mkdirs()
