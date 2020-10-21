@@ -71,7 +71,7 @@ object PrettyPrinter {
 
     fun onWrongPath() {
         print(System.lineSeparator())
-        cpf.println("Please enter a correct file path containing Solidity code.")
+        cpf.println("No Solidity smart contracts found! Please enter a correct path containing Solidity code.")
         print(System.lineSeparator())
     }
 }
