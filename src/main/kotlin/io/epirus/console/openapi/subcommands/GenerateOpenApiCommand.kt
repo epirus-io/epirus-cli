@@ -13,16 +13,19 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.OpenApiGeneratorService
-import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
-import io.epirus.console.openapi.options.PreCompiledContractOptions
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.utils.ProgressCounter
-import picocli.CommandLine.Mixin
+import io.epirus.console.project.utils.ProjectUtils.deleteFolder
+import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
+import org.apache.commons.io.FileUtils
 import picocli.CommandLine.Option
 import picocli.CommandLine.Command
 import picocli.CommandLine.Help.Visibility.ALWAYS
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 @Command(
         name = "generate",
@@ -38,8 +41,11 @@ import java.io.File
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class GenerateOpenApiCommand : AbstractOpenApiCommand() {
 
-    @Mixin
-    val preCompiledContractOptions = PreCompiledContractOptions()
+    @Option(
+        names = ["-s", "--solidity-path"],
+        description = ["Path to Solidity file/folder"]
+    )
+    var solidityImportPath: String? = null
 
     @Option(
         names = ["--with-implementations"],
@@ -49,21 +55,45 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
     var withImplementations: Boolean = true
 
     override fun generate(projectFolder: File) {
+        if (solidityImportPath == null) {
+            solidityImportPath = interactiveOptions.solidityProjectPath
+        }
+        exitIfNoContractFound(File(solidityImportPath!!))
+
         val progressCounter = ProgressCounter(true)
         progressCounter.processing("Generating REST endpoints ...")
 
-        OpenApiGeneratorService(
-            OpenApiGeneratorServiceConfiguration(
-                projectName = projectOptions.projectName,
-                packageName = projectOptions.packageName,
-                outputDir = projectFolder.path,
-                abis = preCompiledContractOptions.abis,
-                addressLength = projectOptions.addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                withImplementations = withImplementations
-            )
-        ).generate()
+        val projectFolderName = "GenerateEndpoints"
+        val tempFolder = Files.createTempDirectory(Paths.get(projectOptions.outputDir), projectFolderName)
 
+        val projectStructure = OpenApiProjectCreationUtils.createProjectStructure(
+            OpenApiTemplateProvider(
+                "",
+                solidityImportPath!!,
+                "project/build.gradleGenerateOpenApi.template",
+                "project/settings.gradle.template",
+                "project/gradlew-wrapper.properties.template",
+                "project/gradlew.bat.template",
+                "project/gradlew.template",
+                "gradle-wrapper.jar",
+                projectOptions.packageName,
+                projectOptions.projectName,
+                contextPath,
+                (projectOptions.addressLength * 8).toString(),
+                "project/README.openapi.md",
+                withImplementations.toString()),
+            tempFolder.toAbsolutePath().toString())
+
+        OpenApiProjectCreationUtils.buildProject(
+            projectStructure.projectRoot,
+            withOpenApi = true,
+            withSwaggerUi = false,
+            withShadowJar = false)
+
+        FileUtils.copyDirectory(Paths.get(tempFolder.toString(), projectOptions.projectName, "build", "generated", "sources", "web3j", "main").toFile(),
+            Paths.get(projectOptions.outputDir, projectOptions.projectName).toFile())
+
+        deleteFolder(tempFolder)
         progressCounter.setLoading(false)
         PrettyPrinter.onSuccess()
     }

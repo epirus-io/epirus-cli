@@ -18,7 +18,7 @@ import io.epirus.console.project.templates.TemplateProvider
 import io.epirus.console.project.templates.TemplateReader
 import java.io.File
 
-class OpenApiTemplateProvider(
+class OpenApiTemplateProvider @JvmOverloads constructor(
     private val solidityContract: String,
     private val pathToSolidityFolder: String,
     private val gradleBuild: String,
@@ -31,7 +31,8 @@ class OpenApiTemplateProvider(
     val projectName: String,
     private val contextPath: String,
     private val addressLength: String,
-    private val readme: String
+    private val readme: String,
+    private val generateServer: String = "true"
 ) : TemplateProvider {
     private fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)
@@ -39,6 +40,7 @@ class OpenApiTemplateProvider(
             .replace("<project_name>".toRegex(), projectName)
             .replace("<context_path>".toRegex(), contextPath)
             .replace("<address_length>".toRegex(), addressLength)
+            .replace("<generate_server>".toRegex(), generateServer)
     }
 
     fun loadSolidityContract(): String {
