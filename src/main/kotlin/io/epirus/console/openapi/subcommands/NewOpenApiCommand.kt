@@ -49,42 +49,30 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
         when (templateType) {
             TemplateType.HelloWorld -> {
                 val projectStructure = createProjectStructure(
-                    OpenApiTemplateProvider(
-                        "project/HelloWorld.sol",
-                        "",
-                        "project/build.gradleOpenApi.template",
-                        "project/settings.gradle.template",
-                        "project/gradlew-wrapper.properties.template",
-                        "project/gradlew.bat.template",
-                        "project/gradlew.template",
-                        "gradle-wrapper.jar",
-                        projectOptions.packageName,
-                        projectOptions.projectName,
-                        contextPath,
-                        (projectOptions.addressLength * 8).toString(),
-                        "project/README.openapi.md"),
-                    projectOptions.outputDir
+                    openApiTemplateProvider = OpenApiTemplateProvider(
+                        solidityContract = "project/HelloWorld.sol",
+                        pathToSolidityFolder = "",
+                        gradleBuild = "project/build.gradleOpenApi.template",
+                        packageName = projectOptions.packageName,
+                        projectName = projectOptions.projectName,
+                        contextPath = contextPath,
+                        addressLength = (projectOptions.addressLength * 8).toString()
+                    ), outputDir = projectOptions.outputDir
                 )
                 buildProject(projectStructure.projectRoot)
             }
 
             TemplateType.ERC777 -> {
                 val projectStructure = createProjectStructure(
-                    OpenApiTemplateProvider(
-                        "",
-                        "",
-                        "project/build.gradleOpenApiErc777.template",
-                        "project/settings.gradle.template",
-                        "project/gradlew-wrapper.properties.template",
-                        "project/gradlew.bat.template",
-                        "project/gradlew.template",
-                        "gradle-wrapper.jar",
-                        projectOptions.packageName,
-                        projectOptions.projectName,
-                        contextPath,
-                        (projectOptions.addressLength * 8).toString(),
-                        "project/README.openapi.md"),
-                    projectOptions.outputDir
+                    openApiTemplateProvider = OpenApiTemplateProvider(
+                        solidityContract = "",
+                        pathToSolidityFolder = "",
+                        gradleBuild = "project/build.gradleOpenApiErc777.template",
+                        packageName = projectOptions.packageName,
+                        projectName = projectOptions.projectName,
+                        contextPath = contextPath,
+                        addressLength = (projectOptions.addressLength * 8).toString()
+                    ), outputDir = projectOptions.outputDir
                 )
                 ERC777Utils.copy(projectStructure.solidityPath)
                 buildProject(projectStructure.projectRoot)

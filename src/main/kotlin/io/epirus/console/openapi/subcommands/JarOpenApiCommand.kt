@@ -13,14 +13,15 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.utils.ProgressCounter
-import io.epirus.console.project.utils.ProjectUtils
 import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
+import io.epirus.console.project.utils.ProjectUtils.findSolidityContracts
 import picocli.CommandLine.Command
+import picocli.CommandLine.Help.Visibility.ALWAYS
 import picocli.CommandLine.Option
 import java.io.File
 import java.nio.file.Files
@@ -49,6 +50,13 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
     )
     var solidityImportPath: String? = null
 
+    @Option(
+        names = ["--with-implementations"],
+        description = ["Generate a JAR containing the interfaces implementations."],
+        showDefaultValue = ALWAYS
+    )
+    var withImplementations: Boolean = true
+
     /**
      * Path to the `.epirus` folder
      */
@@ -66,26 +74,20 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
 
         Paths.get(projectFolder.toString(), projectOptions.projectName)
 
-        val projectDirectoryPath = getCachedDirectoryPath(ProjectUtils.findSolidityContracts(Paths.get(solidityImportPath!!)))
+        val projectDirectoryPath = getCachedDirectoryPath(findSolidityContracts(Paths.get(solidityImportPath!!)))
         if (!projectDirectoryPath.toFile().exists()) {
             createProjectStructure(
-                OpenApiTemplateProvider(
-                    "",
-                    solidityImportPath!!,
-                    "project/build.gradleJarOpenApi.template",
-                    "project/settings.gradle.template",
-                    "project/gradlew-wrapper.properties.template",
-                    "project/gradlew.bat.template",
-                    "project/gradlew.template",
-                    "gradle-wrapper.jar",
-                    projectOptions.packageName,
-                    projectOptions.projectName,
-                    contextPath,
-                    (projectOptions.addressLength * 8).toString(),
-                    "project/README.openapi.md"),
-                projectDirectoryPath.toString())
+                openApiTemplateProvider = OpenApiTemplateProvider(
+                    solidityContract = "",
+                    pathToSolidityFolder = solidityImportPath!!,
+                    gradleBuild = "project/build.gradleJarOpenApi.template",
+                    packageName = projectOptions.packageName,
+                    projectName = projectOptions.projectName,
+                    contextPath = contextPath,
+                    addressLength = (projectOptions.addressLength * 8).toString()
+                ), outputDir = projectDirectoryPath.toString())
         }
-        OpenApiProjectCreationUtils.buildProject(
+        buildProject(
             Paths.get(projectDirectoryPath.toString(), projectOptions.projectName).toString(),
             withOpenApi = true,
             withSwaggerUi = true,

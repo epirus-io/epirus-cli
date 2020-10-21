@@ -59,21 +59,15 @@ class ImportOpenApiCommand(
         progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
         val projectStructure = createProjectStructure(
-            OpenApiTemplateProvider(
-                "",
-                solidityImportPath!!,
-                "project/build.gradleImportOpenApi.template",
-                "project/settings.gradle.template",
-                "project/gradlew-wrapper.properties.template",
-                "project/gradlew.bat.template",
-                "project/gradlew.template",
-                "gradle-wrapper.jar",
-                projectOptions.packageName,
-                projectOptions.projectName,
-                contextPath,
-                (projectOptions.addressLength * 8).toString(),
-                "project/README.openapi.md"),
-            projectOptions.outputDir)
+            openApiTemplateProvider = OpenApiTemplateProvider(
+                solidityContract = "",
+                pathToSolidityFolder = solidityImportPath!!,
+                gradleBuild = "project/build.gradleImportOpenApi.template",
+                packageName = projectOptions.packageName,
+                projectName = projectOptions.projectName,
+                contextPath = contextPath,
+                addressLength = (projectOptions.addressLength * 8).toString()
+            ), outputDir = projectOptions.outputDir)
 
         buildProject(projectStructure.projectRoot)
 

@@ -13,7 +13,8 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.utils.ProgressCounter
@@ -66,25 +67,19 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
         val projectFolderName = "GenerateEndpoints"
         val tempFolder = Files.createTempDirectory(Paths.get(projectOptions.outputDir), projectFolderName)
 
-        val projectStructure = OpenApiProjectCreationUtils.createProjectStructure(
-            OpenApiTemplateProvider(
-                "",
-                solidityImportPath!!,
-                "project/build.gradleGenerateOpenApi.template",
-                "project/settings.gradle.template",
-                "project/gradlew-wrapper.properties.template",
-                "project/gradlew.bat.template",
-                "project/gradlew.template",
-                "gradle-wrapper.jar",
-                projectOptions.packageName,
-                projectOptions.projectName,
-                contextPath,
-                (projectOptions.addressLength * 8).toString(),
-                "project/README.openapi.md",
-                withImplementations.toString()),
-            tempFolder.toAbsolutePath().toString())
+        val projectStructure = createProjectStructure(
+            openApiTemplateProvider = OpenApiTemplateProvider(
+                solidityContract = "",
+                pathToSolidityFolder = solidityImportPath!!,
+                gradleBuild = "project/build.gradleGenerateOpenApi.template",
+                packageName = projectOptions.packageName,
+                projectName = projectOptions.projectName,
+                contextPath = contextPath,
+                addressLength = (projectOptions.addressLength * 8).toString(),
+                generateServer = withImplementations.toString()
+            ), outputDir = tempFolder.toAbsolutePath().toString())
 
-        OpenApiProjectCreationUtils.buildProject(
+        buildProject(
             projectStructure.projectRoot,
             withOpenApi = true,
             withSwaggerUi = false,
