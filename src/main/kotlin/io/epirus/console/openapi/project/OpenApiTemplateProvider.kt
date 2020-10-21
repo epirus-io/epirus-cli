@@ -14,7 +14,6 @@ package io.epirus.console.openapi.project
 
 import io.epirus.console.project.ProjectStructure
 import io.epirus.console.project.ProjectWriter
-import io.epirus.console.project.templates.AbstractTemplateProvider
 import io.epirus.console.project.templates.TemplateProvider
 import io.epirus.console.project.templates.TemplateReader
 import java.io.File
@@ -33,12 +32,34 @@ class OpenApiTemplateProvider(
     private val contextPath: String,
     private val addressLength: String,
     private val readme: String
-) : AbstractTemplateProvider() {
-    
-    override fun loadGradleBuild(): String {
-        return super.loadGradleBuild()
+) : TemplateProvider {
+    private fun loadGradleBuild(): String {
+        return TemplateReader.readFile(gradleBuild)
+            .replace("<package_name>".toRegex(), packageName)
+            .replace("<project_name>".toRegex(), projectName)
             .replace("<context_path>".toRegex(), contextPath)
             .replace("<address_length>".toRegex(), addressLength)
+    }
+
+    fun loadSolidityContract(): String {
+        return TemplateReader.readFile(solidityContract)
+    }
+
+    private fun loadGradleSettings(): String {
+        return TemplateReader.readFile(gradleSettings)
+            .replace("<project_name>".toRegex(), projectName)
+    }
+
+    private fun loadGradlewWrapperSettings(): String {
+        return TemplateReader.readFile(gradlewWrapperSettings)
+    }
+
+    fun loadGradlewBatScript(): String {
+        return TemplateReader.readFile(gradlewBatScript)
+    }
+
+    private fun loadGradlewScript(): String {
+        return TemplateReader.readFile(gradlewScript)
     }
 
     override fun generateFiles(projectStructure: ProjectStructure) {
