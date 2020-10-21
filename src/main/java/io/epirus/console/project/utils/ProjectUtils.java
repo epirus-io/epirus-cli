@@ -19,10 +19,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.diogonunes.jcdp.color.api.Ansi;
+import io.epirus.console.openapi.utils.PrettyPrinter;
+import io.epirus.console.openapi.utils.SimpleFileLogger;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -178,5 +181,59 @@ public class ProjectUtils {
         Request request = new Request.Builder().url(uploadURL).post(requestBody).build();
         Call call = okHttpClient.newCall(request);
         call.execute();
+    }
+
+    /**
+     * Checks if no Solidity smart contract is found in the provided path. If so, it exits with 1
+     *
+     * @param solidityPath path to the Solidity file/folder to be checked
+     */
+    public static void exitIfNoContractFound(File solidityPath) {
+        if (!isSmartContract(solidityPath) && !directoryContainsSmartContracts(solidityPath)) {
+            PrettyPrinter.INSTANCE.onWrongPath();
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Checks if provided path contains Solidity smart contracts.
+     *
+     * @param solidityDirectory Directory file to check for Solidity in
+     * @return True if path contains smart contracts
+     */
+    public static Boolean directoryContainsSmartContracts(File solidityDirectory) {
+        try {
+            if (solidityDirectory.exists()
+                    && findSolidityContracts(solidityDirectory.toPath()).size() != 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            PrettyPrinter.INSTANCE.onFailed();
+            e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+            System.exit(1);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if provided file is a Solidity smart contract
+     *
+     * @param file File to check
+     * @return True if the file is a Solidity smart contract
+     */
+    public static Boolean isSmartContract(File file) {
+        return file.exists() && file.isFile() && file.getName().endsWith(".sol");
+    }
+
+    /**
+     * Searches for Solidity smart contracts in the provided directory
+     *
+     * @param directory directory where to search for Solidity smart contracts
+     * @return List of contracts paths
+     */
+    public static List<Path> findSolidityContracts(Path directory) throws IOException {
+        return Files.walk(directory)
+                .filter(it -> it.toFile().getName().endsWith(".sol"))
+                .collect(Collectors.toList());
     }
 }
