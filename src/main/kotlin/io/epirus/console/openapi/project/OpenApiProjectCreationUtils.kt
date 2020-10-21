@@ -49,18 +49,16 @@ internal object OpenApiProjectCreationUtils {
      * @param withShadowJar: generate an application Jar
      */
     fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false) {
-        when {
-            withOpenApi && withSwaggerUi -> {
-                generateOpenApiAndSwaggerUi(projectRoot)
-                runGradleClean(projectRoot)
-                generateOpenApiAndSwaggerUi(projectRoot)
-            }
-            withOpenApi -> {
-                generateOpenApi(projectRoot)
-            }
-            withShadowJar -> {
-                generateShadowJar(projectRoot)
-            }
+        if (withOpenApi && withSwaggerUi) {
+            generateOpenApiAndSwaggerUi(projectRoot)
+            runGradleClean(projectRoot)
+            generateOpenApiAndSwaggerUi(projectRoot)
+        }
+        if (withOpenApi && !withSwaggerUi) {
+            generateOpenApi(projectRoot)
+        }
+        if (withShadowJar) {
+            generateShadowJar(projectRoot)
         }
     }
 }
