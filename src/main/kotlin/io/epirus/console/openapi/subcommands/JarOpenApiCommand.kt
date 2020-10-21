@@ -89,7 +89,9 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
             Paths.get(projectDirectoryPath.toString(), projectOptions.projectName).toString(),
             withOpenApi = true,
             withSwaggerUi = true,
-            withShadowJar = true)
+            withShadowJar = true,
+            withClientJar = true,
+            withServerJar = true)
 
         Files.copy(
             getJarFile(projectDirectoryPath),
@@ -108,13 +110,11 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
      * @return Path to the Jar
      */
     private fun getJarFile(outputProjectFolder: Path): Path {
-        return File(
-            Paths.get(
-                outputProjectFolder.toString(),
-                projectOptions.projectName,
-                "build",
-                "libs"
-            ).toString()
+        return File(outputProjectFolder
+                .resolve(projectOptions.projectName)
+                .resolve("build")
+                .resolve("libs")
+                .toString()
         ).listFiles()!!.first { it.name.endsWith("-all.jar") }.toPath()
     }
 
@@ -129,6 +129,6 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
         val folderNameHashCode = contracts.sorted().joinToString("") {
             it.toFile().nameWithoutExtension
         }.hashCode().toString()
-        return Paths.get(epirusHomeFolder.toString(), "projects", folderNameHashCode)
+        return epirusHomeFolder.resolve("projects").resolve(folderNameHashCode)
     }
 }

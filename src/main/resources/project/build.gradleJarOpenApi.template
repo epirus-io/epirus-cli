@@ -25,3 +25,26 @@ web3j {
         contextPath = '<context_path>'
     }
 }
+
+task clientJar(type: Jar) {
+    from "$buildDir/classes/kotlin/main"
+    include "**/core/**/*.class"
+    includeEmptyDirs false
+    archiveAppendix.set("openapi-client")
+}
+
+task serverJar(type: Jar) {
+    from "$buildDir/classes/java/main"
+    from("$buildDir/classes/kotlin/main") {
+        include "**/server/**/*.class"
+    }
+    from("$buildDir/resources/main") {
+        include "META-INF/services/*"
+    }
+    includeEmptyDirs false
+    archiveAppendix.set("openapi-server")
+}
+
+artifacts {
+    archives clientJar, serverJar
+}

@@ -48,7 +48,7 @@ internal object OpenApiProjectCreationUtils {
      * @param withSwaggerUi: generate SwaggerUI for the generated endpoints
      * @param withShadowJar: generate an application Jar
      */
-    fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false) {
+    fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false, withClientJar: Boolean = false, withServerJar: Boolean = false) {
         if (withOpenApi && withSwaggerUi) {
             generateOpenApiAndSwaggerUi(projectRoot)
             runGradleClean(projectRoot)
