@@ -27,8 +27,8 @@ class OpenApiTemplateProvider(
     private val gradlewBatScript: String,
     private val gradlewScript: String,
     private val gradlewJar: String,
-    private val packageName: String,
-    private val projectName: String,
+    val packageName: String,
+    val projectName: String,
     private val contextPath: String,
     private val addressLength: String,
     private val readme: String

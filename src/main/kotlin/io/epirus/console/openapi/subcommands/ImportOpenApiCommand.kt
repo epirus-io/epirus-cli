@@ -13,13 +13,12 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectBuildUtils
-import io.epirus.console.openapi.project.OpenApiProjectStructure
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.utils.ProgressCounter
-import io.epirus.console.project.utils.ProjectCreationUtils
-import org.apache.commons.lang.StringUtils
+import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
@@ -54,47 +53,31 @@ class ImportOpenApiCommand(
         if (solidityImportPath == null) {
             solidityImportPath = interactiveOptions.solidityProjectPath
         }
-
-        val contextPath = if (projectOptions.contextPath != null) {
-            StringUtils.removeEnd(projectOptions.contextPath, "/")
-        } else {
-            projectOptions.projectName
-        }
+        exitIfNoContractFound(File(solidityImportPath!!))
 
         val progressCounter = ProgressCounter(true)
         progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
-        createImportProject(contextPath)
+        val projectStructure = createProjectStructure(
+            OpenApiTemplateProvider(
+                "",
+                solidityImportPath!!,
+                "project/build.gradleImportOpenApi.template",
+                "project/settings.gradle.template",
+                "project/gradlew-wrapper.properties.template",
+                "project/gradlew.bat.template",
+                "project/gradlew.template",
+                "gradle-wrapper.jar",
+                projectOptions.packageName,
+                projectOptions.projectName,
+                contextPath,
+                (projectOptions.addressLength * 8).toString(),
+                "project/README.openapi.md"),
+            projectOptions.outputDir)
+
+        buildProject(projectStructure.projectRoot)
 
         progressCounter.setLoading(false)
         PrettyPrinter.onOpenApiProjectSuccess()
-    }
-
-    private fun createImportProject(contextPath: String) {
-        val projectStructure = OpenApiProjectStructure(
-            projectOptions.outputDir,
-            projectOptions.packageName,
-            projectOptions.projectName
-        )
-        ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
-        OpenApiTemplateProvider(
-            "",
-            solidityImportPath!!,
-            "project/build.gradleImportOpenApi.template",
-            "project/settings.gradle.template",
-            "project/gradlew-wrapper.properties.template",
-            "project/gradlew.bat.template",
-            "project/gradlew.template",
-            "project/gradle-wrapper.jar",
-            projectOptions.packageName,
-            projectOptions.projectName,
-            contextPath,
-            (projectOptions.addressLength * 8).toString(),
-            "project/README.openapi.md"
-        ).generateFiles(projectStructure)
-
-        OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
-        OpenApiProjectBuildUtils.runGradleClean(projectStructure.projectRoot)
-        OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
     }
 }

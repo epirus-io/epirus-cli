@@ -17,9 +17,10 @@ import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
+import org.apache.commons.lang.StringUtils
+import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
-import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.Spec
 import java.io.File
 import java.io.InputStream
@@ -41,8 +42,17 @@ abstract class AbstractOpenApiCommand(
     @Spec
     protected lateinit var spec: CommandSpec
 
-    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(input, output)
-    private val inputVerifier: InputVerifier = InputVerifier(output)
+    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
+    private val inputVerifier: InputVerifier = InputVerifier(System.out)
+
+    protected val contextPath: String
+        get() {
+            return if (projectOptions.contextPath != null) {
+                StringUtils.removeEnd(projectOptions.contextPath, "/")
+            } else {
+                projectOptions.projectName
+            }
+        }
 
     override fun call(): Int {
         if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName))

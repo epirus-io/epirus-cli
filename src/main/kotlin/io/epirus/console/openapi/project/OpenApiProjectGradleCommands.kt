@@ -18,7 +18,20 @@ import io.epirus.console.project.utils.ProjectCreationUtils.isWindows
 import java.io.File
 import java.io.IOException
 
-internal object OpenApiProjectBuildUtils {
+internal object OpenApiProjectGradleCommands {
+    @Throws(IOException::class, InterruptedException::class)
+    fun generateOpenApi(pathToDirectory: String?) {
+        if (!isWindows()) {
+            setExecutable(pathToDirectory, "gradlew")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jOpenApi"))
+        } else {
+            setExecutable(pathToDirectory, "gradlew.bat")
+            executeBuild(
+                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jOpenApi"))
+        }
+    }
+
     @Throws(IOException::class, InterruptedException::class)
     fun generateOpenApiAndSwaggerUi(pathToDirectory: String?) {
         if (!isWindows()) {
@@ -50,11 +63,11 @@ internal object OpenApiProjectBuildUtils {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew clean"))
+                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew shadowJar"))
         } else {
             setExecutable(pathToDirectory, "gradlew.bat")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat clean"))
+                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat shadowJar"))
         }
     }
 }

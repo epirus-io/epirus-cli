@@ -12,11 +12,15 @@
  */
 package io.epirus.console.project;
 
+import java.io.File;
+
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.java.JavaProjectImporterRunner;
 import io.epirus.console.project.kotlin.KotlinProjectImporterRunner;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+
+import static io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound;
 
 @Command(
         name = "import",
@@ -43,6 +47,7 @@ public class ImportProjectCommand extends AbstractProjectCommand implements Runn
         if (solidityImportPath == null) {
             buildInteractively();
         }
+        exitIfNoContractFound(new File(solidityImportPath));
 
         final ProjectImporterConfig projectImporterConfig =
                 new ProjectImporterConfig(
