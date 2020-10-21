@@ -62,13 +62,8 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
                 packageName = projectOptions.packageName,
                 outputDir = projectFolder.path,
                 abis = preCompiledContractOptions.abis,
-                bins = preCompiledContractOptions.bins,
                 addressLength = projectOptions.addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                withSwaggerUi = false,
-                withGradleResources = false,
-                withWrappers = withImplementations, // So that we don't generate the wrappers with only the interfaces
-                withServerBuildFile = true,
                 withCoreBuildFile = true,
                 withImplementations = withImplementations
             )

@@ -19,13 +19,8 @@ class OpenApiGeneratorServiceConfiguration @JvmOverloads constructor(
     val packageName: String,
     val outputDir: String,
     val abis: List<File>,
-    val bins: List<File>,
     val addressLength: Int,
     val contextPath: String,
-    val withSwaggerUi: Boolean = true,
-    val withGradleResources: Boolean = true,
-    val withWrappers: Boolean = true,
-    val withServerBuildFile: Boolean = true,
     val withCoreBuildFile: Boolean = true,
     val withImplementations: Boolean = true
 )

@@ -31,7 +31,7 @@ class OpenApiGeneratorService(
         if (openApiGeneratorServiceConfiguration.abis.isEmpty())
             generateWithHelloWorldTemplate()
         else {
-            generateInternal(openApiGeneratorServiceConfiguration.abis, openApiGeneratorServiceConfiguration.bins)
+            generateInternal(openApiGeneratorServiceConfiguration.abis)
         }
     }
 
@@ -61,26 +61,20 @@ class OpenApiGeneratorService(
             SolcArguments.OVERWRITE
         )
 
-        generateInternal(listOf(File(buildPath + File.separator + "HelloWorld.abi")), listOf(File(buildPath + File.separator + "HelloWorld.bin")))
-
+        generateInternal(listOf(File(buildPath + File.separator + "HelloWorld.abi")))
         FileUtils.deleteDirectory(File(buildPath))
     }
 
-    private fun generateInternal(abis: List<File>, bins: List<File>) {
+    private fun generateInternal(abis: List<File>) {
         OpenApiGenerator(GeneratorConfiguration(
             projectName = openApiGeneratorServiceConfiguration.projectName,
             packageName = openApiGeneratorServiceConfiguration.packageName,
             outputDir = if (openApiGeneratorServiceConfiguration.outputDir.endsWith(openApiGeneratorServiceConfiguration.projectName))
                 openApiGeneratorServiceConfiguration.outputDir
             else "${openApiGeneratorServiceConfiguration.outputDir}${File.separator}${openApiGeneratorServiceConfiguration.projectName}",
-            contracts = GeneratorUtils.loadContractConfigurations(abis, bins),
+            contracts = GeneratorUtils.loadContractConfigurations(abis),
             addressLength = openApiGeneratorServiceConfiguration.addressLength,
             contextPath = openApiGeneratorServiceConfiguration.contextPath,
-            withWrappers = openApiGeneratorServiceConfiguration.withWrappers,
-            withSwaggerUi = openApiGeneratorServiceConfiguration.withSwaggerUi,
-            withGradleResources = openApiGeneratorServiceConfiguration.withGradleResources,
-            withServerBuildFile = openApiGeneratorServiceConfiguration.withServerBuildFile,
-            withCoreBuildFile = openApiGeneratorServiceConfiguration.withCoreBuildFile,
             withImplementations = openApiGeneratorServiceConfiguration.withImplementations
         )).generate()
     }

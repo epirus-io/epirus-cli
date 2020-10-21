@@ -25,7 +25,7 @@ public class ProjectOptions extends BaseProjectOptions {
 
     @Option(
             names = {"--jar"},
-            description = {"generate the JAR"},
+            description = {"Generate the JAR"},
             showDefaultValue = ALWAYS)
     public Boolean generateJar = false;
 

@@ -15,22 +15,6 @@ description 'epirus command line tools'
 mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
-ext {
-    web3jVersion = "4.7.0"
-    picocli = "4.0.4"
-    slf4jVersion = "1.7.+"
-    junitVersion = '5.+'
-    mockitoVersion = "3.+"
-    gsonVersion = "2.8.6"
-    wireMockVersion = "2.25.1"
-    web3jSoktVersion = "0.2.1"
-    gradleVersion = "6.2"
-    kotlinLoggin = "1.7.9"
-    dockerJavaVersion = '3.2.5'
-    web3jEpirusVersion = '0.0.7'
-}
-
-
 apply {
     [
         'jacoco',
@@ -82,32 +66,28 @@ dependencies {
             "org.web3j:crypto:$web3jVersion",
             "org.web3j.openapi:web3j-openapi-codegen:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
-            "org.web3j:web3j-sokt:$web3jSoktVersion",
+            "org.web3j:web3j-sokt:$soktVersion",
             "io.epirus:epirus-web3j:$web3jEpirusVersion",
-            "info.picocli:picocli:$picocli",
+            "info.picocli:picocli:$picocliVersion",
             files('libs/smartcheck.jar'),
-            "javax.xml.bind:jaxb-api:2.2.11",
-            "com.sun.xml.bind:jaxb-core:2.2.11",
-            "com.sun.xml.bind:jaxb-impl:2.2.11",
-            "javax.activation:activation:1.1.1",
+            "javax.xml.bind:jaxb-api:$jaxbVersion",
+            "com.sun.xml.bind:jaxb-core:$jaxbVersion",
+            "com.sun.xml.bind:jaxb-impl:$jaxbVersion",
+            "javax.activation:activation:$activationVersion",
             "com.google.code.gson:gson:$gsonVersion",
-            "javax.activation:activation:1.1.1",
-            "org.apache.commons:commons-lang3:3.9",
-            'com.github.zafarkhaja:java-semver:0.9.0',
-            'log4j:log4j:1.2.17',
+            "org.apache.commons:commons-lang3:$commonsLangVersion",
+            "com.github.zafarkhaja:java-semver:$semverVersion",
             "org.gradle:gradle-tooling-api:$gradleVersion",
-            "io.github.microutils:kotlin-logging:$kotlinLoggin",
-            "com.github.docker-java:docker-java:$dockerJavaVersion"
+            "io.github.microutils:kotlin-logging:$kotlinLogging",
+            "com.github.docker-java:docker-java:$dockerJavaVersion",
+            "com.diogonunes:JCDP:$jcdpVersion"
 
-    compile group: 'com.diogonunes', name: 'JCDP', version: '4.0.1'
-
-
-    runtime "org.slf4j:slf4j-nop:$slf4jVersion"
+    runtimeOnly "org.slf4j:slf4j-nop:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
-    testImplementation 'org.mockito:mockito-inline:3.3.0'
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
 }
 
 task createProperties(dependsOn: processResources) doLast {

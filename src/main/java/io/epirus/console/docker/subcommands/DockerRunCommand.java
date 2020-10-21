@@ -67,7 +67,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
 
     @Option(
             names = {"-d", "--directory"},
-            description = "Directory to run docker in.",
+            description = "Directory to run Docker in.",
             showDefaultValue = ALWAYS)
     Path directory = Paths.get(System.getProperty("user.dir"));
 

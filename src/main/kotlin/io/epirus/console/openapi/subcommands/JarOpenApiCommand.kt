@@ -54,7 +54,6 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
                 packageName = projectOptions.packageName,
                 outputDir = tempFolderPath.toString(),
                 abis = preCompiledContractOptions.abis,
-                bins = preCompiledContractOptions.bins,
                 addressLength = projectOptions.addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
             )

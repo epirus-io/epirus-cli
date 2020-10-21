@@ -45,7 +45,7 @@ public class ImportProjectCommand implements Runnable {
 
     @Option(
             names = {"-s", "--solidity-path"},
-            description = "Path to Solidity file/folder")
+            description = "Path to Solidity file/folder.")
     public String solidityImportPath;
 
     private final InteractiveOptions interactiveOptions;

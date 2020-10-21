@@ -18,14 +18,14 @@ import java.io.File
 class PreCompiledContractOptions {
     @Option(
         names = ["-a", "--abi"],
-        description = ["input ABI files and folders."],
+        description = ["Input ABI files and folders."],
         arity = "1..*"
     )
     var abis: MutableList<File> = mutableListOf()
 
     @Option(
         names = ["-b", "--bin"],
-        description = ["input BIN files and folders."],
+        description = ["Input BIN files and folders."],
         arity = "1..*"
     )
     var bins: MutableList<File> = mutableListOf()

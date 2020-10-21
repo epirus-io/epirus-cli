@@ -20,20 +20,20 @@ class OpenApiProjectOptions : BaseProjectOptions() {
 
     @Option(
         names = ["--context-path"],
-        description = ["set the API context path (Default: project name)"]
+        description = ["Set the API context path (Default: project name)."]
     )
     var contextPath: String? = null
 
     @Option(
         names = ["--address-length"],
-        description = ["specify the address length."],
+        description = ["Specify the address length."],
         showDefaultValue = CommandLine.Help.Visibility.ALWAYS
     )
     var addressLength = 20
 
     @Option(
         names = ["--overwrite"],
-        description = ["overwrite the project if exists."],
+        description = ["Overwrite the project if exists."],
         showDefaultValue = CommandLine.Help.Visibility.ALWAYS
     )
     var overwrite = false

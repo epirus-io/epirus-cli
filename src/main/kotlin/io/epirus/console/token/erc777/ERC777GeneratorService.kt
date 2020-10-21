@@ -80,15 +80,9 @@ class ERC777GeneratorService(private val projectName: String, private val packag
                 outputDir = outputDir,
                 abis = listOf(
                     File(buildPath + File.separator + "ERC777Implementation.abi")),
-                bins = listOf(
-                    File(buildPath + File.separator + "ERC777Implementation.bin")),
                 addressLength = 20,
                 contextPath = projectName,
-                withSwaggerUi = true,
-                withWrappers = true,
-                withGradleResources = true,
-                withCoreBuildFile = true,
-                withServerBuildFile = true
+                withCoreBuildFile = true
             )).generate()
 
             FileUtils.deleteDirectory(File(buildPath))

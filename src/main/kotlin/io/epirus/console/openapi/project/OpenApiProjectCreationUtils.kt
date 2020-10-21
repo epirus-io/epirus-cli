@@ -18,7 +18,7 @@ import io.epirus.console.project.utils.ProjectCreationUtils.isWindows
 import java.io.File
 import java.io.IOException
 
-object OpenApiProjectCreationUtils {
+internal object OpenApiProjectCreationUtils {
     @Throws(IOException::class, InterruptedException::class)
     fun generateOpenApiAndSwaggerUi(pathToDirectory: String?) {
         if (!isWindows()) {
