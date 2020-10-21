@@ -19,13 +19,12 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
 import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 @Command(
         name = "kotlin",
