@@ -13,17 +13,13 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectBuildUtils.generateOpenApiAndSwaggerUi
-import io.epirus.console.openapi.project.OpenApiProjectBuildUtils.runGradleClean
-import io.epirus.console.openapi.project.OpenApiProjectStructure
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.project.ProjectStructure
 import io.epirus.console.project.TemplateType
 import io.epirus.console.project.utils.ProgressCounter
-import io.epirus.console.project.utils.ProjectCreationUtils
 import io.epirus.console.token.erc777.ERC777Utils
-import org.apache.commons.lang.StringUtils
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.io.File
@@ -50,15 +46,9 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
         val progressCounter = ProgressCounter(true)
         progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
-        val contextPath = if (projectOptions.contextPath != null) {
-            StringUtils.removeEnd(projectOptions.contextPath, "/")
-        } else {
-            projectOptions.projectName
-        }
-
         when (templateType) {
             TemplateType.HelloWorld -> {
-                val projectStructure = createNewProject(
+                val projectStructure = createProjectStructure(
                     OpenApiTemplateProvider(
                         "project/HelloWorld.sol",
                         "",
@@ -72,14 +62,14 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         projectOptions.projectName,
                         contextPath,
                         (projectOptions.addressLength * 8).toString(),
-                        "project/README.openapi.md"
-                    )
+                        "project/README.openapi.md"),
+                    projectOptions.outputDir
                 )
-                buildNewProject(projectStructure.projectRoot)
+                buildProject(projectStructure.projectRoot)
             }
 
             TemplateType.ERC777 -> {
-                val projectStructure = createNewProject(
+                val projectStructure = createProjectStructure(
                     OpenApiTemplateProvider(
                         "",
                         "",
@@ -93,42 +83,15 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         projectOptions.projectName,
                         contextPath,
                         (projectOptions.addressLength * 8).toString(),
-                        "project/README.openapi.md"
-                    )
+                        "project/README.openapi.md"),
+                    projectOptions.outputDir
                 )
                 ERC777Utils.copy(projectStructure.solidityPath)
-                buildNewProject(projectStructure.projectRoot)
+                buildProject(projectStructure.projectRoot)
             }
         }
 
         progressCounter.setLoading(false)
         PrettyPrinter.onOpenApiProjectSuccess()
-    }
-
-    /**
-     * Creates a new OpenAPI project structure from a set of predefined contracts.
-     *
-     * @param openApiTemplateProvider: is the OpenApiTemplateProvider containing all parameters for the generation
-     */
-    private fun createNewProject(openApiTemplateProvider: OpenApiTemplateProvider): ProjectStructure {
-        return OpenApiProjectStructure(
-            projectOptions.outputDir,
-            projectOptions.packageName,
-            projectOptions.projectName
-        ).apply {
-            ProjectCreationUtils.generateTopLevelDirectories(this)
-            openApiTemplateProvider.generateFiles(this)
-        }
-    }
-
-    /**
-     * Runs the necessary gradle tasks to have a working project.
-     *
-     * @param projectRoot: The project root directory containing the gradle executables
-     */
-    private fun buildNewProject(projectRoot: String) {
-        generateOpenApiAndSwaggerUi(projectRoot)
-        runGradleClean(projectRoot)
-        generateOpenApiAndSwaggerUi(projectRoot)
     }
 }
