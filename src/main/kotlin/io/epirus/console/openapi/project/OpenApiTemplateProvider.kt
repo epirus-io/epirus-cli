@@ -87,7 +87,7 @@ class OpenApiTemplateProvider(
             loadGradlewBatScript(), "gradlew.bat", projectStructure.projectRoot)
         ProjectWriter.copyResourceFile(
             gradlewJar,
-            projectStructure.wrapperPath + File.separator + "gradle-wrapper.jar")
+            projectStructure.wrapperPath + "gradle-wrapper.jar")
         ProjectWriter.copyResourceFile(
             readme,
             projectStructure.projectRoot + File.separator + "README.md")
