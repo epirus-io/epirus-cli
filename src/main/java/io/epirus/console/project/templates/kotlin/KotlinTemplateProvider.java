@@ -159,7 +159,6 @@ public class KotlinTemplateProvider implements TemplateProvider {
         ProjectWriter.writeResourceFile(
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
-                getGradlewJar(),
-                projectStructure.getWrapperPath() + "gradle-wrapper.jar");
+                getGradlewJar(), projectStructure.getWrapperPath() + "gradle-wrapper.jar");
     }
 }

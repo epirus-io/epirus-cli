@@ -32,11 +32,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImportProjectCommandTest extends ClassExecutor {
-    
+
     private static String tempDirPath;
-    
-    private final String solidityTestDir = Paths.get("src", "test", "resources", "Solidity")
-            .toFile().getAbsolutePath();
+
+    private final String solidityTestDir =
+            Paths.get("src", "test", "resources", "Solidity").toFile().getAbsolutePath();
 
     @BeforeAll
     public static void setUpStreams() {
