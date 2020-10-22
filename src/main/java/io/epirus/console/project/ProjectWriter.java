@@ -24,7 +24,7 @@ public class ProjectWriter {
     public static void writeResourceFile(
             final String file, final String fileName, final String writeLocation)
             throws IOException {
-        Files.write(Paths.get(writeLocation + File.separator + fileName), getBytes(file));
+        Files.write(Paths.get(writeLocation, fileName), getBytes(file));
     }
 
     private static byte[] getBytes(final String file) {
@@ -47,7 +47,7 @@ public class ProjectWriter {
             if (solidityImportPath.isFile() && solidityImportPath.getName().endsWith(".sol")) {
                 Files.copy(
                         solidityImportPath.toPath(),
-                        Paths.get(destination + File.separator + solidityImportPath.getName()),
+                        Paths.get(destination, solidityImportPath.getName()),
                         StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.walkFileTree(

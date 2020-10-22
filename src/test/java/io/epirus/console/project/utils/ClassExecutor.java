@@ -24,7 +24,7 @@ import org.eclipse.jetty.io.RuntimeIOException;
 
 public class ClassExecutor {
     public ProcessBuilder executeClassAsSubProcessAndReturnProcess(
-            Class classToExecute, List<String> jvmArgs, List<String> args, boolean suppressOutput) {
+            Class<?> classToExecute, List<String> jvmArgs, List<String> args, boolean suppressOutput) {
 
         ProcessBuilder pb =
                 new ProcessBuilder(
