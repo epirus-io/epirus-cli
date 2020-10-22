@@ -16,17 +16,17 @@ import io.epirus.console.openapi.subcommands.GenerateOpenApiCommand
 import io.epirus.console.openapi.subcommands.ImportOpenApiCommand
 import io.epirus.console.openapi.subcommands.JarOpenApiCommand
 import io.epirus.console.openapi.subcommands.NewOpenApiCommand
+import io.epirus.console.project.utils.Folders
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
 import java.io.ByteArrayInputStream
-import java.nio.file.Files
 import java.nio.file.Paths
 
 class OpenApiProjectTest {
-    //    private val tempDirPath = Folders.tempBuildFolder().absolutePath
-    private val tempDirPath = Files.createTempDirectory("openapi").toFile().absolutePath
+
+    private val tempDirPath = Folders.tempBuildFolder().absolutePath
 
     @Test
     fun testCorrectArgsOpenApiEndpointsGeneration() {
