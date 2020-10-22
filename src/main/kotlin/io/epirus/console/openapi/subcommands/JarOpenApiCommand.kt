@@ -70,7 +70,7 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
 
         Files.copy(
             getJarFile(tempFolderPath.toFile()).toPath(),
-            File(projectOptions.outputDir, "${projectOptions.projectName}$JARSUFFIX").toPath(),
+            File(projectOptions.outputDir, "${projectOptions.projectName}$JAR_SUFFIX").toPath(),
             StandardCopyOption.REPLACE_EXISTING
         )
 

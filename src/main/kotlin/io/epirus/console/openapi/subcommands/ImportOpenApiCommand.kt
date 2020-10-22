@@ -23,6 +23,8 @@ import org.apache.commons.lang.StringUtils
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 
 @Command(
     name = "import",
@@ -37,7 +39,10 @@ import java.io.File
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class ImportOpenApiCommand : AbstractOpenApiCommand() {
+class ImportOpenApiCommand(
+    input: InputStream = System.`in`,
+    output: PrintStream = System.out
+) : AbstractOpenApiCommand(input, output) {
 
     @Option(
         names = ["-s", "--solidity-path"],
@@ -86,8 +91,6 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
             (projectOptions.addressLength * 8).toString(),
             "project/README.openapi.md"
         ).generateFiles(projectStructure)
-        OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
-        OpenApiProjectCreationUtils.runGradleClean(projectStructure.projectRoot)
         OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
     }
 }
