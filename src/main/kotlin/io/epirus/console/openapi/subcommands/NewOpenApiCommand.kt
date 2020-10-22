@@ -16,10 +16,10 @@ import io.epirus.console.EpirusVersionProvider
 import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
+import io.epirus.console.openapi.project.erc777.ERC777Utils
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.TemplateType
 import io.epirus.console.project.utils.ProgressCounter
-import io.epirus.console.token.erc777.ERC777Utils
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.io.File

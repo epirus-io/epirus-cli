@@ -12,6 +12,7 @@
  */
 package io.epirus.console.project.java;
 
+import io.epirus.console.openapi.project.erc777.ERC777Utils;
 import io.epirus.console.openapi.utils.PrettyPrinter;
 import io.epirus.console.openapi.utils.SimpleFileLogger;
 import io.epirus.console.project.Erc777ProjectCreatorConfig;
@@ -19,7 +20,6 @@ import io.epirus.console.project.ProjectRunner;
 import io.epirus.console.project.templates.java.erc777.Erc777JavaTemplateBuilder;
 import io.epirus.console.project.utils.ProgressCounter;
 import io.epirus.console.project.utils.ProjectCreationUtils;
-import io.epirus.console.token.erc777.ERC777Utils;
 
 import org.web3j.commons.JavaVersion;
 
