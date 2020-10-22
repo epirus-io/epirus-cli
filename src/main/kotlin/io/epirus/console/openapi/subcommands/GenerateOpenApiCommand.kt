@@ -64,7 +64,6 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
                 abis = preCompiledContractOptions.abis,
                 addressLength = projectOptions.addressLength,
                 contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                withCoreBuildFile = true,
                 withImplementations = withImplementations
             )
         ).generate()

@@ -12,6 +12,7 @@
  */
 package io.epirus.console.openapi
 
+import org.web3j.abi.datatypes.Address
 import java.io.File
 
 class OpenApiGeneratorServiceConfiguration @JvmOverloads constructor(
@@ -19,8 +20,7 @@ class OpenApiGeneratorServiceConfiguration @JvmOverloads constructor(
     val packageName: String,
     val outputDir: String,
     val abis: List<File>,
-    val addressLength: Int,
+    val addressLength: Int = Address.DEFAULT_LENGTH / Byte.SIZE_BITS,
     val contextPath: String,
-    val withCoreBuildFile: Boolean = true,
     val withImplementations: Boolean = true
 )
