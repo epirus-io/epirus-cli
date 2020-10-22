@@ -11,7 +11,7 @@ plugins {
     id "de.undercouch.download" version "4.0.0"
 }
 
-description 'epirus command line tools'
+description 'Epirus command-line tools'
 mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
 
