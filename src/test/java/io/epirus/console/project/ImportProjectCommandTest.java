@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 
 import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
@@ -31,10 +32,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ImportProjectCommandTest extends ClassExecutor {
-    static String tempDirPath;
-    private String solidityTestDir =
-            new File(String.join(separator, "src", "test", "resources", "Solidity"))
-                    .getAbsolutePath();
+
+    private static String tempDirPath;
+
+    private final String solidityTestDir =
+            Paths.get("src", "test", "resources", "Solidity").toFile().getAbsolutePath();
 
     @BeforeAll
     public static void setUpStreams() {

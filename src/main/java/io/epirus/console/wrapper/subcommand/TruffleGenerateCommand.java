@@ -42,31 +42,31 @@ public class TruffleGenerateCommand implements Runnable {
 
     @Option(
             names = {"-t", "--truffle-json"},
-            description = "abi file with contract definition.",
+            description = "ABI file with contract definition.",
             required = true)
     private File jsonFileLocation;
 
     @Option(
             names = {"-o", "--outputDir"},
-            description = "destination base directory.",
+            description = "Destination base directory.",
             required = true)
     private File destinationDirLocation;
 
     @Option(
             names = {"-p", "--package"},
-            description = "base package name.",
+            description = "Base package name.",
             required = true)
     private String basePackageName;
 
     @Option(
             names = {"-jt", JAVA_TYPES_ARG},
-            description = "use native Java types.",
+            description = "Use native Java types.",
             showDefaultValue = ALWAYS)
     private boolean javaTypes = true;
 
     @Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use Solidity types.")
+            description = "Use Solidity types.")
     private boolean solidityTypes;
 
     @Override

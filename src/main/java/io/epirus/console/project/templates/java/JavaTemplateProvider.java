@@ -159,7 +159,6 @@ public class JavaTemplateProvider implements TemplateProvider {
         ProjectWriter.writeResourceFile(
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
-                getGradlewJar(),
-                projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
+                getGradlewJar(), projectStructure.getWrapperPath() + "gradle-wrapper.jar");
     }
 }

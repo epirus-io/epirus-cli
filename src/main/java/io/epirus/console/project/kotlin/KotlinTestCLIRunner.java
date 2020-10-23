@@ -19,13 +19,14 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.project.InteractiveOptions;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
 import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
 
-@CommandLine.Command(
+@Command(
         name = "kotlin",
         description = "Generate Kotlin tests for a Web3j Java smart contract wrapper",
         showDefaultValues = true,
@@ -38,16 +39,14 @@ import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class KotlinTestCLIRunner implements Runnable {
-    @CommandLine.Option(
+    @Option(
             names = {"-i", "--java-wrapper-directory"},
-            description = "The class path of your generated wrapper.",
-            required = false)
+            description = "The class path of your generated wrapper.")
     public String javaWrapperDir;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-o", "--output-directory"},
-            description = "The path where the unit tests will be generated.",
-            required = false)
+            description = "The path where the unit tests will be generated.")
     public String unitTestOutputDir;
 
     @VisibleForTesting

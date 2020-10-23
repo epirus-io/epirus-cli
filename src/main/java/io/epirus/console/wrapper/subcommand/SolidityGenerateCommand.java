@@ -45,53 +45,53 @@ public class SolidityGenerateCommand implements Runnable {
 
     @Option(
             names = {"-a", "--abiFile"},
-            description = "abi file with contract definition.",
+            description = "ABI file with contract definition.",
             required = true)
     private File abiFile;
 
     @Option(
             names = {"-b", "--binFile"},
             description =
-                    "bin file with contract compiled code "
+                    "BIN file with contract compiled code "
                             + "in order to generate deploy methods.")
     private File binFile;
 
     @Option(
             names = {"-c", "--contractName"},
-            description = "contract name (defaults to ABI file name).")
+            description = "Contract name (defaults to ABI file name).")
     private String contractName;
 
     @Option(
             names = {"-o", "--outputDir"},
-            description = "destination base directory.",
+            description = "Destination base directory.",
             required = true)
     private File destinationFileDir;
 
     @Option(
             names = {"-p", "--package"},
-            description = "base package name.",
+            description = "Base package name.",
             required = true)
     private String packageName;
 
     @Option(
             names = {"-al", "--addressLength"},
-            description = "address length in bytes (defaults to 20).")
+            description = "Address length in bytes (defaults to 20).")
     private int addressLength = Address.DEFAULT_LENGTH / Byte.SIZE;
 
     @Option(
             names = {"-jt", JAVA_TYPES_ARG},
-            description = "use native Java types.",
+            description = "Use native Java types.",
             showDefaultValue = ALWAYS)
     private boolean javaTypes = true;
 
     @Option(
             names = {"-st", SOLIDITY_TYPES_ARG},
-            description = "use Solidity types.")
+            description = "Use Solidity types.")
     private boolean solidityTypes;
 
     @Option(
             names = {"-pt", PRIMITIVE_TYPES_ARG},
-            description = "use Java primitive types.")
+            description = "Use Java primitive types.")
     private boolean primitiveTypes = false;
 
     @Override

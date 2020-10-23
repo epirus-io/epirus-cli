@@ -84,7 +84,7 @@ class ImportOpenApiCommand(
             "project/gradlew-wrapper.properties.template",
             "project/gradlew.bat.template",
             "project/gradlew.template",
-            "gradle-wrapper.jar",
+            "project/gradle-wrapper.jar",
             projectOptions.packageName,
             projectOptions.projectName,
             contextPath,
