@@ -44,6 +44,7 @@ import org.web3j.utils.Convert;
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR_PREFIX;
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
 import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static io.epirus.console.utils.PrinterUtilities.*;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
@@ -173,7 +174,7 @@ public class RunCommand implements Runnable {
                     "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
         }
         fundWallet();
-        // uploadSolidityMetadata(network, workingDirectory);
+        uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());
         coloredPrinter.println("Running your Web3App");
         System.out.print(System.lineSeparator());
