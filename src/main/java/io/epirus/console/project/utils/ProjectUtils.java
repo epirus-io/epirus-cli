@@ -161,6 +161,8 @@ public class ProjectUtils {
 
     private static void uploadFile(File file, Network network) throws IOException {
         String uploadURL = "https://" + network.getNetworkName() + ".api.epirus.io/metadata";
+        System.out.print(uploadURL);
+
         OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody requestBody =
                 new MultipartBody.Builder()
