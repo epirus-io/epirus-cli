@@ -66,8 +66,3 @@ sourceSets {
     main.kotlin.srcDirs += "${web3j.generatedFilesBaseDir}/main/java"
     test.kotlin.srcDirs += "${web3j.generatedFilesBaseDir}/test/java"
 }
-
-import org.web3j.solidity.gradle.plugin.OutputComponent
-solidity {
-    outputComponents = [OutputComponent.BIN, OutputComponent.ABI, OutputComponent.METADATA]
-}

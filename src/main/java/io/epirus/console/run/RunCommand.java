@@ -24,6 +24,7 @@ import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.account.subcommands.LoginCommand;
+import io.epirus.console.project.InteractiveOptions;
 import io.epirus.console.project.utils.ProjectUtils;
 import io.epirus.console.wallet.Faucet;
 import io.epirus.console.wallet.subcommands.WalletFundCommand;
@@ -45,7 +46,10 @@ import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
 import static io.epirus.console.config.ConfigManager.config;
 import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
-import static io.epirus.console.utils.PrinterUtilities.*;
+import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
+import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPair;
+import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.utils.Convert.Unit.ETHER;
 
 @Command(
@@ -61,12 +65,6 @@ import static org.web3j.utils.Convert.Unit.ETHER;
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class RunCommand implements Runnable {
-    private Path workingDirectory;
-    private Network network;
-    private AccountService accountService;
-    private Credentials credentials;
-    private Web3j web3j;
-
     @Mixin CredentialsOptions credentialsOptions;
 
     @Parameters(
@@ -75,6 +73,12 @@ public class RunCommand implements Runnable {
             description = "Ethereum network [rinkeby/kovan]",
             arity = "1")
     String deployNetwork;
+
+    private Path workingDirectory;
+    private Network network;
+    private AccountService accountService;
+    private Credentials credentials;
+    private Web3j web3j;
 
     @VisibleForTesting
     public RunCommand(
@@ -163,6 +167,7 @@ public class RunCommand implements Runnable {
     }
 
     public void deploy() throws Exception {
+        InteractiveOptions options = new InteractiveOptions();
         coloredPrinter.println("Preparing to run your Web3App");
         System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountService);
@@ -174,7 +179,10 @@ public class RunCommand implements Runnable {
                     "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
         }
         fundWallet();
-        uploadSolidityMetadata(network, workingDirectory);
+        if (options.isUserLoggedIn()) {
+
+            uploadSolidityMetadata(network, workingDirectory);
+        }
         System.out.print(System.lineSeparator());
         coloredPrinter.println("Running your Web3App");
         System.out.print(System.lineSeparator());
