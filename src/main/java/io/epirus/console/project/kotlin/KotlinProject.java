@@ -64,7 +64,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                             JavaVersion.getJavaVersionAsDouble() < 11
                                     ? "project/build.gradle.template"
                                     : "project/build.gradleJava11.template")
-                    .withSolidityProject("project/HelloWorld.sol");
+                    .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
