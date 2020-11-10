@@ -38,7 +38,8 @@ public class Erc777JavaTemplateProvider extends JavaTemplateProvider {
             String tokenName,
             String tokenSymbol,
             String initialSupply,
-            String[] defaultProviders) {
+            String[] defaultProviders,
+            String readme) {
         super(
                 mainJavaClass,
                 solidityContract,
@@ -50,7 +51,8 @@ public class Erc777JavaTemplateProvider extends JavaTemplateProvider {
                 gradlewScript,
                 gradlewJar,
                 packageNameReplacement,
-                projectNameReplacement);
+                projectNameReplacement,
+                readme);
         this.tokenName = tokenName;
         this.tokenSymbol = tokenSymbol;
         this.initialSupply = initialSupply;

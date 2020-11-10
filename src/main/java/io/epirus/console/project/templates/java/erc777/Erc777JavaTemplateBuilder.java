@@ -30,6 +30,7 @@ public class Erc777JavaTemplateBuilder implements TemplateBuilder {
     protected String gradlewWrapperJar;
     protected String packageNameReplacement;
     protected String projectNameReplacement;
+    protected String readme;
 
     public Erc777JavaTemplateBuilder withMainJavaClass(String mainJavaClass) {
         this.mainJavaClass = mainJavaClass;
@@ -99,6 +100,11 @@ public class Erc777JavaTemplateBuilder implements TemplateBuilder {
         return this;
     }
 
+    public Erc777JavaTemplateBuilder withReadme(String readme) {
+        this.readme = readme;
+        return this;
+    }
+
     public Erc777JavaTemplateBuilder withDefaultOperators(String[] defaultOperators) {
         if (defaultOperators != null && defaultOperators.length != 0) {
             this.defaultOperators = defaultOperators;
@@ -125,6 +131,7 @@ public class Erc777JavaTemplateBuilder implements TemplateBuilder {
                 tokenName,
                 tokenSymbol,
                 initialSupply,
-                defaultOperators);
+                defaultOperators,
+                readme);
     }
 }

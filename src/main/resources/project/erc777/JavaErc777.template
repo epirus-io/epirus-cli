@@ -1,7 +1,7 @@
-package io.epirus;
+package <package_name>;
 
 import ch.qos.logback.classic.Level;
-import io.epirus.generated.contracts.ERC777Token;
+import <package_name>.generated.contracts.ERC777Token;
 import io.epirus.web3j.Epirus;
 import io.epirus.web3j.gas.EpirusGasProvider;
 import io.epirus.web3j.gas.GasPrice;
@@ -29,7 +29,7 @@ import java.util.Collections;
  * <p>It deploys the ERC777 contract in src/main/solidity/ and prints its address</p>
  * <p>For more information on how to run this project, please refer to our <a href="https://docs.epirus.io/quickstart/#deployment">documentation</a></p>
  */
-public class Web3App {
+public class <project_name> {
 
     // ERC777 token deployment parameters
     private static final String NAME = "<NAME>";
@@ -56,7 +56,13 @@ public class Web3App {
             Web3j web3j = getDeployWeb3j();
             ERC777Token erc777Token = deployErc777(web3j, credentials, new EpirusGasProvider(deployNetwork, GasPrice.High));
             log.info("Contract returned: " + erc777Token.getContractAddress());
-            System.out.println(String.format("%-20s", "Contract address") + "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + erc777Token.getContractAddress());
+            String contractAddress;
+            if(epirusDeploy) {
+                contractAddress = "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + erc777Token.getContractAddress();
+            } else {
+                contractAddress = erc777Token.getContractAddress();
+            }
+            System.out.println(String.format("%-20s", "Contract address") + contractAddress);
             System.exit(0);
         } catch (Exception e) {
             log.error(e.getMessage());
