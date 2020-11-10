@@ -53,7 +53,7 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
         description = ["Generate the interfaces implementations."],
         showDefaultValue = ALWAYS
     )
-    var withImplementations: Boolean = true
+    var withImplementations: Boolean = false
 
     override fun generate(projectFolder: File) {
         if (solidityImportPath == null) {
