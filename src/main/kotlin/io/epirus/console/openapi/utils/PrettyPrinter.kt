@@ -53,8 +53,10 @@ object PrettyPrinter {
 
         instructionPrinter.println(
             "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK)
-        instructionPrinter.print(String.format("%-40s", "java -jar <args>"))
+        instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> <args>"))
         commandPrinter.println("Run your Jar")
+        instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> --help"))
+        commandPrinter.println("See the available options")
     }
 
     fun onSuccess() {
