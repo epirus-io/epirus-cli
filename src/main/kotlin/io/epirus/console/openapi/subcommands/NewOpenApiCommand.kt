@@ -67,14 +67,16 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                     openApiTemplateProvider = OpenApiTemplateProvider(
                         solidityContract = "",
                         pathToSolidityFolder = "",
-                        gradleBuild = "project/build.gradleOpenApiErc777.template",
+                        gradleBuild = "project/erc777/build.gradleOpenApiErc777.template",
                         packageName = projectOptions.packageName,
                         projectName = projectOptions.projectName,
                         contextPath = contextPath,
                         addressLength = (projectOptions.addressLength * 8).toString()
                     ), outputDir = projectOptions.outputDir
                 )
-                ERC777Utils.copy(projectStructure.solidityPath)
+                CopyUtils.copyFromResources(
+                    File("contracts").toPath().resolve("ERC777Token.sol"),
+                    Paths.get(projectStructure.solidityPath))
                 buildProject(projectStructure.projectRoot)
             }
         }
