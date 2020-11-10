@@ -21,7 +21,6 @@ import io.epirus.console.project.utils.ProgressCounter
 import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
 import io.epirus.console.project.utils.ProjectUtils.findSolidityContracts
 import picocli.CommandLine.Command
-import picocli.CommandLine.Help.Visibility.ALWAYS
 import picocli.CommandLine.Option
 import java.io.File
 import java.nio.file.Files
@@ -49,13 +48,6 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
         description = ["Path to Solidity file/folder"]
     )
     var solidityImportPath: String? = null
-
-    @Option(
-        names = ["--with-implementations"],
-        description = ["Generate a JAR containing the interfaces implementations."],
-        showDefaultValue = ALWAYS
-    )
-    var withImplementations: Boolean = true
 
     /**
      * Path to the `.epirus` folder
