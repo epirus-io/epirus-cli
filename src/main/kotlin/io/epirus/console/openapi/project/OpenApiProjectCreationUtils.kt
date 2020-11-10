@@ -15,7 +15,6 @@ package io.epirus.console.openapi.project
 import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateOpenApi
 import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateOpenApiAndSwaggerUi
 import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateShadowJar
-import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.runGradleClean
 import io.epirus.console.project.ProjectStructure
 import io.epirus.console.project.utils.ProjectCreationUtils
 
@@ -48,10 +47,8 @@ internal object OpenApiProjectCreationUtils {
      * @param withSwaggerUi: generate SwaggerUI for the generated endpoints
      * @param withShadowJar: generate an application Jar
      */
-    fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false, withClientJar: Boolean = false, withServerJar: Boolean = false) {
+    fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false) {
         if (withOpenApi && withSwaggerUi) {
-            generateOpenApiAndSwaggerUi(projectRoot)
-            runGradleClean(projectRoot)
             generateOpenApiAndSwaggerUi(projectRoot)
         }
         if (withOpenApi && !withSwaggerUi) {
