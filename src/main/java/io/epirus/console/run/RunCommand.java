@@ -179,10 +179,7 @@ public class RunCommand implements Runnable {
                     "Please check your email and activate your account in order to take advantage our features. Once your account is activated you can re-run the command.");
         }
         fundWallet();
-        if (options.isUserLoggedIn()) {
-
-            uploadSolidityMetadata(network, workingDirectory);
-        }
+        uploadSolidityMetadata(network, workingDirectory);
         System.out.print(System.lineSeparator());
         coloredPrinter.println("Running your Web3App");
         System.out.print(System.lineSeparator());
