@@ -65,21 +65,10 @@ public class Erc777JavaProjectCreator extends ProjectRunner {
                     .build()
                     .generateFiles(projectStructure);
 
-            ERC777Utils.INSTANCE.copy(projectStructure.getSolidityPath());
-            ProjectCreationUtils.generateWrappers(projectStructure.getProjectRoot());
-            if (withTests) {
-                new JavaTestCLIRunner(
-                                projectStructure.getGeneratedJavaWrappers(),
-                                projectStructure.getPathToTestDirectory())
-                        .generateJava();
-            }
-            if (withJar) {
-                ProjectCreationUtils.createFatJar(projectStructure.getProjectRoot());
-            }
-
-            progressCounter.setLoading(false);
-            JavaProjectRunner.onSuccess(
-                    new JavaProject(withTests, withJar, true, "new", "", projectStructure), "java");
+            CopyUtils.INSTANCE.copyFromResources(
+                    new File("contracts").toPath().resolve("ERC777Token.sol"),
+                    Paths.get(projectStructure.getSolidityPath()));
+            buildProject(projectStructure, progressCounter);
         } catch (Exception e) {
             e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
             PrettyPrinter.INSTANCE.onFailed();

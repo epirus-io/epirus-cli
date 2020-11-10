@@ -12,8 +12,15 @@
  */
 package io.epirus.console.project;
 
+import java.io.IOException;
+
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
+import io.epirus.console.project.java.JavaProject;
+import io.epirus.console.project.java.JavaProjectRunner;
+import io.epirus.console.project.java.JavaTestCLIRunner;
+import io.epirus.console.project.utils.ProgressCounter;
+import io.epirus.console.project.utils.ProjectCreationUtils;
 
 public abstract class ProjectRunner implements Runnable {
 
@@ -84,5 +91,23 @@ public abstract class ProjectRunner implements Runnable {
         commandPrinter.println("Runs your application");
         instructionPrinter.print(String.format("%-40s", "epirus docker run rinkeby|ropsten"));
         commandPrinter.println("Runs your application in a docker container");
+    }
+
+    public void buildProject(ProjectStructure projectStructure, ProgressCounter progressCounter)
+            throws IOException, InterruptedException {
+        ProjectCreationUtils.generateWrappers(projectStructure.getProjectRoot());
+        if (withTests) {
+            new JavaTestCLIRunner(
+                            projectStructure.getGeneratedJavaWrappers(),
+                            projectStructure.getPathToTestDirectory())
+                    .generateJava();
+        }
+        if (withJar) {
+            ProjectCreationUtils.createFatJar(projectStructure.getProjectRoot());
+        }
+
+        progressCounter.setLoading(false);
+        JavaProjectRunner.onSuccess(
+                new JavaProject(withTests, withJar, true, "new", "", projectStructure), "java");
     }
 }
