@@ -69,10 +69,10 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
                                             projectOptions.outputDir,
                                             projectOptions.generateJar,
                                             projectOptions.generateTests,
-                                            interactiveOptions.getErc777TokenName(),
-                                            interactiveOptions.getErc777TokenSymbol(),
-                                            interactiveOptions.getErc777InitialSupply(),
-                                            interactiveOptions.getErc777DefaultOperators()))
+                                            interactiveOptions.getTokenName("ERC777"),
+                                            interactiveOptions.getTokenSymbol("erc777"),
+                                            interactiveOptions.getTokenInitialSupply("1000000000"),
+                                            interactiveOptions.getTokenDefaultOperators()))
                             .run();
                     break;
             }

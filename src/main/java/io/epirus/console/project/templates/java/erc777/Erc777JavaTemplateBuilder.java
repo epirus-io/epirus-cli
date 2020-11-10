@@ -78,20 +78,12 @@ public class Erc777JavaTemplateBuilder implements TemplateBuilder {
     }
 
     public Erc777JavaTemplateBuilder withTokenName(String tokenName) {
-        if (tokenName != null && !tokenName.isEmpty()) {
-            this.tokenName = tokenName;
-        } else {
-            this.tokenName = "ERC777";
-        }
+        this.tokenName = tokenName;
         return this;
     }
 
     public Erc777JavaTemplateBuilder withTokenSymbol(String tokenSymbol) {
-        if (tokenSymbol != null && !tokenSymbol.isEmpty()) {
-            this.tokenSymbol = tokenSymbol;
-        } else {
-            this.tokenSymbol = "erc777";
-        }
+        this.tokenSymbol = tokenSymbol;
         return this;
     }
 

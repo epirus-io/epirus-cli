@@ -236,39 +236,39 @@ public class InteractiveOptions {
         return getUserInput();
     }
 
-    public String getErc777TokenName() {
-        print("Please enter the ERC777 token name [ERC777]: ");
+    public String getTokenName(String defaultValue) {
+        print("Please enter the token name [" + defaultValue + "]: ");
         String tokenName = getUserInput();
         if (tokenName.isEmpty()) {
-            return "ERC777";
+            return defaultValue;
         } else {
             return tokenName;
         }
     }
 
-    public String getErc777TokenSymbol() {
-        print("Please enter the ERC777 token symbol [erc777]: ");
+    public String getTokenSymbol(String defaultValue) {
+        print("Please enter the token symbol [" + defaultValue + "]: ");
         String tokenSymbol = getUserInput();
         if (tokenSymbol.isEmpty()) {
-            return "erc777";
+            return defaultValue;
         } else {
             return tokenSymbol;
         }
     }
 
-    public String getErc777InitialSupply() {
-        print("Please enter the ERC777 token initial supply in Wei [1000000000]: ");
+    public String getTokenInitialSupply(String defaultValue) {
+        print("Please enter the token initial supply in Wei [" + defaultValue + "]: ");
         String supply = getUserInput();
         if (supply.isEmpty()) {
-            return "1000000000";
+            return defaultValue;
         } else {
             return supply;
         }
     }
 
-    public String[] getErc777DefaultOperators() {
+    public String[] getTokenDefaultOperators() {
         print(
-                "Please enter the ERC777 token default operators [your wallet address] (0x prefixed and ; separated): ");
+                "Please enter the token default operators [your wallet address] (0x prefixed and ; separated): ");
         String operators = getUserInput();
         if (operators.isEmpty()) {
             return null;
