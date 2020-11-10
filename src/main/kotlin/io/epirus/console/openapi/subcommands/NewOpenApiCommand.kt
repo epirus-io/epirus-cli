@@ -50,7 +50,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
             TemplateType.HelloWorld -> {
                 val projectStructure = createProjectStructure(
                     openApiTemplateProvider = OpenApiTemplateProvider(
-                        solidityContract = "project/HelloWorld.sol",
+                        solidityContract = "contracts/HelloWorld.sol",
                         pathToSolidityFolder = "",
                         gradleBuild = "project/build.gradleOpenApi.template",
                         packageName = projectOptions.packageName,
