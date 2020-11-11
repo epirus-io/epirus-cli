@@ -13,6 +13,7 @@
 package io.epirus.console.project;
 
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.project.java.Erc20JavaProjectCreator;
 import io.epirus.console.project.java.Erc777JavaProjectCreator;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
@@ -33,7 +34,7 @@ import picocli.CommandLine.Parameters;
         footer = "Epirus CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand extends AbstractProjectCommand implements Runnable {
 
-    @Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
+    @Parameters(description = "HelloWorld, ERC20, ERC777", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
 
     @Override
@@ -51,6 +52,9 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
             switch (templateType) {
                 case HelloWorld:
                     new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+                    break;
+                case ERC20:
+                    System.out.println("Generating ERC20 Kotlin project is currently unsupported");
                     break;
                 case ERC777:
                     System.out.println("Generating ERC777 Kotlin project is currently unsupported");
@@ -73,6 +77,19 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
                                             interactiveOptions.getTokenSymbol("erc777"),
                                             interactiveOptions.getTokenInitialSupply("1000000000"),
                                             interactiveOptions.getTokenDefaultOperators()))
+                            .run();
+                    break;
+                case ERC20:
+                    new Erc20JavaProjectCreator(
+                                    new Erc20ProjectCreatorConfig(
+                                            projectOptions.projectName,
+                                            projectOptions.packageName,
+                                            projectOptions.outputDir,
+                                            projectOptions.generateJar,
+                                            projectOptions.generateTests,
+                                            interactiveOptions.getTokenName("ERC20"),
+                                            interactiveOptions.getTokenSymbol("erc20"),
+                                            interactiveOptions.getTokenInitialSupply("1000000000")))
                             .run();
                     break;
             }

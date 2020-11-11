@@ -16,13 +16,14 @@ import io.epirus.console.EpirusVersionProvider
 import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
-import io.epirus.console.openapi.project.erc777.ERC777Utils
+import io.epirus.console.openapi.project.erc777.CopyUtils
 import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.project.TemplateType
 import io.epirus.console.project.utils.ProgressCounter
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.io.File
+import java.nio.file.Paths
 
 @Command(
     name = "new",
@@ -39,7 +40,7 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    @Parameters(description = ["HelloWorld, ERC777"], defaultValue = "HelloWorld")
+    @Parameters(description = ["HelloWorld, ERC20, ERC777"], defaultValue = "HelloWorld")
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
@@ -76,6 +77,24 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 )
                 CopyUtils.copyFromResources(
                     File("contracts").toPath().resolve("ERC777Token.sol"),
+                    Paths.get(projectStructure.solidityPath))
+                buildProject(projectStructure.projectRoot)
+            }
+
+            TemplateType.ERC20 -> {
+                val projectStructure = createProjectStructure(
+                    openApiTemplateProvider = OpenApiTemplateProvider(
+                        solidityContract = "",
+                        pathToSolidityFolder = "",
+                        gradleBuild = "project/erc20/build.gradleOpenApiErc20.template",
+                        packageName = projectOptions.packageName,
+                        projectName = projectOptions.projectName,
+                        contextPath = contextPath,
+                        addressLength = (projectOptions.addressLength * 8).toString()
+                    ), outputDir = projectOptions.outputDir
+                )
+                CopyUtils.copyFromResources(
+                    File("contracts").toPath().resolve("ERC20Token.sol"),
                     Paths.get(projectStructure.solidityPath))
                 buildProject(projectStructure.projectRoot)
             }

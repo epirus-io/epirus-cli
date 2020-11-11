@@ -53,6 +53,20 @@ class OpenApiProjectTest {
     }
 
     @Test
+    fun testCorrectArgsOpenApiNewErc20() {
+        val args = arrayOf("ERC20", "-p", "org.com", "-n", "Test", "-o", tempDirPath)
+        val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
+        assertEquals(0, exitCode)
+    }
+
+    @Test
+    fun testCorrectArgsOpenApiNewErc777() {
+        val args = arrayOf("ERC777", "-p", "org.com", "-n", "Test", "-o", tempDirPath)
+        val exitCode = CommandLine(NewOpenApiCommand::class.java).execute(*args)
+        assertEquals(0, exitCode)
+    }
+
+    @Test
     fun testCorrectArgsOpenApiImport() {
         val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath, "-s", soliditySource.absolutePath)
         val exitCode = CommandLine(ImportOpenApiCommand()).execute(*args)

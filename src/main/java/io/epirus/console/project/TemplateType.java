@@ -14,5 +14,6 @@ package io.epirus.console.project;
 
 public enum TemplateType {
     HelloWorld,
+    ERC20,
     ERC777
 }
