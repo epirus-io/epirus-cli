@@ -44,7 +44,7 @@ public class JavaProjectWriterTest {
     @Test
     public void copyResourceFileTest() throws IOException {
         ProjectWriter.copyResourceFile(
-                "project" + File.separator + templateProvider.getGradlewJar(),
+                templateProvider.getGradlewJar(),
                 tempDirPath + File.separator + "gradle-wrapper.jar");
         assertTrue(new File(tempDirPath + File.separator + "gradle-wrapper.jar").exists());
     }
