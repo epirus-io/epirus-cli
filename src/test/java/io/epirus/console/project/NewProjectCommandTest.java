@@ -120,14 +120,13 @@ public class NewProjectCommandTest extends ClassExecutor {
         assertEquals(0, process.exitValue());
     }
 
-
     @Test
     public void testCorrectArgsJavaErc20ProjectGeneration()
             throws IOException, InterruptedException {
         final String[] args = {"new", "ERC20", "-o", tempDirPath};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
-                        Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
                         .start();
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
@@ -140,7 +139,7 @@ public class NewProjectCommandTest extends ClassExecutor {
         writer.close();
 
         try (BufferedReader reader =
-                     new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             List<String> stringList = reader.lines().collect(Collectors.toList());
             stringList.forEach(System.out::println);
         }
