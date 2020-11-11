@@ -60,7 +60,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         addressLength = (projectOptions.addressLength * 8).toString()
                     ), outputDir = projectOptions.outputDir
                 )
-                buildProject(projectStructure.projectRoot)
+                buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
             TemplateType.ERC777 -> {
@@ -78,7 +78,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 CopyUtils.copyFromResources(
                     File("contracts").toPath().resolve("ERC777Token.sol"),
                     Paths.get(projectStructure.solidityPath))
-                buildProject(projectStructure.projectRoot)
+                buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
             TemplateType.ERC20 -> {
@@ -96,7 +96,7 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 CopyUtils.copyFromResources(
                     File("contracts").toPath().resolve("ERC20Token.sol"),
                     Paths.get(projectStructure.solidityPath))
-                buildProject(projectStructure.projectRoot)
+                buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
         }
 

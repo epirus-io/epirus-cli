@@ -69,7 +69,7 @@ class ImportOpenApiCommand(
                 addressLength = (projectOptions.addressLength * 8).toString()
             ), outputDir = projectOptions.outputDir)
 
-        buildProject(projectStructure.projectRoot)
+        buildProject(projectStructure.projectRoot, withSwaggerUi = false)
 
         progressCounter.setLoading(false)
         PrettyPrinter.onOpenApiProjectSuccess()

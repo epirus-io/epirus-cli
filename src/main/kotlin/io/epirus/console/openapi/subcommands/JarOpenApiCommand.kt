@@ -81,8 +81,8 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
         }
         buildProject(
             Paths.get(projectDirectoryPath.toString(), projectOptions.projectName).toString(),
-            withOpenApi = true,
-            withSwaggerUi = true,
+            withOpenApi = false,
+            withSwaggerUi = false,
             withShadowJar = true)
 
         Files.copy(
