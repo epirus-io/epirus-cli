@@ -164,7 +164,8 @@ public class JavaTemplateProvider implements TemplateProvider {
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
                 getGradlewJar(),
-                new File(projectStructure.getWrapperPath(), "gradle-wrapper.jar").getAbsolutePath());
+                new File(projectStructure.getWrapperPath(), "gradle-wrapper.jar")
+                        .getAbsolutePath());
         if (readme != null)
             ProjectWriter.copyResourceFile(
                     readme, projectStructure.getProjectRoot() + File.separator + "README.md");
