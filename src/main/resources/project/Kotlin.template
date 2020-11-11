@@ -82,7 +82,7 @@ class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld")
         val response: String = helloWorld?.greeting()!!.send()
         log.info("Contract returned: $response")
-        String contractAddress = if(epirusDeploy) {
+        val contractAddress = if(epirusDeploy) {
             "https://${deployNetwork.networkName}.epirus.io/contracts/${helloWorld.contractAddress}"
         } else {
             helloWorld.contractAddress
