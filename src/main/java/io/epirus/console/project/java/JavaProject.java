@@ -55,7 +55,7 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                         .withGradleScript("project/gradlew.template")
                         .withGradleSettings("project/settings.gradle.template")
                         .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
-                        .withGradlewWrapperJar("project/gradle-wrapper.jar");
+                        .withGradlewWrapperJar("gradle-wrapper.jar");
 
         if (command.equals("new")) {
             templateBuilder
