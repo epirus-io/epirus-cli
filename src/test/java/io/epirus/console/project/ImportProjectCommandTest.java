@@ -13,8 +13,6 @@
 package io.epirus.console.project;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Paths;
 
 import io.epirus.console.project.utils.ClassExecutor;
@@ -76,7 +74,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
+            "-p", "org.com", "-n", "Test5", "-o", tempDirPath, "-s", solidityTestDir
         };
         int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);

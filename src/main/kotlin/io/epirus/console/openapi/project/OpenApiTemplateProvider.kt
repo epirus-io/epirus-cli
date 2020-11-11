@@ -32,7 +32,7 @@ class OpenApiTemplateProvider @JvmOverloads constructor(
     private val gradlewWrapperSettings: String = "project/gradlew-wrapper.properties.template",
     private val gradlewBatScript: String = "project/gradlew.bat.template",
     private val gradlewScript: String = "project/gradlew.template",
-    private val gradlewJar: String = "gradle-wrapper.jar"
+    private val gradlewJar: String = "project/gradle-wrapper.jar"
 ) : TemplateProvider {
     private fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)

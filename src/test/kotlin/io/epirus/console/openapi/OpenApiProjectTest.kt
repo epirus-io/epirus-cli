@@ -21,23 +21,24 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
-import java.io.ByteArrayInputStream
+import java.io.File
 import java.nio.file.Paths
 
 class OpenApiProjectTest {
 
     private val tempDirPath = Folders.tempBuildFolder().absolutePath
+    private val soliditySource: File = Paths.get("src", "test", "resources", "Solidity", "TestContract.sol").toFile()
 
     @Test
     fun testCorrectArgsOpenApiEndpointsGeneration() {
-        val args = arrayOf("-o", tempDirPath, "-n", "generationTest")
+        val args = arrayOf("-o", tempDirPath, "-n", "generationTest", "-s", soliditySource.absolutePath)
         val exitCode = CommandLine(GenerateOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
     }
 
     @Test
     fun testCorrectArgsOpenApiJarGeneration() {
-        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath)
+        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath, "-s", soliditySource.absolutePath)
         val exitCode = CommandLine(JarOpenApiCommand::class.java).execute(*args)
         assertEquals(0, exitCode)
         val jarFile = Paths.get(tempDirPath, "Test-server-all.jar").toFile()
@@ -53,10 +54,8 @@ class OpenApiProjectTest {
 
     @Test
     fun testCorrectArgsOpenApiImport() {
-        val soliditySource = Paths.get("src", "test", "resources", "Solidity", "TestContract.sol").toFile()
-        val userInput = ByteArrayInputStream(soliditySource.absolutePath.toByteArray())
-        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath)
-        val exitCode = CommandLine(ImportOpenApiCommand(userInput, System.out)).execute(*args)
+        val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath, "-s", soliditySource.absolutePath)
+        val exitCode = CommandLine(ImportOpenApiCommand()).execute(*args)
         assertEquals(0, exitCode)
     }
 }

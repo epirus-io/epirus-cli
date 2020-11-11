@@ -32,7 +32,7 @@ public class TemplateProviderTest {
                         .withGradleBuild("project/build.gradle.template")
                         .withGradleSettings("project/settings.gradle.template")
                         .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
-                        .withGradlewWrapperJar("gradle-wrapper.jar")
+                        .withGradlewWrapperJar("project/gradle-wrapper.jar")
                         .withPackageNameReplacement("test")
                         .withProjectNameReplacement("test")
                         .build();

@@ -30,11 +30,4 @@ class OpenApiProjectOptions : BaseProjectOptions() {
         showDefaultValue = CommandLine.Help.Visibility.ALWAYS
     )
     var addressLength = 20
-
-    @Option(
-        names = ["--overwrite"],
-        description = ["Overwrite the project if exists."],
-        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
-    )
-    var overwrite = false
 }

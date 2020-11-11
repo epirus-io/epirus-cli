@@ -12,12 +12,16 @@
  */
 package io.epirus.console.project;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import io.epirus.console.Epirus;
 import io.epirus.console.project.utils.ClassExecutor;
@@ -90,7 +94,7 @@ public class NewProjectCommandTest extends ClassExecutor {
     @Test
     public void testCorrectArgsJavaErc777ProjectGeneration()
             throws IOException, InterruptedException {
-        final String[] args = {"new", "-o", tempDirPath, "ERC777"};
+        final String[] args = {"new", "ERC777", "-o", tempDirPath};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
@@ -105,6 +109,12 @@ public class NewProjectCommandTest extends ClassExecutor {
         writer.newLine();
         writer.newLine();
         writer.close();
+
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(System.out::println);
+        }
         process.waitFor();
 
         assertEquals(0, process.exitValue());
