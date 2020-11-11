@@ -6,7 +6,7 @@ plugins {
     id "distribution"
     id "idea"
     id "jacoco"
-    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.diffplug.gradle.spotless" version "3.25.0"
     id "de.undercouch.download" version "4.0.0"
 }
