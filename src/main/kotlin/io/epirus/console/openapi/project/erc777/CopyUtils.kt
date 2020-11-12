@@ -12,21 +12,25 @@
  */
 package io.epirus.console.openapi.project.erc777
 
+import io.epirus.console.project.ProjectWriter
 import io.epirus.console.project.templates.TemplateReader
+import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
 
 internal object CopyUtils {
     /**
      * Copies dependencies from a file to an output file or directory.
      * Used when loading a file from jar resources.
+     *
+     * @param inputPath relative resource path
+     * @param outputPath output directory
      */
     @Throws(IOException::class)
-    fun copyFromResources(inputPath: Path, outputPath: Path) {
-        val inputFile = TemplateReader.readFile(inputPath.toString())
-        Files.write(
-            if (outputPath.toFile().isDirectory) outputPath.resolve(inputPath.fileName) else outputPath,
-            inputFile.toByteArray())
+    fun copyFromResources(inputPath: String, outputPath: String) {
+        ProjectWriter.writeResourceFile(
+            TemplateReader.readFile(inputPath),
+            File(inputPath).name,
+            outputPath
+        )
     }
 }

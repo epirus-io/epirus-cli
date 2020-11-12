@@ -23,7 +23,6 @@ import io.epirus.console.project.utils.ProgressCounter
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.io.File
-import java.nio.file.Paths
 
 @Command(
     name = "new",
@@ -76,8 +75,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                     ), outputDir = projectOptions.outputDir
                 )
                 CopyUtils.copyFromResources(
-                    File("contracts").toPath().resolve("ERC777Token.sol"),
-                    Paths.get(projectStructure.solidityPath))
+                    "contracts/ERC777Token.sol",
+                    projectStructure.solidityPath)
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
@@ -94,8 +93,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                     ), outputDir = projectOptions.outputDir
                 )
                 CopyUtils.copyFromResources(
-                    File("contracts").toPath().resolve("ERC20Token.sol"),
-                    Paths.get(projectStructure.solidityPath))
+                    "contracts/ERC20Token.sol",
+                    projectStructure.solidityPath)
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
         }

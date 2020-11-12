@@ -12,9 +12,6 @@
  */
 package io.epirus.console.project.java;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import io.epirus.console.openapi.project.erc777.CopyUtils;
 import io.epirus.console.openapi.utils.PrettyPrinter;
 import io.epirus.console.openapi.utils.SimpleFileLogger;
@@ -64,8 +61,7 @@ public class Erc20JavaProjectCreator extends ProjectRunner {
                     .generateFiles(projectStructure);
 
             CopyUtils.INSTANCE.copyFromResources(
-                    new File("contracts").toPath().resolve("ERC20Token.sol"),
-                    Paths.get(projectStructure.getSolidityPath()));
+                    "contracts/ERC20Token.sol", projectStructure.getSolidityPath());
             buildProject(projectStructure, progressCounter);
         } catch (Exception e) {
             e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
