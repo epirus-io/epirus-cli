@@ -1,9 +1,9 @@
 # To build a Dockerized version execute: `docker build -t web3app .`
 # To run the generated image execute: `docker run --env EPIRUS_LOGIN_TOKEN="<your login token>" web3app`
-FROM alpine as Build
+FROM ubuntu as Build
 COPY . /root/app
-RUN apk \
-	add --no-cache curl bash openjdk11-jre\
+RUN apt-get update && apt-get install -y \
+	curl bash openjdk-11-jre \
 	&& rm -rf /var/cache/apk/* \
 	&& curl -L get.epirus.io | sh \
 	&& /root/.epirus/epirus \
