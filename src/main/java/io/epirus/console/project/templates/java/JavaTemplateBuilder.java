@@ -95,6 +95,7 @@ public class JavaTemplateBuilder implements TemplateBuilder {
                 gradlewScript,
                 gradlewWrapperJar,
                 packageNameReplacement,
-                projectNameReplacement);
+                projectNameReplacement,
+                null);
     }
 }

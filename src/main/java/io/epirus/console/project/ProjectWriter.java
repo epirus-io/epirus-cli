@@ -21,6 +21,15 @@ import java.util.Objects;
 
 public class ProjectWriter {
 
+    /**
+     * Writes file content into the output directory. Can be used with <code>
+     * TemplateReader.readFile()</code> to get the file content from JAR.
+     *
+     * @param file File content to be written.
+     * @param fileName output file name
+     * @param writeLocation output location
+     * @throws java.io.IOException when file is not found
+     */
     public static void writeResourceFile(
             final String file, final String fileName, final String writeLocation)
             throws IOException {

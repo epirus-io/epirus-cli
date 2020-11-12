@@ -20,20 +20,14 @@ import io.epirus.console.project.ProjectImporterConfig;
 public class JavaProjectImporterRunner extends JavaProjectRunner {
 
     public String solidityImportPath;
-    public boolean shouldGenerateTests;
 
     public JavaProjectImporterRunner(final ProjectImporterConfig projectImporterConfig) {
         super(projectImporterConfig);
         solidityImportPath = projectImporterConfig.getSolidityImportPath();
-        shouldGenerateTests = projectImporterConfig.shouldGenerateTests();
     }
 
     protected void createProject() {
         generateJava(
-                shouldGenerateTests,
-                Optional.of(new File(solidityImportPath)),
-                false,
-                false,
-                "import");
+                withTests, Optional.of(new File(solidityImportPath)), withJar, false, "import");
     }
 }

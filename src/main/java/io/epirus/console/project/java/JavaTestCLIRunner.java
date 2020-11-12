@@ -18,11 +18,12 @@ import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.openapi.utils.PrettyPrinter;
+import io.epirus.console.openapi.utils.SimpleFileLogger;
 import io.epirus.console.project.InteractiveOptions;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
 import org.web3j.codegen.unit.gen.java.JavaClassGenerator;
 
@@ -69,7 +70,9 @@ public class JavaTestCLIRunner implements Runnable {
             System.out.println(
                     "Unit tests were generated successfully at location: " + unitTestOutputDir);
         } catch (IOException e) {
-            Console.exitError(e);
+            e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+            PrettyPrinter.INSTANCE.onFailed();
+            System.exit(1);
         }
     }
 
@@ -101,7 +104,9 @@ public class JavaTestCLIRunner implements Runnable {
                                         unitTestOutputDir)
                                 .writeClass();
                     } catch (Exception e) {
-                        Console.exitError(e);
+                        e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+                        PrettyPrinter.INSTANCE.onFailed();
+                        System.exit(1);
                     }
                 });
     }

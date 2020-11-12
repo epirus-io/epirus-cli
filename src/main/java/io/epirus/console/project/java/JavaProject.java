@@ -24,7 +24,7 @@ import org.web3j.commons.JavaVersion;
 
 public class JavaProject extends AbstractProject<JavaProject> implements Project {
 
-    protected JavaProject(
+    public JavaProject(
             boolean withTests,
             boolean withFatJar,
             boolean withSampleCode,
@@ -55,7 +55,7 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                         .withGradleScript("project/gradlew.template")
                         .withGradleSettings("project/settings.gradle.template")
                         .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
-                        .withGradlewWrapperJar("project/gradle-wrapper.jar");
+                        .withGradlewWrapperJar("gradle-wrapper.jar");
 
         if (command.equals("new")) {
             templateBuilder
@@ -63,7 +63,7 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                             JavaVersion.getJavaVersionAsDouble() < 11
                                     ? "project/build.gradle.template"
                                     : "project/build.gradleJava11.template")
-                    .withSolidityProject("project/HelloWorld.sol");
+                    .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder

@@ -13,18 +13,15 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.project.OpenApiProjectCreationUtils
-import io.epirus.console.openapi.project.OpenApiProjectStructure
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
-import io.epirus.console.project.utils.ProjectCreationUtils
-import org.apache.commons.lang.StringUtils
+import io.epirus.console.project.utils.ProgressCounter
+import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
-import java.io.InputStream
-import java.io.PrintStream
 
 @Command(
     name = "import",
@@ -39,10 +36,7 @@ import java.io.PrintStream
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class ImportOpenApiCommand(
-    input: InputStream = System.`in`,
-    output: PrintStream = System.out
-) : AbstractOpenApiCommand(input, output) {
+class ImportOpenApiCommand : AbstractOpenApiCommand() {
 
     @Option(
         names = ["-s", "--solidity-path"],
@@ -54,43 +48,25 @@ class ImportOpenApiCommand(
         if (solidityImportPath == null) {
             solidityImportPath = interactiveOptions.solidityProjectPath
         }
+        exitIfNoContractFound(File(solidityImportPath!!))
 
-        val contextPath = if (projectOptions.contextPath != null) {
-            StringUtils.removeEnd(projectOptions.contextPath, "/")
-        } else {
-            projectOptions.projectName
-        }
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Creating and Building ${projectOptions.projectName} project ... Subsequent builds will be faster")
 
-        print("\nCreating ${projectOptions.projectName} project ...\n")
-        SimpleFileLogger.startLogging()
+        val projectStructure = createProjectStructure(
+            openApiTemplateProvider = OpenApiTemplateProvider(
+                solidityContract = "",
+                pathToSolidityFolder = solidityImportPath!!,
+                gradleBuild = "project/build.gradleImportOpenApi.template",
+                packageName = projectOptions.packageName,
+                projectName = projectOptions.projectName,
+                contextPath = contextPath,
+                addressLength = (projectOptions.addressLength * 8).toString()
+            ), outputDir = projectOptions.outputDir)
 
-        createImportProject(contextPath)
+        buildProject(projectStructure.projectRoot, withSwaggerUi = false)
 
-        PrettyPrinter.onProjectSuccess()
-    }
-
-    private fun createImportProject(contextPath: String) {
-        val projectStructure = OpenApiProjectStructure(
-            projectOptions.outputDir,
-            projectOptions.packageName,
-            projectOptions.projectName
-        )
-        ProjectCreationUtils.generateTopLevelDirectories(projectStructure)
-        OpenApiTemplateProvider(
-            "",
-            solidityImportPath!!,
-            "project/build.gradleImportOpenAPI.template",
-            "project/settings.gradle.template",
-            "project/gradlew-wrapper.properties.template",
-            "project/gradlew.bat.template",
-            "project/gradlew.template",
-            "project/gradle-wrapper.jar",
-            projectOptions.packageName,
-            projectOptions.projectName,
-            contextPath,
-            (projectOptions.addressLength * 8).toString(),
-            "project/README.openapi.md"
-        ).generateFiles(projectStructure)
-        OpenApiProjectCreationUtils.generateOpenApiAndSwaggerUi(projectStructure.projectRoot)
+        progressCounter.setLoading(false)
+        PrettyPrinter.onOpenApiProjectSuccess()
     }
 }

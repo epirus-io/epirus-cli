@@ -97,7 +97,8 @@ public class KotlinTemplateProvider implements TemplateProvider {
                 .replaceAll(
                         "<project_name>",
                         ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
-                .replaceAll("<package_name>", packageNameReplacement.orElse(""));
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<project_language>", "java");
     }
 
     public String loadGradleBuild() throws IOException {
@@ -159,6 +160,8 @@ public class KotlinTemplateProvider implements TemplateProvider {
         ProjectWriter.writeResourceFile(
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
-                getGradlewJar(), projectStructure.getWrapperPath() + "gradle-wrapper.jar");
+                getGradlewJar(),
+                new File(projectStructure.getWrapperPath(), "gradle-wrapper.jar")
+                        .getAbsolutePath());
     }
 }

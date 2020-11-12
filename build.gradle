@@ -6,7 +6,7 @@ plugins {
     id "distribution"
     id "idea"
     id "jacoco"
-    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.diffplug.gradle.spotless" version "3.25.0"
     id "de.undercouch.download" version "4.0.0"
 }
@@ -14,6 +14,26 @@ plugins {
 description 'Epirus command-line tools'
 mainClassName = 'io.epirus.console.Epirus'
 applicationName = 'epirus'
+
+ext {
+    web3jVersion = '4.7.0'
+    picocli = '4.0.4'
+    slf4jVersion = '1.7.+'
+    junitVersion = '5.+'
+    mockitoVersion = '3.+'
+    gsonVersion = '2.8.6'
+    wireMockVersion = '2.25.1'
+    kotlinLoggin = '1.7.9'
+    dockerJavaVersion = '3.2.5'
+    web3jEpirusVersion = '0.0.7'
+    jaxbVersion = '2.2.11'
+    activationVersion = '1.1.1'
+    log4jVersion = '1.2.17'
+    semverVersion = '0.9.0'
+    commonsLangVersion = '3.9'
+    jcdpVersion = '4.0.1'
+}
+
 
 apply {
     [
@@ -64,11 +84,9 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j.openapi:web3j-openapi-codegen:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
-            "org.web3j:web3j-sokt:$soktVersion",
             "io.epirus:epirus-web3j:$web3jEpirusVersion",
-            "info.picocli:picocli:$picocliVersion",
+            "info.picocli:picocli:$picocli",
             files('libs/smartcheck.jar'),
             "javax.xml.bind:jaxb-api:$jaxbVersion",
             "com.sun.xml.bind:jaxb-core:$jaxbVersion",
@@ -77,8 +95,8 @@ dependencies {
             "com.google.code.gson:gson:$gsonVersion",
             "org.apache.commons:commons-lang3:$commonsLangVersion",
             "com.github.zafarkhaja:java-semver:$semverVersion",
-            "org.gradle:gradle-tooling-api:$gradleVersion",
-            "io.github.microutils:kotlin-logging:$kotlinLogging",
+            "log4j:log4j:$log4jVersion",
+            "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
             "com.diogonunes:JCDP:$jcdpVersion"
 
@@ -86,8 +104,8 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
+            "org.mockito:mockito-inline:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
 }
 
 task createProperties(dependsOn: processResources) doLast {

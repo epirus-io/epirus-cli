@@ -13,16 +13,20 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.OpenApiGeneratorService
-import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
-import io.epirus.console.openapi.options.PreCompiledContractOptions
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
+import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
-import picocli.CommandLine.Mixin
+import io.epirus.console.project.utils.ProgressCounter
+import io.epirus.console.project.utils.ProjectUtils.deleteFolder
+import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
+import org.apache.commons.io.FileUtils
 import picocli.CommandLine.Option
 import picocli.CommandLine.Command
 import picocli.CommandLine.Help.Visibility.ALWAYS
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 @Command(
         name = "generate",
@@ -38,36 +42,54 @@ import java.io.File
         footer = ["Epirus CLI is licensed under the Apache License 2.0"])
 class GenerateOpenApiCommand : AbstractOpenApiCommand() {
 
-    @Mixin
-    val preCompiledContractOptions = PreCompiledContractOptions()
+    @Option(
+        names = ["-s", "--solidity-path"],
+        description = ["Path to Solidity file/folder"]
+    )
+    var solidityImportPath: String? = null
 
     @Option(
         names = ["--with-implementations"],
         description = ["Generate the interfaces implementations."],
         showDefaultValue = ALWAYS
     )
-    var withImplementations: Boolean = true
+    var withImplementations: Boolean = false
 
     override fun generate(projectFolder: File) {
-        if (preCompiledContractOptions.abis.isEmpty()) {
-            print("\nGenerating Hello World REST endpoints ...\n")
-        } else {
-            print("\nGenerating contracts REST endpoints ...\n")
+        if (solidityImportPath == null) {
+            solidityImportPath = interactiveOptions.solidityProjectPath
         }
-        SimpleFileLogger.startLogging()
+        exitIfNoContractFound(File(solidityImportPath!!))
 
-        OpenApiGeneratorService(
-            OpenApiGeneratorServiceConfiguration(
-                projectName = projectOptions.projectName,
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Generating REST endpoints ...")
+
+        val projectFolderName = "GenerateEndpoints"
+        val tempFolder = Files.createTempDirectory(Paths.get(projectOptions.outputDir), projectFolderName)
+
+        val projectStructure = createProjectStructure(
+            openApiTemplateProvider = OpenApiTemplateProvider(
+                solidityContract = "",
+                pathToSolidityFolder = solidityImportPath!!,
+                gradleBuild = "project/build.gradleGenerateOpenApi.template",
                 packageName = projectOptions.packageName,
-                outputDir = projectFolder.path,
-                abis = preCompiledContractOptions.abis,
-                addressLength = projectOptions.addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName,
-                withImplementations = withImplementations
-            )
-        ).generate()
+                projectName = projectOptions.projectName,
+                contextPath = contextPath,
+                addressLength = (projectOptions.addressLength * 8).toString(),
+                generateServer = withImplementations.toString()
+            ), outputDir = tempFolder.toAbsolutePath().toString())
 
+        buildProject(
+            projectStructure.projectRoot,
+            withOpenApi = true,
+            withSwaggerUi = false,
+            withShadowJar = false)
+
+        FileUtils.copyDirectory(Paths.get(tempFolder.toString(), projectOptions.projectName, "build", "generated", "sources", "web3j", "main").toFile(),
+            Paths.get(projectOptions.outputDir, projectOptions.projectName).toFile())
+
+        deleteFolder(tempFolder)
+        progressCounter.setLoading(false)
         PrettyPrinter.onSuccess()
     }
 }

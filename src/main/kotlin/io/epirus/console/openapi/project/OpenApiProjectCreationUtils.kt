@@ -12,36 +12,50 @@
  */
 package io.epirus.console.openapi.project
 
-import io.epirus.console.project.utils.ProjectCreationUtils.setExecutable
-import io.epirus.console.project.utils.ProjectCreationUtils.executeBuild
-import io.epirus.console.project.utils.ProjectCreationUtils.isWindows
-import java.io.File
-import java.io.IOException
+import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateOpenApi
+import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateOpenApiAndSwaggerUi
+import io.epirus.console.openapi.project.OpenApiProjectGradleCommands.generateShadowJar
+import io.epirus.console.project.ProjectStructure
+import io.epirus.console.project.utils.ProjectCreationUtils
 
 internal object OpenApiProjectCreationUtils {
-    @Throws(IOException::class, InterruptedException::class)
-    fun generateOpenApiAndSwaggerUi(pathToDirectory: String?) {
-        if (!isWindows()) {
-            setExecutable(pathToDirectory, "gradlew")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jSwaggerUI"))
-        } else {
-            setExecutable(pathToDirectory, "gradlew.bat")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jSwaggerUI"))
+
+    /**
+     * Creates a new OpenAPI project structure from a set of  contracts.
+     *
+     * @param openApiTemplateProvider: is the OpenApiTemplateProvider containing all parameters for the generation
+     * @param outputDir: project output directory
+     *
+     * @return The project structure containing all the project directory needed details
+     */
+    fun createProjectStructure(openApiTemplateProvider: OpenApiTemplateProvider, outputDir: String): ProjectStructure {
+        return OpenApiProjectStructure(
+            outputDir,
+            openApiTemplateProvider.packageName,
+            openApiTemplateProvider.projectName
+        ).apply {
+            ProjectCreationUtils.generateTopLevelDirectories(this)
+            openApiTemplateProvider.generateFiles(this)
         }
     }
 
-    @Throws(IOException::class, InterruptedException::class)
-    fun runGradleClean(pathToDirectory: String?) {
-        if (!isWindows()) {
-            setExecutable(pathToDirectory, "gradlew")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew clean"))
-        } else {
-            setExecutable(pathToDirectory, "gradlew.bat")
-            executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat clean"))
+    /**
+     * Runs the necessary gradle tasks to have a working project.
+     *
+     * @param projectRoot: the project root directory containing the gradle executables
+     * @param withOpenApi: generate OpenAPI endpoints
+     * @param withSwaggerUi: generate SwaggerUI for the generated endpoints
+     * @param withShadowJar: generate an application Jar
+     */
+    fun buildProject(projectRoot: String, withOpenApi: Boolean = true, withSwaggerUi: Boolean = true, withShadowJar: Boolean = false) {
+        if (withOpenApi && withSwaggerUi) {
+            generateOpenApiAndSwaggerUi(projectRoot)
+        }
+        if (withOpenApi && !withSwaggerUi) {
+            generateOpenApi(projectRoot)
+        }
+        if (withShadowJar) {
+            generateShadowJar(projectRoot)
         }
     }
 }

@@ -23,6 +23,6 @@ public class JavaProjectCreatorRunner extends JavaProjectRunner {
     }
 
     protected void createProject() {
-        generateJava(true, Optional.empty(), withJar, true, "new");
+        generateJava(withTests, Optional.empty(), withJar, true, "new");
     }
 }

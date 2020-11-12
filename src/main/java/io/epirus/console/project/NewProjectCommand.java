@@ -12,19 +12,13 @@
  */
 package io.epirus.console.project;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
-
 import io.epirus.console.EpirusVersionProvider;
+import io.epirus.console.project.java.Erc20JavaProjectCreator;
+import io.epirus.console.project.java.Erc777JavaProjectCreator;
 import io.epirus.console.project.java.JavaProjectCreatorRunner;
 import io.epirus.console.project.kotlin.KotlinProjectCreatorRunner;
-import io.epirus.console.project.utils.InputVerifier;
-import io.epirus.console.project.utils.ProjectUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
-
-import static org.web3j.codegen.Console.exitError;
 
 @Command(
         name = "new",
@@ -38,65 +32,67 @@ import static org.web3j.codegen.Console.exitError;
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
         footer = "Epirus CLI is licensed under the Apache License 2.0")
-public class NewProjectCommand extends ProjectOptions implements Runnable {
+public class NewProjectCommand extends AbstractProjectCommand implements Runnable {
 
-    @Parameters(description = "HelloWorld, ERC777", defaultValue = "HelloWorld")
+    @Parameters(description = "HelloWorld, ERC20, ERC777", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
-
-    private final InteractiveOptions interactiveOptions;
-    private final InputVerifier inputVerifier;
-
-    public NewProjectCommand() {
-        this(System.in, System.out);
-    }
-
-    public NewProjectCommand(InputStream inputStream, PrintStream outputStream) {
-        this.interactiveOptions = new InteractiveOptions(inputStream, outputStream);
-        this.inputVerifier = new InputVerifier(outputStream);
-    }
 
     @Override
     public void run() {
-        if (inputIsValid(projectName, packageName)) {
-            projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
-            if (new File(projectName).exists()) {
-                if (interactiveOptions.overrideExistingProject()) {
-                    ProjectUtils.deleteFolder(new File(projectName).toPath());
-                } else {
-                    exitError("Project creation was canceled.");
-                }
-            }
-            final ProjectCreatorConfig projectCreatorConfig =
-                    new ProjectCreatorConfig(
-                            projectName, packageName, outputDir, generateJar, generateTests);
+        setupProject();
+        final ProjectCreatorConfig projectCreatorConfig =
+                new ProjectCreatorConfig(
+                        projectOptions.projectName,
+                        projectOptions.packageName,
+                        projectOptions.outputDir,
+                        projectOptions.generateJar,
+                        projectOptions.generateTests);
 
-            if (isKotlin) {
-                switch (templateType) {
-                    case HelloWorld:
-                        new KotlinProjectCreatorRunner(projectCreatorConfig).run();
-                        break;
-                    case ERC777:
-                        System.out.println(
-                                "Generating ERC777 Kotlin project is currently unsupported");
-                        break;
-                }
-            } else {
-                switch (templateType) {
-                    case HelloWorld:
-                        new JavaProjectCreatorRunner(projectCreatorConfig).run();
-                        break;
-                    case ERC777:
-                        System.out.println(
-                                "Generating ERC777 Java project is currently unsupported");
-                        break;
-                }
+        if (projectOptions.isKotlin) {
+            switch (templateType) {
+                case HelloWorld:
+                    new KotlinProjectCreatorRunner(projectCreatorConfig).run();
+                    break;
+                case ERC20:
+                    System.out.println("Generating ERC20 Kotlin project is currently unsupported");
+                    break;
+                case ERC777:
+                    System.out.println("Generating ERC777 Kotlin project is currently unsupported");
+                    break;
+            }
+        } else {
+            switch (templateType) {
+                case HelloWorld:
+                    new JavaProjectCreatorRunner(projectCreatorConfig).run();
+                    break;
+                case ERC777:
+                    new Erc777JavaProjectCreator(
+                                    new Erc777ProjectCreatorConfig(
+                                            projectOptions.projectName,
+                                            projectOptions.packageName,
+                                            projectOptions.outputDir,
+                                            projectOptions.generateJar,
+                                            projectOptions.generateTests,
+                                            interactiveOptions.getTokenName("ERC777"),
+                                            interactiveOptions.getTokenSymbol("erc777"),
+                                            interactiveOptions.getTokenInitialSupply("1000000000"),
+                                            interactiveOptions.getTokenDefaultOperators()))
+                            .run();
+                    break;
+                case ERC20:
+                    new Erc20JavaProjectCreator(
+                                    new Erc20ProjectCreatorConfig(
+                                            projectOptions.projectName,
+                                            projectOptions.packageName,
+                                            projectOptions.outputDir,
+                                            projectOptions.generateJar,
+                                            projectOptions.generateTests,
+                                            interactiveOptions.getTokenName("ERC20"),
+                                            interactiveOptions.getTokenSymbol("erc20"),
+                                            interactiveOptions.getTokenInitialSupply("1000000000")))
+                            .run();
+                    break;
             }
         }
-    }
-
-    private boolean inputIsValid(String... requiredArgs) {
-        return inputVerifier.requiredArgsAreNotEmpty(requiredArgs)
-                && inputVerifier.classNameIsValid(projectName)
-                && inputVerifier.packageNameIsValid(packageName);
     }
 }

@@ -12,14 +12,9 @@
  */
 package io.epirus.console.project;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Paths;
 
-import io.epirus.console.config.ConfigManager;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -79,7 +74,7 @@ public class ImportProjectCommandTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + solidityTestDir
+            "-p", "org.com", "-n", "Test5", "-o", tempDirPath, "-s", solidityTestDir
         };
         int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
@@ -98,24 +93,5 @@ public class ImportProjectCommandTest extends ClassExecutor {
                         "contracts",
                         "Test2Test.java");
         assertTrue(new File(pathToTests).exists());
-    }
-
-    @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
-        ConfigManager.setDevelopment();
-        final String[] args = {"-n=", "-p=", "-s="};
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final PrintStream printStream = new PrintStream(outputStream);
-
-        new CommandLine(
-                        ImportProjectCommand.class,
-                        FactoryHarness.getFactory(
-                                new ByteArrayInputStream("".getBytes()), printStream))
-                .execute(args);
-
-        assertTrue(
-                outputStream
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty."));
     }
 }

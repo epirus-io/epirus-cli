@@ -56,7 +56,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                         .withGradleScript("project/gradlew.template")
                         .withGradleSettings("project/settings.gradle.template")
                         .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
-                        .withGradlewWrapperJar("project/gradle-wrapper.jar");
+                        .withGradlewWrapperJar("gradle-wrapper.jar");
 
         if (command.equals("new")) {
             templateBuilder
@@ -64,7 +64,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                             JavaVersion.getJavaVersionAsDouble() < 11
                                     ? "project/build.gradle.template"
                                     : "project/build.gradleJava11.template")
-                    .withSolidityProject("project/HelloWorld.sol");
+                    .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder

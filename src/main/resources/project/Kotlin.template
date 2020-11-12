@@ -15,6 +15,14 @@ import org.web3j.tx.gas.ContractGasProvider
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+/**
+ * <p>Auto generated code.
+ * <p><strong>Do not modify!</strong>
+ * <p>This is the generated class for <code>epirus new helloworld</code></p>
+ * <p>It deploys the Hello World contract in src/main/solidity/ and prints its address</p>
+ * <p>The generated tests, if generated, are in src/test/<project_language></p>
+ * <p>For more information on how to run this project, please refer to our <a href="https://docs.epirus.io/quickstart/#deployment">documentation</a></p>
+ */
 class <project_name> {
 
     private val log = LoggerFactory.getILoggerFactory().getLogger("org.web3j.protocol.http.HttpService")
@@ -74,7 +82,12 @@ class <project_name> {
         log.info("Calling the greeting method of contract HelloWorld")
         val response: String = helloWorld?.greeting()!!.send()
         log.info("Contract returned: $response")
-        println(String.format("%-20s", "Contract address") + "https://" + deployNetwork.getNetworkName() + ".epirus.io/contracts/" + helloWorld.contractAddress)
+        val contractAddress = if(epirusDeploy) {
+            "https://${deployNetwork.networkName}.epirus.io/contracts/${helloWorld.contractAddress}"
+        } else {
+            helloWorld.contractAddress
+        }
+        println(String.format("%-20s", "Contract address") + contractAddress)
         exitProcess(0)
     }
 }

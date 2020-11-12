@@ -18,15 +18,12 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
 import io.epirus.console.account.AccountUtils;
-import io.epirus.console.openapi.utils.PrettyPrinter;
 import io.epirus.console.project.utils.InputVerifier;
 import io.epirus.console.project.utils.ProjectUtils;
 
@@ -131,7 +128,7 @@ public class InteractiveOptions {
                 System.exit(1);
             }
             print(
-                    "Please enter your wallet password [Leave empty if your wallet is not password protected]");
+                    "Please ente r your wallet password [Leave empty if your wallet is not password protected]");
             String walletPassword = getUserInput();
             walletCredentials.put("path", walletPath);
             walletCredentials.put("password", walletPassword);
@@ -214,20 +211,7 @@ public class InteractiveOptions {
         print("Please enter the path to your Solidity file/folder [Required Field]: ");
         File file = new File(getUserInput());
 
-        if (!(file.exists()) || !containsContracts(file)) {
-            PrettyPrinter.INSTANCE.onWrongPath();
-            System.exit(1);
-        }
         return file.getAbsolutePath();
-    }
-
-    public Boolean containsContracts(File file) {
-        if (file.isFile()) {
-            return file.getName().substring(file.getName().lastIndexOf(".") + 1).equals("sol");
-        }
-        return Arrays.stream(Objects.requireNonNull(file.listFiles()))
-                .anyMatch(
-                        f -> f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("sol"));
     }
 
     public boolean overrideExistingProject() {
@@ -249,8 +233,48 @@ public class InteractiveOptions {
 
     public String getEmail() {
         print("Please enter your email address: ");
-
         return getUserInput();
+    }
+
+    public String getTokenName(String defaultValue) {
+        print("Please enter the token name [" + defaultValue + "]: ");
+        String tokenName = getUserInput();
+        if (tokenName.isEmpty()) {
+            return defaultValue;
+        } else {
+            return tokenName;
+        }
+    }
+
+    public String getTokenSymbol(String defaultValue) {
+        print("Please enter the token symbol [" + defaultValue + "]: ");
+        String tokenSymbol = getUserInput();
+        if (tokenSymbol.isEmpty()) {
+            return defaultValue;
+        } else {
+            return tokenSymbol;
+        }
+    }
+
+    public String getTokenInitialSupply(String defaultValue) {
+        print("Please enter the token initial supply in Wei [" + defaultValue + "]: ");
+        String supply = getUserInput();
+        if (supply.isEmpty()) {
+            return defaultValue;
+        } else {
+            return supply;
+        }
+    }
+
+    public String[] getTokenDefaultOperators() {
+        print(
+                "Please enter the token default operators [your wallet address] (0x prefixed and ; separated): ");
+        String operators = getUserInput();
+        if (operators.isEmpty()) {
+            return null;
+        } else {
+            return operators.split(";");
+        }
     }
 
     private String getUserInput() {

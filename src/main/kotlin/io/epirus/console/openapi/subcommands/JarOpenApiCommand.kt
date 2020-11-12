@@ -13,16 +13,18 @@
 package io.epirus.console.openapi.subcommands
 
 import io.epirus.console.EpirusVersionProvider
-import io.epirus.console.openapi.OpenApiGeneratorService
-import io.epirus.console.openapi.OpenApiGeneratorServiceConfiguration
-import io.epirus.console.openapi.options.PreCompiledContractOptions
-import io.epirus.console.openapi.utils.GradleUtils
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.buildProject
+import io.epirus.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
+import io.epirus.console.openapi.project.OpenApiTemplateProvider
 import io.epirus.console.openapi.utils.PrettyPrinter
-import io.epirus.console.openapi.utils.SimpleFileLogger
+import io.epirus.console.project.utils.ProgressCounter
+import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
+import io.epirus.console.project.utils.ProjectUtils.findSolidityContracts
 import picocli.CommandLine.Command
-import picocli.CommandLine.Mixin
+import picocli.CommandLine.Option
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
@@ -40,50 +42,85 @@ import java.nio.file.StandardCopyOption
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
 class JarOpenApiCommand : AbstractOpenApiCommand() {
-    @Mixin
-    val preCompiledContractOptions = PreCompiledContractOptions()
+
+    @Option(
+        names = ["-s", "--solidity-path"],
+        description = ["Path to Solidity file/folder"]
+    )
+    var solidityImportPath: String? = null
+
+    /**
+     * Path to the `.epirus` folder
+     */
+    private val epirusHomeFolder: Path =
+        Paths.get(System.getenv(if (System.getProperty("os.name").toLowerCase().startsWith("win")) "USERPROFILE" else "HOME"), ".epirus")
 
     override fun generate(projectFolder: File) {
-        print("\nCreating ${projectOptions.projectName} JAR ...\n")
-        SimpleFileLogger.startLogging()
-        val tempFolderPath = Paths.get(projectFolder.toString(), projectOptions.projectName)
+        if (solidityImportPath == null) {
+            solidityImportPath = interactiveOptions.solidityProjectPath
+        }
+        exitIfNoContractFound(File(solidityImportPath!!))
 
-        OpenApiGeneratorService(
-            OpenApiGeneratorServiceConfiguration(
-                projectName = projectOptions.projectName,
-                packageName = projectOptions.packageName,
-                outputDir = tempFolderPath.toString(),
-                abis = preCompiledContractOptions.abis,
-                addressLength = projectOptions.addressLength,
-                contextPath = projectOptions.contextPath?.removeSuffix("/") ?: projectOptions.projectName
-            )
-        ).generate()
+        val progressCounter = ProgressCounter(true)
+        progressCounter.processing("Creating and Building ${projectOptions.projectName} JAR ... Subsequent builds will be faster")
 
-        GradleUtils.runGradleTask(
-            tempFolderPath.toFile(),
-            "shadowJar",
-            emptyList(),
-            "Generating the Jar ...",
-            System.out
-        )
+        Paths.get(projectFolder.toString(), projectOptions.projectName)
+
+        val projectDirectoryPath = getCachedDirectoryPath(findSolidityContracts(Paths.get(solidityImportPath!!)))
+        if (!projectDirectoryPath.toFile().exists()) {
+            createProjectStructure(
+                openApiTemplateProvider = OpenApiTemplateProvider(
+                    solidityContract = "",
+                    pathToSolidityFolder = solidityImportPath!!,
+                    gradleBuild = "project/build.gradleJarOpenApi.template",
+                    packageName = projectOptions.packageName,
+                    projectName = projectOptions.projectName,
+                    contextPath = contextPath,
+                    addressLength = (projectOptions.addressLength * 8).toString()
+                ), outputDir = projectDirectoryPath.toString())
+        }
+        buildProject(
+            Paths.get(projectDirectoryPath.toString(), projectOptions.projectName).toString(),
+            withOpenApi = false,
+            withSwaggerUi = false,
+            withShadowJar = true)
 
         Files.copy(
-            getJarFile(tempFolderPath.toFile()).toPath(),
+            getJarFile(projectDirectoryPath),
             File(projectOptions.outputDir, "${projectOptions.projectName}$JAR_SUFFIX").toPath(),
             StandardCopyOption.REPLACE_EXISTING
         )
 
+        progressCounter.setLoading(false)
         PrettyPrinter.onJarSuccess()
     }
 
-    private fun getJarFile(outputProjectFolder: File): File {
-        return File(
-            Paths.get(
-                outputProjectFolder.toString(),
-                "server",
-                "build",
-                "libs"
-            ).toString()
-        ).listFiles()!!.first { it.name.endsWith("-all.jar") }
+    /**
+     * Returns the path to the generated Jar when applying the Shadow plugin to the project.
+     *
+     * @param outputProjectFolder The cached directory containing the project
+     * @return Path to the Jar
+     */
+    private fun getJarFile(outputProjectFolder: Path): Path {
+        return File(outputProjectFolder
+                .resolve(projectOptions.projectName)
+                .resolve("build")
+                .resolve("libs")
+                .toString()
+        ).listFiles()!!.first { it.name.endsWith("-all.jar") }.toPath()
+    }
+
+    /**
+     * Creates the Path of the project directory used to generate the JAR.
+     * This latter is in <code>~/.epirus/projects/HashCode(contractName1, contractName2, ...)</code>
+     *
+     * @param contracts List of contracts that will be used in the project
+     * @return Path of the cached directory
+     */
+    private fun getCachedDirectoryPath(contracts: List<Path>): Path {
+        val folderNameHashCode = contracts.sorted().joinToString("") {
+            it.toFile().nameWithoutExtension
+        }.hashCode().toString()
+        return epirusHomeFolder.resolve("projects").resolve(folderNameHashCode)
     }
 }

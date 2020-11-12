@@ -34,4 +34,10 @@ public class BaseProjectOptions {
             description = "Destination base directory.",
             showDefaultValue = ALWAYS)
     public String outputDir = ".";
+
+    @Option(
+            names = {"--overwrite"},
+            description = {"overwrite the project if exists."},
+            showDefaultValue = ALWAYS)
+    public Boolean overwrite = false;
 }

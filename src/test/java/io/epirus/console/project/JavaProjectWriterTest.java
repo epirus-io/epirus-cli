@@ -37,14 +37,14 @@ public class JavaProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        ProjectWriter.writeResourceFile("project/HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        ProjectWriter.writeResourceFile("contracts/HelloWorld.sol", "HelloWorld.sol", tempDirPath);
         assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
     @Test
     public void copyResourceFileTest() throws IOException {
         ProjectWriter.copyResourceFile(
-                "project" + File.separator + templateProvider.getGradlewJar(),
+                templateProvider.getGradlewJar(),
                 tempDirPath + File.separator + "gradle-wrapper.jar");
         assertTrue(new File(tempDirPath + File.separator + "gradle-wrapper.jar").exists());
     }
@@ -54,7 +54,7 @@ public class JavaProjectWriterTest {
         final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
         ProjectWriter.writeResourceFile(
-                "project/HelloWorld.sol",
+                "contracts/HelloWorld.sol",
                 "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(
@@ -78,7 +78,7 @@ public class JavaProjectWriterTest {
                 new File(tempDirPath + File.separator + "tempSoliditySingleImport");
         destination.mkdirs();
         ProjectWriter.writeResourceFile(
-                "project/HelloWorld.sol",
+                "contracts/HelloWorld.sol",
                 "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(

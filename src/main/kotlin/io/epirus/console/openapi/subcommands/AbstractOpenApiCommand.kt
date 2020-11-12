@@ -17,21 +17,17 @@ import io.epirus.console.openapi.utils.PrettyPrinter
 import io.epirus.console.openapi.utils.SimpleFileLogger
 import io.epirus.console.project.InteractiveOptions
 import io.epirus.console.project.utils.InputVerifier
+import org.apache.commons.lang.StringUtils
+import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
-import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.Spec
 import java.io.File
-import java.io.InputStream
-import java.io.PrintStream
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-abstract class AbstractOpenApiCommand(
-    input: InputStream = System.`in`,
-    output: PrintStream = System.out
-) : Callable<Int> {
+abstract class AbstractOpenApiCommand : Callable<Int> {
 
     protected val JAR_SUFFIX = "-server-all.jar"
 
@@ -41,8 +37,17 @@ abstract class AbstractOpenApiCommand(
     @Spec
     protected lateinit var spec: CommandSpec
 
-    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(input, output)
-    private val inputVerifier: InputVerifier = InputVerifier(output)
+    protected val interactiveOptions: InteractiveOptions = InteractiveOptions(System.`in`, System.out)
+    private val inputVerifier: InputVerifier = InputVerifier(System.out)
+
+    protected val contextPath: String
+        get() {
+            return if (projectOptions.contextPath != null) {
+                StringUtils.removeEnd(projectOptions.contextPath, "/")
+            } else {
+                projectOptions.projectName
+            }
+        }
 
     override fun call(): Int {
         if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName))

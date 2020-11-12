@@ -18,20 +18,21 @@ import io.epirus.console.project.templates.TemplateProvider
 import io.epirus.console.project.templates.TemplateReader
 import java.io.File
 
-class OpenApiTemplateProvider(
+class OpenApiTemplateProvider @JvmOverloads constructor(
     private val solidityContract: String,
     private val pathToSolidityFolder: String,
     private val gradleBuild: String,
-    private val gradleSettings: String,
-    private val gradlewWrapperSettings: String,
-    private val gradlewBatScript: String,
-    private val gradlewScript: String,
-    private val gradlewJar: String,
-    private val packageName: String,
-    private val projectName: String,
+    val packageName: String,
+    val projectName: String,
     private val contextPath: String,
     private val addressLength: String,
-    private val readme: String
+    private val generateServer: String = "true",
+    private val readme: String = "project/README.openapi.md",
+    private val gradleSettings: String = "project/settings.gradle.template",
+    private val gradlewWrapperSettings: String = "project/gradlew-wrapper.properties.template",
+    private val gradlewBatScript: String = "project/gradlew.bat.template",
+    private val gradlewScript: String = "project/gradlew.template",
+    private val gradlewJar: String = "gradle-wrapper.jar"
 ) : TemplateProvider {
     private fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)
@@ -39,6 +40,7 @@ class OpenApiTemplateProvider(
             .replace("<project_name>".toRegex(), projectName)
             .replace("<context_path>".toRegex(), contextPath)
             .replace("<address_length>".toRegex(), addressLength)
+            .replace("<generate_server>".toRegex(), generateServer)
     }
 
     fun loadSolidityContract(): String {

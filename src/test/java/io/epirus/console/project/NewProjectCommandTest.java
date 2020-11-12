@@ -12,13 +12,18 @@
  */
 package io.epirus.console.project;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.epirus.console.config.ConfigManager;
+import io.epirus.console.Epirus;
 import io.epirus.console.project.utils.ClassExecutor;
 import io.epirus.console.project.utils.Folders;
 import org.junit.jupiter.api.Assertions;
@@ -43,9 +48,9 @@ public class NewProjectCommandTest extends ClassExecutor {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
         final NewProjectCommand newProjectCommand = new NewProjectCommand();
         new CommandLine(newProjectCommand).parseArgs(args);
-        assertEquals("org.com", newProjectCommand.packageName);
-        assertEquals("Test", newProjectCommand.projectName);
-        assertEquals(tempDirPath, newProjectCommand.outputDir);
+        assertEquals("org.com", newProjectCommand.projectOptions.packageName);
+        assertEquals("Test", newProjectCommand.projectOptions.projectName);
+        assertEquals(tempDirPath, newProjectCommand.projectOptions.outputDir);
     }
 
     @Test
@@ -87,21 +92,60 @@ public class NewProjectCommandTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
-        ConfigManager.setDevelopment();
-        final String[] args = {"-n=", "-p="};
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final PrintStream printStream = new PrintStream(outputStream);
+    public void testCorrectArgsJavaErc777ProjectGeneration()
+            throws IOException, InterruptedException {
+        final String[] args = {"new", "ERC777", "-o", tempDirPath};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("ERC777Test", 0, "ERC777Test".length());
+        writer.newLine();
+        writer.write("erc777", 0, "erc777".length());
+        writer.newLine();
+        writer.write("10000000", 0, "10000000".length());
+        writer.newLine();
+        writer.newLine();
+        writer.close();
 
-        new CommandLine(
-                        NewProjectCommand.class,
-                        FactoryHarness.getFactory(
-                                new ByteArrayInputStream("".getBytes()), printStream))
-                .execute(args);
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(System.out::println);
+        }
+        process.waitFor();
 
-        assertTrue(
-                outputStream
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty."));
+        assertEquals(0, process.exitValue());
+    }
+
+    @Test
+    public void testCorrectArgsJavaErc20ProjectGeneration()
+            throws IOException, InterruptedException {
+        final String[] args = {"new", "ERC20", "-o", tempDirPath};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                Epirus.class, Collections.emptyList(), Arrays.asList(args), false)
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("ERC20Test", 0, "ERC20Test".length());
+        writer.newLine();
+        writer.write("erc20", 0, "erc20".length());
+        writer.newLine();
+        writer.write("10000000", 0, "10000000".length());
+        writer.newLine();
+        writer.close();
+
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(System.out::println);
+        }
+
+        process.waitFor();
+
+        assertEquals(0, process.exitValue());
     }
 }

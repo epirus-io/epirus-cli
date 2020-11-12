@@ -34,6 +34,7 @@ public class JavaTemplateProvider implements TemplateProvider {
     private final String gradlewJar;
     private final Optional<String> packageNameReplacement;
     private final Optional<String> projectNameReplacement;
+    private final String readme;
 
     protected JavaTemplateProvider(
             final String mainJavaClass,
@@ -46,7 +47,8 @@ public class JavaTemplateProvider implements TemplateProvider {
             final String gradlewScript,
             final String gradlewJar,
             String packageNameReplacement,
-            String projectNameReplacement) {
+            String projectNameReplacement,
+            String readme) {
         this.mainJavaClass = mainJavaClass;
         this.solidityContract = solidityContract;
         this.pathToSolidityFolder = pathToSolidityFolder;
@@ -58,6 +60,7 @@ public class JavaTemplateProvider implements TemplateProvider {
         this.gradlewJar = gradlewJar;
         this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
         this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
+        this.readme = readme;
     }
 
     public String getSolidityContract() {
@@ -97,7 +100,8 @@ public class JavaTemplateProvider implements TemplateProvider {
                 .replaceAll(
                         "<project_name>",
                         ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
-                .replaceAll("<package_name>", packageNameReplacement.orElse(""));
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<project_language>", "java");
     }
 
     public String loadGradleBuild() throws IOException {
@@ -159,6 +163,11 @@ public class JavaTemplateProvider implements TemplateProvider {
         ProjectWriter.writeResourceFile(
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
-                getGradlewJar(), projectStructure.getWrapperPath() + "gradle-wrapper.jar");
+                getGradlewJar(),
+                new File(projectStructure.getWrapperPath(), "gradle-wrapper.jar")
+                        .getAbsolutePath());
+        if (readme != null)
+            ProjectWriter.copyResourceFile(
+                    readme, projectStructure.getProjectRoot() + File.separator + "README.md");
     }
 }

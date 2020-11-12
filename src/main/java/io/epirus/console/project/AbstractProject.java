@@ -60,7 +60,8 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
     public void createProject() throws IOException, InterruptedException {
         ProjectCreationUtils.generateTopLevelDirectories(projectStructure);
         getTemplateProvider().generateFiles(projectStructure);
-        progressCounter.processing("Creating " + projectStructure.projectName);
+        progressCounter.processing(
+                "Creating and building project ... Subsequent builds will be faster");
         ProjectCreationUtils.generateWrappers(projectStructure.getProjectRoot());
         if (withTests) {
             generateTests(projectStructure);
