@@ -23,16 +23,11 @@ import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
 import picocli.CommandLine.Spec
 import java.io.File
-import java.io.InputStream
-import java.io.PrintStream
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
-abstract class AbstractOpenApiCommand(
-    input: InputStream = System.`in`,
-    output: PrintStream = System.out
-) : Callable<Int> {
+abstract class AbstractOpenApiCommand : Callable<Int> {
 
     protected val JAR_SUFFIX = "-server-all.jar"
 

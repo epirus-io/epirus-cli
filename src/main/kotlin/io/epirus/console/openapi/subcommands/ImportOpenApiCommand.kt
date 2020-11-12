@@ -22,8 +22,6 @@ import io.epirus.console.project.utils.ProjectUtils.exitIfNoContractFound
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
-import java.io.InputStream
-import java.io.PrintStream
 
 @Command(
     name = "import",
@@ -38,10 +36,7 @@ import java.io.PrintStream
     footerHeading = "%n",
     footer = ["Epirus CLI is licensed under the Apache License 2.0"]
 )
-class ImportOpenApiCommand(
-    input: InputStream = System.`in`,
-    output: PrintStream = System.out
-) : AbstractOpenApiCommand(input, output) {
+class ImportOpenApiCommand : AbstractOpenApiCommand() {
 
     @Option(
         names = ["-s", "--solidity-path"],
