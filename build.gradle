@@ -32,6 +32,7 @@ ext {
     semverVersion = '0.9.0'
     commonsLangVersion = '3.9'
     jcdpVersion = '4.0.1'
+    web3jCLIVersion='4.8.2-SNAPSHOT'
 }
 
 
@@ -55,6 +56,7 @@ apply {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
@@ -98,7 +100,13 @@ dependencies {
             "log4j:log4j:$log4jVersion",
             "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
-            "com.diogonunes:JCDP:$jcdpVersion"
+            "com.diogonunes:JCDP:$jcdpVersion",
+            "org.web3j.console:web3j-cli:$web3jCLIVersion"
+
+
+
+
+
 
     runtimeOnly "org.slf4j:slf4j-nop:$slf4jVersion"
 

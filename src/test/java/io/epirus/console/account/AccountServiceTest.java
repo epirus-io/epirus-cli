@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import io.epirus.console.config.ConfigManager;
+import io.epirus.console.config.EpirusConfigManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,7 +36,7 @@ public class AccountServiceTest {
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
         accountService = new AccountService(wireMockServer.baseUrl());
-        ConfigManager.setDevelopment();
+        EpirusConfigManager.setDevelopment();
     }
 
     @ParameterizedTest

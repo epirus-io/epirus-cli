@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.epirus.console.EpirusCommand;
-import io.epirus.console.utils.OSUtils;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-import static io.epirus.console.config.ConfigManager.config;
+import org.web3j.console.utils.OSUtils;
+
+import static io.epirus.console.config.EpirusConfigManager.config;
 
 public class Telemetry {
     private static final String DEFAULT_TELEMETRY_URL =

@@ -14,12 +14,12 @@ package io.epirus.console.account.subcommands;
 
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
-import io.epirus.console.project.InteractiveOptions;
-import io.epirus.console.utils.ConsoleDevice;
-import io.epirus.console.utils.IODevice;
 import picocli.CommandLine.Command;
 
 import org.web3j.codegen.Console;
+import org.web3j.console.project.InteractiveOptions;
+import org.web3j.console.utils.ConsoleDevice;
+import org.web3j.console.utils.IODevice;
 
 @Command(
         name = "login",
