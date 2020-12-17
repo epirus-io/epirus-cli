@@ -18,7 +18,7 @@ import picocli.CommandLine.Command;
 
 import org.web3j.console.project.InteractiveOptions;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 
 @Command(
         name = "reset",

@@ -18,17 +18,17 @@ import com.github.zafarkhaja.semver.Version;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 import org.web3j.console.utils.CliVersion;
 import org.web3j.console.utils.OSUtils;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 
 public class Updater {
     private static final String DEFAULT_UPDATE_URL =

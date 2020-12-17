@@ -22,7 +22,9 @@ import java.util.UUID;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 
-public class ConfigManager {
+import org.web3j.console.config.ConfigManager;
+
+public class EpirusConfigManager extends ConfigManager {
     protected static final Path DEFAULT_EPIRUS_CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".epirus", ".config");
 

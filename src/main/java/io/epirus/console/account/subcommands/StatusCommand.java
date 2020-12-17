@@ -15,7 +15,7 @@ package io.epirus.console.account.subcommands;
 import io.epirus.console.EpirusVersionProvider;
 import picocli.CommandLine.Command;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 
 @Command(
         name = "status",

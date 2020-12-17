@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import io.epirus.console.config.ConfigManager;
+import io.epirus.console.config.EpirusConfigManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class TelemetryTest {
         wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        ConfigManager.setDevelopment();
+        EpirusConfigManager.setDevelopment();
 
         stubFor(
                 post(urlPathMatching("/api/analytics/"))

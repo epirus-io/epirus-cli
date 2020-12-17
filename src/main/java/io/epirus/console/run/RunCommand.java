@@ -12,6 +12,12 @@
  */
 package io.epirus.console.run;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
@@ -19,6 +25,7 @@ import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.web3j.Epirus;
+
 import org.web3j.codegen.Console;
 import org.web3j.console.project.utils.ProjectUtils;
 import org.web3j.console.wallet.Faucet;
@@ -31,15 +38,9 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR_PREFIX;
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 import static org.web3j.console.project.utils.ProjectUtils.uploadSolidityMetadata;
 import static org.web3j.console.utils.PrinterUtilities.coloredPrinter;
 import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;

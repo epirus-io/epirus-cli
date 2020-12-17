@@ -18,6 +18,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import io.epirus.console.config.EpirusConfigManager;
+
 import org.web3j.codegen.Console;
 import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.wallet.ProjectWallet;
@@ -28,7 +30,7 @@ public class AccountUtils {
     public static void accountInit(AccountService accountService) {
         InteractiveOptions interactiveOptions = new InteractiveOptions();
 
-        if (!interactiveOptions.isUserLoggedIn()
+        if (!interactiveOptions.isUserLoggedIn(new EpirusConfigManager())
                 && interactiveOptions.doesUserWantEpirusAccount()) {
             if (accountService.createAccount(interactiveOptions.getEmail())) {
                 System.out.println(

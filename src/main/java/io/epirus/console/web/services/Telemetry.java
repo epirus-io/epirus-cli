@@ -26,7 +26,7 @@ import okhttp3.RequestBody;
 
 import org.web3j.console.utils.OSUtils;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 
 public class Telemetry {
     private static final String DEFAULT_TELEMETRY_URL =

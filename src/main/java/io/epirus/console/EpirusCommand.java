@@ -19,7 +19,7 @@ import java.util.Map;
 import io.epirus.console.account.AccountCommand;
 import io.epirus.console.account.subcommands.LoginCommand;
 import io.epirus.console.account.subcommands.LogoutCommand;
-import io.epirus.console.config.ConfigManager;
+import io.epirus.console.config.EpirusConfigManager;
 import io.epirus.console.run.RunCommand;
 import io.epirus.console.web.services.Updater;
 import org.apache.commons.lang.RandomStringUtils;
@@ -31,7 +31,7 @@ import org.web3j.codegen.Console;
 import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.services.Telemetry;
 
-import static io.epirus.console.config.ConfigManager.config;
+import static io.epirus.console.config.EpirusConfigManager.config;
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitSuccess;
 
@@ -93,7 +93,7 @@ public class EpirusCommand implements Runnable {
 
         System.out.println(LOGO);
         try {
-            ConfigManager.setProduction();
+            EpirusConfigManager.setProduction();
             maybeCreateDefaultWallet();
             Updater.promptIfUpdateAvailable();
         } catch (IOException e) {
