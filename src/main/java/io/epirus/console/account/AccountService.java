@@ -34,9 +34,9 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 
 import static io.epirus.console.config.ConfigManager.config;
-import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
-import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.codegen.Console.exitError;
+import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
+import static org.web3j.console.utils.PrinterUtilities.printInformationPairWithStatus;
 
 public class AccountService implements Closeable {
 

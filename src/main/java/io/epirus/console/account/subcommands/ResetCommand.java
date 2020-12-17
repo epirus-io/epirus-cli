@@ -14,8 +14,9 @@ package io.epirus.console.account.subcommands;
 
 import io.epirus.console.EpirusCommand;
 import io.epirus.console.EpirusVersionProvider;
-import io.epirus.console.project.InteractiveOptions;
 import picocli.CommandLine.Command;
+
+import org.web3j.console.project.InteractiveOptions;
 
 import static io.epirus.console.config.ConfigManager.config;
 

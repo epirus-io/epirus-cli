@@ -12,29 +12,18 @@
  */
 package io.epirus.console.run;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.google.common.annotations.VisibleForTesting;
 import io.epirus.console.EpirusVersionProvider;
 import io.epirus.console.account.AccountService;
 import io.epirus.console.account.AccountUtils;
 import io.epirus.console.account.subcommands.LoginCommand;
-import io.epirus.console.project.InteractiveOptions;
-import io.epirus.console.project.utils.ProjectUtils;
-import io.epirus.console.wallet.Faucet;
-import io.epirus.console.wallet.subcommands.WalletFundCommand;
-import io.epirus.console.wrapper.CredentialsOptions;
 import io.epirus.web3j.Epirus;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Parameters;
-
 import org.web3j.codegen.Console;
+import org.web3j.console.project.utils.ProjectUtils;
+import org.web3j.console.wallet.Faucet;
+import org.web3j.console.wallet.subcommands.WalletFundCommand;
+import org.web3j.console.wrapper.CredentialsOptions;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
@@ -42,15 +31,24 @@ import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR_PREFIX;
 import static io.epirus.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
 import static io.epirus.console.config.ConfigManager.config;
-import static io.epirus.console.project.utils.ProjectUtils.uploadSolidityMetadata;
-import static io.epirus.console.utils.PrinterUtilities.coloredPrinter;
-import static io.epirus.console.utils.PrinterUtilities.printErrorAndExit;
-import static io.epirus.console.utils.PrinterUtilities.printInformationPair;
-import static io.epirus.console.utils.PrinterUtilities.printInformationPairWithStatus;
+import static org.web3j.console.project.utils.ProjectUtils.uploadSolidityMetadata;
+import static org.web3j.console.utils.PrinterUtilities.coloredPrinter;
+import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
+import static org.web3j.console.utils.PrinterUtilities.printInformationPair;
+import static org.web3j.console.utils.PrinterUtilities.printInformationPairWithStatus;
 import static org.web3j.utils.Convert.Unit.ETHER;
+import static picocli.CommandLine.Command;
+import static picocli.CommandLine.Mixin;
+import static picocli.CommandLine.Parameters;
 
 @Command(
         name = "run",
@@ -167,7 +165,6 @@ public class RunCommand implements Runnable {
     }
 
     public void deploy() throws Exception {
-        InteractiveOptions options = new InteractiveOptions();
         coloredPrinter.println("Preparing to run your Web3App");
         System.out.print(System.lineSeparator());
         AccountUtils.accountInit(accountService);

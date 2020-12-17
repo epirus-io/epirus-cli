@@ -18,10 +18,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import io.epirus.console.project.InteractiveOptions;
-import io.epirus.console.project.wallet.ProjectWallet;
-
 import org.web3j.codegen.Console;
+import org.web3j.console.project.InteractiveOptions;
+import org.web3j.console.project.wallet.ProjectWallet;
 import org.web3j.crypto.CipherException;
 
 public class AccountUtils {

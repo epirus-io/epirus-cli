@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.epirus.console.EpirusCommand;
-import io.epirus.console.utils.OSUtils;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+
+import org.web3j.console.utils.OSUtils;
 
 import static io.epirus.console.config.ConfigManager.config;
 

@@ -12,8 +12,9 @@
  */
 package io.epirus.console;
 
-import io.epirus.console.utils.CliVersion;
 import picocli.CommandLine;
+
+import org.web3j.console.utils.CliVersion;
 
 public class EpirusVersionProvider implements CommandLine.IVersionProvider {
     @Override
