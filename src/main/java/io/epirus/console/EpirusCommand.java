@@ -31,6 +31,7 @@ import io.epirus.console.security.ContractAuditCommand;
 import io.epirus.console.wallet.WalletCommand;
 import io.epirus.console.web.services.Telemetry;
 import io.epirus.console.web.services.Updater;
+import io.epirus.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
 import org.apache.commons.lang.RandomStringUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -49,7 +50,6 @@ import static org.web3j.codegen.Console.exitSuccess;
             AccountCommand.class,
             ContractAuditCommand.class,
             DockerCommand.class,
-            GenerateCommand.class,
             CommandLine.HelpCommand.class,
             ImportProjectCommand.class,
             LoginCommand.class,
@@ -59,6 +59,7 @@ import static org.web3j.codegen.Console.exitSuccess;
             RunCommand.class,
             ProjectTestCommand.class,
             WalletCommand.class,
+            SolidityFunctionWrapperGeneratorCommand.class
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,
