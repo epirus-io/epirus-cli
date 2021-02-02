@@ -24,7 +24,7 @@ import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(
-        name = "generate",
+        name = "truffle",
         description = "Generate Java smart contract wrappers from truffle json",
         showDefaultValues = true,
         abbreviateSynopsis = true,
