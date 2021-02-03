@@ -13,8 +13,8 @@
 package io.epirus.console;
 
 import io.epirus.console.project.UnitTestCommand;
-import io.epirus.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
-import io.epirus.console.wrapper.TruffleFunctionWrapperGeneratorCommand;
+import io.epirus.console.wrapper.subcommand.SolidityGenerateCommand;
+import io.epirus.console.wrapper.subcommand.TruffleGenerateCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -22,9 +22,9 @@ import picocli.CommandLine.Command;
         name = "generate",
         subcommands = {
             CommandLine.HelpCommand.class,
-            SolidityFunctionWrapperGeneratorCommand.class,
-            TruffleFunctionWrapperGeneratorCommand.class,
+            TruffleGenerateCommand.class,
             UnitTestCommand.class,
+            SolidityGenerateCommand.class,
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,
